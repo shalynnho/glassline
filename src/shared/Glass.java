@@ -44,6 +44,11 @@ public class Glass {
 		this(new String[0]);
 	}
 	
+	// Turn ArrayList into array and call other constructor
+	public Glass(List<String> recipe) {
+		this(recipe.toArray(new String[recipe.size()]));
+	}
+	
 	/* Getters */
 	public boolean getRecipe(String machID) {
 		return recipe.get(machID);
@@ -59,7 +64,7 @@ public class Glass {
 	
 	// test constructor and getters
 	public static void main(String[] args) {
-		Glass g[] = new Glass[3];
+		Glass g[] = new Glass[4];
 		g[0] = new Glass();
 		
 		String rec[] = {"NCCutter"};
@@ -67,6 +72,11 @@ public class Glass {
 		
 		String rec1[] = {"Grinder", "Drill", "Washer"};
 		g[2] = new Glass(rec1);
+		
+		List<String> rec2 = new ArrayList<String>();
+		rec2.add("Painter");
+		rec2.add("CrossSeamer");
+		g[3] = new Glass(rec2);
 		
 		System.out.println("Num Glass Created: " + Glass.getCurrentID());
 		

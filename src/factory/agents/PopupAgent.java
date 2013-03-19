@@ -3,38 +3,30 @@ package factory.agents;
 import transducer.TChannel;
 import transducer.TEvent;
 import engine.agent.Agent;
-import factory.interfaces.ConveyorFamily;
+import factory.interfaces.Popup;
 
-public class ConveyorFamilyAgent extends Agent implements ConveyorFamily {
+public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
-	public ConveyorFamilyAgent() {
+	public PopupAgent() {
 	}
+
 
 	// *** DATA ***
 
 	// *** MESSAGES ***
-	@Override
-	public void msgHereIsGlass() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void msgPositionFree() {
-		// TODO Auto-generated method stub
-	}
 
 	// *** SCHEDULER ***
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// TODO Auto-generated method stub
+		
 	}
-
 	// *** ACTIONS ***
 
 	// *** EXTRA ***

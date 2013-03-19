@@ -11,7 +11,8 @@ import transducer.Transducer;
 import transducer.TReceiver;
 
 /**
- * Superclass for all threaded Agents. Agents have a thread devoted to their scheduler and subclasses must override pickAndExecuteAnAction(). They can also register with transducers
+ * Superclass for all threaded Agents. Agents have a thread devoted to their scheduler and subclasses must override pickAndExecuteAnAction(). 
+ * They can also register with transducers
  */
 public abstract class Agent implements TReceiver {
 	/** The Agent's name */
