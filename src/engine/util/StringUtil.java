@@ -49,7 +49,7 @@ import java.util.Vector;
 public class StringUtil {
 
 	/**
-	 * Replace all occurances of oldstr in line with newstr
+	 * Replace all occurrences of oldstr in line with newstr
 	 * 
 	 * @param line
 	 *            string to be modified

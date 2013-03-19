@@ -1,83 +1,60 @@
-
 package shared.enums;
 
 /**
- * Enum to keep track of what type of
- * machine the machine is.
+ * Enum to keep track of what type of machine the machine is.
  */
-public enum MachineType
-{
+public enum MachineType {
 
 	// Offline Machines
-	CROSS_SEAMER
-	{
-		public String toString()
-		{
+	CROSS_SEAMER {
+		public String toString() {
 			return "Cross Seamer";
 		}
 	},
-	DRILL
-	{
-		public String toString()
-		{
+	DRILL {
+		public String toString() {
 			return "Drill";
 		}
 	},
-	GRINDER
-	{
-		public String toString()
-		{
+	GRINDER {
+		public String toString() {
 			return "Grinder";
 		}
 	},
-	MANUAL_BREAKOUT
-	{
-		public String toString()
-		{
+	MANUAL_BREAKOUT {
+		public String toString() {
 			return "Manual Breakout";
 		}
 	},
 
 	// Online Machines
-	CUTTER
-	{
-		public String toString()
-		{
+	CUTTER {
+		public String toString() {
 			return "Cutter";
 		}
 	},
-	WASHER
-	{
-		public String toString()
-		{
+	WASHER {
+		public String toString() {
 			return "Washer";
 		}
 	},
-	UV_LAMP
-	{
-		public String toString()
-		{
+	UV_LAMP {
+		public String toString() {
 			return "UV Lamp";
 		}
 	},
-	OVEN
-	{
-		public String toString()
-		{
+	OVEN {
+		public String toString() {
 			return "Oven";
 		}
 	},
-	PAINT
-	{
-		public String toString()
-		{
+	PAINT {
+		public String toString() {
 			return "Paint";
 		}
 	},
-	BREAKOUT
-	{
-		public String toString()
-		{
+	BREAKOUT {
+		public String toString() {
 			return "Breakout";
 		}
 	}
