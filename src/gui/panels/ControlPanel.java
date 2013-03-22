@@ -205,6 +205,8 @@ public class ControlPanel extends JPanel implements TReceiver
 	public void setTransducer(Transducer newTransducer)
 	{
 		// TODO set the transducer, then register with all the necessary channels
+		//transducer = newTransducer;
+		//transducer.register...
 	}
 
 	/**

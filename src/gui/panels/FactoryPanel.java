@@ -75,6 +75,8 @@ public class FactoryPanel extends JPanel {
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 
+		//ConveyorFamily fam1 = new ConveyorFamily(transducer)
+
 		System.out.println("Back end initialization finished.");
 	}
 

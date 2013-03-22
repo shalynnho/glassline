@@ -3,8 +3,8 @@ package factory.interfaces;
 public interface Conveyor {
 	
 	// *** MESSAGES ***
-	public abstract void msgHereIsGlass(); // from previous sensor (sensor1)
-	public abstract void msgPositionFree(); // from next sensor (sensor2)
+	public abstract void msgHereIsGlass(); // from previous sensor
+	public abstract void msgTakingGlass(); // from following popup
 	
 	// *** ACTIONS ***
 	public abstract void actReadyForGlass();

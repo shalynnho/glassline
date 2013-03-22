@@ -7,17 +7,36 @@ import factory.interfaces.Sensor;
 
 public class SensorAgent extends Agent implements Sensor {
 	// *** Constructor(s) ***
-	public SensorAgent() {
+	public SensorAgent(ConveyorFamily f) {
+		family = f;
 	}
-	
+
 	// *** DATA ***
+	ConveyorFamily family;
+	// boolean nextPositionIsFree = false;
+
+	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 	
 	// *** MESSAGES ***
+	public void msgHereIsGlass(Glass g) {
+		// state = SensorState.GLASS_JUST_ARRIVED;
+		glasses.add(g);
+		stateChanged();
+	}
+	
+	public void msgPositionFree() {
+		// todo
+		// nextPositionIsFree = true;
+		stateChanged();
+	}
 	
 	// *** SCHEDULER ***
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		if (!glasses.isEmpty()) { // state == SensorState.GLASS_JUST_ARRIVED) {
+			actPassOnGlass(glasses.remove(0));
+			return true;
+		}
 		return false;
 	}
 
@@ -27,6 +46,10 @@ public class SensorAgent extends Agent implements Sensor {
 		
 	}
 	// *** ACTIONS ***
+	public void actPassOnGlass(Glass g) {
+		family.conv.msgHereIsGlass(g);
+		// DO_START_CONVEYOR ?
+	}
 	
 	// *** EXTRA ***
 }
