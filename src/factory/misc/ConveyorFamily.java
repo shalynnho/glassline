@@ -18,11 +18,20 @@ public class ConveyorFamily {
 		popup = new PopupAgent(this, transducer);
 	}
 
-	// *** DATA - accessible by agents ***
-	SensorAgent sensor;
-	ConveyorAgent conv;
-	PopupAgent popup;
+	// *** DATA - mostly accessible by agents ***
+	public SensorAgent sensor;
+	public ConveyorAgent conv;
+	public PopupAgent popup;
 	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING, PROCESSED }
+
+	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
+	public RunningState runningState = OFF_BC_QUIET;
+	public enum RunningState = {
+		ON_BC_SENSOR_TO_CONVEYOR, ON_BC_CONVEYOR_TO_SENSOR, ON_BC_SENSOR_TO_POPUP,
+		OFF_BC_QUIET, OFF_BC_WAITING_AT_SENSOR
+	}
+
+	
 	class MyGlass {
 		public MyGlass(Glass g, GlassState s) {
 			this.glass = g;
