@@ -1,9 +1,16 @@
 package factory.agents;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import shared.Glass;
 import transducer.TChannel;
 import transducer.TEvent;
 import engine.agent.Agent;
 import factory.interfaces.Sensor;
+import factory.misc.ConveyorFamily;
+import factory.misc.ConveyorFamily.RunningState;
 
 public class SensorAgent extends Agent implements Sensor {
 	// *** Constructor(s) ***
@@ -14,7 +21,7 @@ public class SensorAgent extends Agent implements Sensor {
 	// *** DATA ***
 	private ConveyorFamily family;
 	private enum SensorState { SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO, GLASS_JUST_ARRIVED }
-	private SensorState state = NOTHING_TO_DO;
+	private SensorState state = SensorState.NOTHING_TO_DO;
 
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 	

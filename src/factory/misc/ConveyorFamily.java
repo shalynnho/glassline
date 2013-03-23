@@ -1,9 +1,10 @@
 package factory.misc;
 
-import transducer.TChannel;
-import transducer.TEvent;
-import engine.agent.Agent;
-import factory.interfaces.ConveyorFamily;
+import shared.Glass;
+import transducer.Transducer;
+import factory.agents.ConveyorAgent;
+import factory.agents.PopupAgent;
+import factory.agents.SensorAgent;
 
 /**
  * Key class that contains agents to represent the conveyor family.
@@ -13,7 +14,7 @@ import factory.interfaces.ConveyorFamily;
 public class ConveyorFamily {
 	// *** Constructor(s) ***
 	public ConveyorFamily(Transducer transducer) {
-		sensor = new Sensor(this, transducer);
+		sensor = new SensorAgent(this, transducer);
 		conv = new ConveyorAgent(this, transducer);
 		popup = new PopupAgent(this, transducer);
 	}

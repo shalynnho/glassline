@@ -4,15 +4,13 @@
 package factory.test.mock;
 
 /**
- * This is the base class for a mock agent. It only defines that an agent should contain a name.
- * 
- * @author Sean Turner
- * 
+ * This is the base class for a mock entity, like an agent, or a class that contains agents. 
+ * It only defines that the entity should contain a name.
  */
-public class MockAgent {
+public class MockEntity {
 	private String name;
 
-	public MockAgent(String name) {
+	public MockEntity(String name) {
 		this.name = name;
 	}
 
