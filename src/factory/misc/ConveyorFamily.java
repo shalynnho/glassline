@@ -23,7 +23,7 @@ public class ConveyorFamily {
 	public SensorAgent sensor;
 	public ConveyorAgent conv;
 	public PopupAgent popup;
-	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING, PROCESSED }
+	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING, FINISHED }
 
 	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
 	public RunningState runningState = OFF_BC_QUIET;
@@ -38,7 +38,24 @@ public class ConveyorFamily {
 			this.glass = g;
 			this.state = s;
 		}
-		Glass glass; GlassState state;
+		private Glass glass; 
+		private GlassState state;
+
+		public boolean needsProcessing() {
+			return state == GlassState.NEEDS_PROCESSING;
+		}
+		public boolean isFinished() {
+			return state == GlassState.FINISHED;
+		}
+		public void setState(GlassState s) {
+			state = s;
+		}
+		public GlassState getState() {
+			return state;
+		}
+		public Glass getGlass() {
+			return glass;
+		}
 	}
 
 	// *** MESSAGES - just passes on immediately to appropriate agent ***
