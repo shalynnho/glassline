@@ -56,9 +56,9 @@ public class SensorAgent extends Agent implements Sensor {
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		// TODO Auto-generated method stub
-		
+		// Nothing to do
 	}
+
 	// *** ACTIONS ***
 	public void actPassOnGlass(Glass g) {
 		while (family.runningState != RunningState.OFF_BC_QUIET) {
@@ -71,7 +71,7 @@ public class SensorAgent extends Agent implements Sensor {
 	}
 	
 	public void actTellPrevFamilyPositionFree() {
-		// TODONOW
+		family.prevFamily.msgPositionFree();		
 	}	
 	// *** EXTRA ***
 }

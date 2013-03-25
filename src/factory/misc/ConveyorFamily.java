@@ -23,6 +23,11 @@ public class ConveyorFamily {
 	public SensorAgent sensor;
 	public ConveyorAgent conv;
 	public PopupAgent popup;
+
+	public ConveyorFamly nextFamily;
+	public ConveyorFamly prevFamily;
+
+	// FINISHED means workstation is done processing it
 	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING, FINISHED }
 
 	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
@@ -67,5 +72,13 @@ public class ConveyorFamily {
 	@Override
 	public void msgPositionFree() {
 		popup.msgPositionFree();
+	}
+
+	// *** EXTRA ***
+	public void setNextConveyorFamily(ConveyorFamily f)	{
+		nextFamily = f;
+	}
+	public void setPreviousConveyorFamily(ConveyorFamily f)	{
+		prevFamily = f;
 	}
 }

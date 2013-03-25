@@ -47,7 +47,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			return true;
 		} else if (state == ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR) { // technically could be merged into NOTHING_TO_DO
 			// Do nothing. Next thing that happens is conveyor auto-stops via eventFired, popup agent realizes sensorOccupied = true, 
-			// does actLoadGlassOntoPopup which then tells this conveyor agent msgTakingGlass()
+			// does actLoadGlassOntoPopup which *then tells this conveyor agent msgTakingGlass()*
 			return false;
 		} else if (state == ConveyorState.SHOULD_NOTIFY_POSITION_FREE) {
 			state = ConveyorState.NOTHING_TO_DO;
