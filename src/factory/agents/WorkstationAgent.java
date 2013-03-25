@@ -1,5 +1,8 @@
 package factory.agents;
 
+import shared.Glass;
+import shared.enums.MachineType;
+import transducer.TChannel;
 import factory.interfaces.Workstation;
 
 /**
@@ -10,12 +13,11 @@ public class WorkstationAgent implements Workstation {
 	// *** Constructor(s) ***
 
 	// *** DATA ***
-
+	MachineType type;
 
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass g) {
 		// later
-		stateChanged();
 	}
 
 	// *** SCHEDULER ***
@@ -23,5 +25,7 @@ public class WorkstationAgent implements Workstation {
 	// *** ACTIONS ***
 
 	// *** EXTRA ***
-
+	public TChannel getChannel() {
+		return type.getChannel();
+	}
 }

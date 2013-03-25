@@ -1,32 +1,18 @@
-
 package transducer;
 
 /**
  * This class contains references to commonly used channels.
  */
-public enum TChannel
-{
+public enum TChannel {
 	// global channels
-	CONTROL_PANEL,
-	ALL_AGENTS,
-	ALL_GUI,
+	CONTROL_PANEL, ALL_AGENTS, ALL_GUI,
 
 	// base components
-	CONVEYOR,
-	SENSOR,
-	POPUP,
-	TRUCK,
-	BIN,
+	CONVEYOR, SENSOR, POPUP, TRUCK, BIN,
 
 	// individual workstations
-	BREAKOUT,
-	MANUAL_BREAKOUT,
-	CROSS_SEAMER,
-	DRILL,
-	GRINDER,
-	CUTTER,
-	WASHER,
-	UV_LAMP,
-	OVEN,
-	PAINTER
+	BREAKOUT, MANUAL_BREAKOUT, CROSS_SEAMER, DRILL, GRINDER, CUTTER, WASHER, UV_LAMP, OVEN, PAINTER,
+	
+	// null
+	NULL_CHANNEL;
 }

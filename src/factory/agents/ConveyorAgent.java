@@ -1,9 +1,19 @@
 package factory.agents;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import shared.Glass;
 import transducer.TChannel;
 import transducer.TEvent;
+import transducer.Transducer;
 import engine.agent.Agent;
 import factory.interfaces.Conveyor;
+import factory.misc.ConveyorFamily;
+import factory.misc.ConveyorFamily.GlassState;
+import factory.misc.ConveyorFamily.MyGlass;
+import factory.misc.ConveyorFamily.RunningState;
 
 public class ConveyorAgent extends Agent implements Conveyor {
 	// *** Constructor(s) ***
@@ -17,7 +27,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private ConveyorFamily family;
 	private Transducer t;
 	private enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
-	public ConveyorState state = NOTHING_TO_DO;
+	public ConveyorState state = ConveyorState.NOTHING_TO_DO;
 
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 
@@ -76,7 +86,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	// *** ACTIONS ***
 	public void actTellPopupGlassOnConveyor(Glass g) {
 		GlassState glassState = family.decideIfGlassNeedsProcessing(g); // conveyor decides this since it has time
-		MyGlass myGlass = new MyGlass(g, glassState);
+		MyGlass myGlass = family.new MyGlass(g, glassState);
 
 		family.runningState = RunningState.ON_BC_CONVEYOR_TO_SENSOR;
 		family.popup.msgGlassComing(myGlass);
