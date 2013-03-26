@@ -3,9 +3,11 @@ package factory.test.mock;
 import shared.Glass;
 import shared.interfaces.ConveyorFamily;
 
-public class MockConveyorFamily implements ConveyorFamily {
-	public EventLog log = new EventLog();
-	
+public class MockConveyorFamily extends MockEntity implements ConveyorFamily {
+	public MockConveyorFamily(String name) {
+		super(name);
+	}
+
 	@Override
 	public void msgHereIsGlass(Glass g) {
 		// TODO Auto-generated method stub

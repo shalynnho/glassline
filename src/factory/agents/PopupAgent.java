@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import factory.interfaces.Popup;
+import factory.interfaces.Workstation;
 import factory.misc.ConveyorFamilyEntity;
 import factory.misc.ConveyorFamilyEntity.GlassState;
 import factory.misc.ConveyorFamilyEntity.MyGlass;
@@ -18,7 +18,7 @@ import factory.misc.ConveyorFamilyEntity.RunningState;
 
 public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
-	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, WorkstationAgent workstation) {
+	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, Workstation workstation) {
 		family = f;
 		t = transducer;
 		this.workstation = workstation;
@@ -31,7 +31,7 @@ public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
 	private Transducer t;
-	private WorkstationAgent workstation;
+	private Workstation workstation;
 	private TChannel workstationChannel;
 	private List<MyGlass> glasses = Collections.synchronizedList(new ArrayList<MyGlass>()); // uses MyGlass instead of just Glass so it contains GlassState
 	private boolean nextPosFree = false;

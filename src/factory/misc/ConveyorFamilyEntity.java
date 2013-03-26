@@ -7,7 +7,11 @@ import transducer.Transducer;
 import factory.agents.ConveyorAgent;
 import factory.agents.PopupAgent;
 import factory.agents.SensorAgent;
-import factory.agents.WorkstationAgent;
+import factory.interfaces.Conveyor;
+import factory.interfaces.Popup;
+import factory.interfaces.Sensor;
+import factory.interfaces.Workstation;
+import factory.test.mock.MockConveyor;
 
 /**
  * Key class that represents my version of the ConveyorFamily design (hence its implementation of ConveyorFamily).
@@ -17,9 +21,7 @@ import factory.agents.WorkstationAgent;
  */
 public class ConveyorFamilyEntity implements ConveyorFamily {
 	// *** Constructor(s) ***
-	public ConveyorFamilyEntity(Transducer transducer, WorkstationAgent workstation) {
-		this.workstation = workstation;
-		
+	public ConveyorFamilyEntity(Transducer transducer, Workstation workstation) {
 		sensor = new SensorAgent(this, transducer);
 		conv = new ConveyorAgent(this, transducer);
 		popup = new PopupAgent(this, transducer, workstation);
@@ -30,10 +32,9 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	// *** DATA - mostly accessible by contained agents ***
 	private MachineType type;
 	
-	public SensorAgent sensor;
-	public ConveyorAgent conv;
-	public PopupAgent popup;
-	private WorkstationAgent workstation;
+	public Sensor sensor;
+	public Conveyor conv;
+	public Popup popup;
 
 	public ConveyorFamily nextFamily;
 	public ConveyorFamily prevFamily;
@@ -99,5 +100,14 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 		else
 			gs = GlassState.DOES_NOT_NEED_PROCESSING;
 		return gs;
+	}
+	
+	/* Testing helpers */
+	public void setConveyor(Conveyor c) {
+		conv = c;
+	}
+	
+	public MockConveyor getMockConveyor() {
+		return (MockConveyor) conv;
 	}
 }

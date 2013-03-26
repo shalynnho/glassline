@@ -24,7 +24,7 @@ public class SensorAgent extends Agent implements Sensor {
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
 	private Transducer t;
-	private enum SensorState { SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO, GLASS_JUST_ARRIVED }
+	public enum SensorState { SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO, GLASS_JUST_ARRIVED }
 	private SensorState state = SensorState.NOTHING_TO_DO;
 
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
@@ -77,5 +77,13 @@ public class SensorAgent extends Agent implements Sensor {
 	public void actTellPrevFamilyPositionFree() {
 		family.prevFamily.msgPositionFree();		
 	}	
+
 	// *** EXTRA ***
+	public List<Glass> getGlasses() {
+		return glasses;
+	}
+	
+	public SensorState getState() {
+		return state;
+	}
 }

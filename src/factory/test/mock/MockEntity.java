@@ -9,8 +9,8 @@ package factory.test.mock;
  * It only defines that the entity should contain a name.
  */
 public class MockEntity {
-	public EventLog log = new EventLog();
 	private String name;
+	public EventLog log = new EventLog();
 
 	public MockEntity(String name) {
 		this.name = name;

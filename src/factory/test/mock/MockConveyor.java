@@ -1,19 +1,17 @@
 package factory.test.mock;
 
+
 import shared.Glass;
 import factory.interfaces.Conveyor;
 
 public class MockConveyor extends MockEntity implements Conveyor {
-	public EventLog log = new EventLog();
-	
 	public MockConveyor(String name) {
 		super(name);
 	}
 
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		// TODO Auto-generated method stub
-
+		log.add(new LoggedEvent("Received msgHereIsAnOrder"));
 	}
 
 	@Override
