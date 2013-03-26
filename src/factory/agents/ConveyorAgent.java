@@ -5,26 +5,27 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
+import shared.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import factory.interfaces.Conveyor;
-import factory.misc.ConveyorFamily;
-import factory.misc.ConveyorFamily.GlassState;
-import factory.misc.ConveyorFamily.MyGlass;
-import factory.misc.ConveyorFamily.RunningState;
+import factory.misc.ConveyorFamilyEntity;
+import factory.misc.ConveyorFamilyEntity.GlassState;
+import factory.misc.ConveyorFamilyEntity.MyGlass;
+import factory.misc.ConveyorFamilyEntity.RunningState;
 
 public class ConveyorAgent extends Agent implements Conveyor {
 	// *** Constructor(s) ***
-	public ConveyorAgent(ConveyorFamily f, Transducer transducer) {
+	public ConveyorAgent(ConveyorFamilyEntity f, Transducer transducer) {
 		family = f;
 		t = transducer;
 		t.register(this, TChannel.SENSOR);
 	}
 	
 	// *** DATA ***
-	private ConveyorFamily family;
+	private ConveyorFamilyEntity family;
 	private Transducer t;
 	private enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
 	public ConveyorState state = ConveyorState.NOTHING_TO_DO;

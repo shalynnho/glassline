@@ -5,19 +5,20 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
+import shared.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import factory.interfaces.Popup;
-import factory.misc.ConveyorFamily;
-import factory.misc.ConveyorFamily.GlassState;
-import factory.misc.ConveyorFamily.MyGlass;
-import factory.misc.ConveyorFamily.RunningState;
+import factory.misc.ConveyorFamilyEntity;
+import factory.misc.ConveyorFamilyEntity.GlassState;
+import factory.misc.ConveyorFamilyEntity.MyGlass;
+import factory.misc.ConveyorFamilyEntity.RunningState;
 
 public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
-	public PopupAgent(ConveyorFamily f, Transducer transducer, WorkstationAgent workstation) {
+	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, WorkstationAgent workstation) {
 		family = f;
 		t = transducer;
 		this.workstation = workstation;
@@ -28,7 +29,7 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	// *** DATA ***
-	private ConveyorFamily family;
+	private ConveyorFamilyEntity family;
 	private Transducer t;
 	private WorkstationAgent workstation;
 	private TChannel workstationChannel;
@@ -58,7 +59,7 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	@Override
-	public void msgGlassDone(Glass g) {
+	public void msgGlassDone(Glass g, int index) { // index is 0 or 1; 0 is top workstation, 1 is bottom
 		MyGlass myG = findGlass(g); // from glasses list
 		myG.setState(GlassState.FINISHED);
 		stateChanged();

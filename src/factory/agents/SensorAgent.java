@@ -5,23 +5,24 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
+import shared.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import factory.interfaces.Sensor;
-import factory.misc.ConveyorFamily;
-import factory.misc.ConveyorFamily.RunningState;
+import factory.misc.ConveyorFamilyEntity;
+import factory.misc.ConveyorFamilyEntity.RunningState;
 
 public class SensorAgent extends Agent implements Sensor {
 	// *** Constructor(s) ***
-	public SensorAgent(ConveyorFamily f, Transducer transducer) {
+	public SensorAgent(ConveyorFamilyEntity f, Transducer transducer) {
 		family = f;
 		t = transducer;
 	}
 
 	// *** DATA ***
-	private ConveyorFamily family;
+	private ConveyorFamilyEntity family;
 	private Transducer t;
 	private enum SensorState { SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO, GLASS_JUST_ARRIVED }
 	private SensorState state = SensorState.NOTHING_TO_DO;

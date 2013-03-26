@@ -13,7 +13,7 @@ public class WorkstationAgent implements Workstation {
 	// *** Constructor(s) ***
 
 	// *** DATA ***
-	MachineType type;
+	private MachineType type;
 
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass g) {
@@ -27,5 +27,9 @@ public class WorkstationAgent implements Workstation {
 	// *** EXTRA ***
 	public TChannel getChannel() {
 		return type.getChannel();
+	}
+	
+	public MachineType getType() {
+		return type;
 	}
 }

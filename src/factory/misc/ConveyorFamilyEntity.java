@@ -2,6 +2,7 @@ package factory.misc;
 
 import shared.Glass;
 import shared.enums.MachineType;
+import shared.interfaces.ConveyorFamily;
 import transducer.Transducer;
 import factory.agents.ConveyorAgent;
 import factory.agents.PopupAgent;
@@ -9,20 +10,21 @@ import factory.agents.SensorAgent;
 import factory.agents.WorkstationAgent;
 
 /**
- * Key class that contains agents to represent the conveyor family.
- * ConveyorFamily design; follows the "sensor-conveyor-popup" pattern, so the sensor b/w the conveyor and popup is absorbed
+ * Key class that represents my version of the ConveyorFamily design (hence its implementation of ConveyorFamily).
+ * Contains agents to represent the ConveyorFamily, whose interface is broadly used by other team members.
+ * Follows the "sensor-conveyor-popup" pattern, so the sensor b/w the conveyor and popup is absorbed.
  * @author David Zhang
  */
-public class ConveyorFamily {
+public class ConveyorFamilyEntity implements ConveyorFamily {
 	// *** Constructor(s) ***
-	public ConveyorFamily(Transducer transducer, WorkstationAgent workstation) {
-		this.workstation = workstation;  
+	public ConveyorFamilyEntity(Transducer transducer, WorkstationAgent workstation) {
+		this.workstation = workstation;
 		
 		sensor = new SensorAgent(this, transducer);
 		conv = new ConveyorAgent(this, transducer);
 		popup = new PopupAgent(this, transducer, workstation);
 		
-		this.type = type;
+		this.type = workstation.getType();
 	}
 
 	// *** DATA - mostly accessible by contained agents ***
@@ -78,12 +80,16 @@ public class ConveyorFamily {
 	public void msgPositionFree() {
 		popup.msgPositionFree();
 	}
+	
+	public void msgGlassDone(Glass g, int index) {
+		popup.msgGlassDone(g, index); // pass to popup
+	}
 
 	// *** EXTRA ***
-	public void setNextConveyorFamily(ConveyorFamily f)	{
+	public void setNextConveyorFamily(ConveyorFamily f) {
 		nextFamily = f;
 	}
-	public void setPreviousConveyorFamily(ConveyorFamily f)	{
+	public void setPreviousConveyorFamily(ConveyorFamily f) {
 		prevFamily = f;
 	}
 	public GlassState decideIfGlassNeedsProcessing(Glass g) {

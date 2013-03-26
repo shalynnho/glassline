@@ -1,5 +1,7 @@
 package factory.test.mock;
 
+import shared.Glass;
+
 
 public class MockWorkstation extends MockEntity {
 	public EventLog log = new EventLog();
@@ -10,7 +12,5 @@ public class MockWorkstation extends MockEntity {
 	}
 
 	public void msgHereIsGlass(Glass g) {
-		// 
-		stateChanged();
 	}
 }

@@ -1,13 +1,13 @@
 package factory.interfaces;
 
 import shared.Glass;
-import factory.misc.ConveyorFamily.MyGlass;
+import factory.misc.ConveyorFamilyEntity.MyGlass;
 
 public interface Popup {
 	// *** MESSAGES ***
-	public abstract void msgGlassComing(MyGlass myGlass); // from conveyor
-	public abstract void msgPositionFree(); // from next family
-	public abstract void msgGlassDone(Glass g); // from workstation
+	public void msgGlassComing(MyGlass myGlass); // from conveyor
+	public void msgPositionFree(); // from next family
+	public void msgGlassDone(Glass g, int index); // from workstation
 
 	// *** ACTIONS ***
 	

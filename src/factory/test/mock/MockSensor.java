@@ -1,5 +1,6 @@
 package factory.test.mock;
 
+import shared.Glass;
 import factory.interfaces.Sensor;
 
 public class MockSensor extends MockEntity implements Sensor {
@@ -9,21 +10,27 @@ public class MockSensor extends MockEntity implements Sensor {
 	}
 
 	@Override
-	public void msgHereIsGlass() {
+	public void msgHereIsGlass(Glass g) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void msgPositionFree() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
-	public void actPassOnGlass() {
+	public void actPassOnGlass(Glass g) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void actTellPrevFamilyPositionFree() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

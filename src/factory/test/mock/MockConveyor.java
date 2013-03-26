@@ -1,15 +1,17 @@
 package factory.test.mock;
 
+import shared.Glass;
 import factory.interfaces.Conveyor;
 
 public class MockConveyor extends MockEntity implements Conveyor {
-
+	public EventLog log = new EventLog();
+	
 	public MockConveyor(String name) {
 		super(name);
 	}
 
 	@Override
-	public void msgHereIsGlass() {
+	public void msgHereIsGlass(Glass g) {
 		// TODO Auto-generated method stub
 
 	}
@@ -21,9 +23,13 @@ public class MockConveyor extends MockEntity implements Conveyor {
 	}
 
 	@Override
-	public void actReadyForGlass() {
-		// TODO Auto-generated method stub
-
+	public void actTellPopupGlassOnConveyor(Glass g) {
+		
+	}
+	
+	@Override
+	public void actTellSensorPositionFree() {
+		
 	}
 
 }
