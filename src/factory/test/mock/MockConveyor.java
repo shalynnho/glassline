@@ -11,13 +11,13 @@ public class MockConveyor extends MockEntity implements Conveyor {
 
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		log.add(new LoggedEvent("Received msgHereIsAnOrder"));
+		log.add(new LoggedEvent("Received msgHereIsGlass"));
 	}
 
 	@Override
 	public void msgTakingGlass() {
 		// TODO Auto-generated method stub
-
+		log.add(new LoggedEvent("Received msgTakingGlass"));
 	}
 
 	@Override

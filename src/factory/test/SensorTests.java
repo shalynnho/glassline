@@ -2,7 +2,9 @@ package factory.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import shared.Glass;
 import transducer.Transducer;
 import factory.agents.SensorAgent.SensorState;
 import factory.misc.ConveyorFamilyEntity;
+import factory.test.mock.EventLog;
 import factory.test.mock.MockConveyor;
 import factory.test.mock.MockConveyorFamily;
 import factory.test.mock.MockWorkstation;
@@ -55,13 +58,12 @@ public class SensorTests {
 		
 		assertEquals("Sensor should receive proper glass", idOfGlassAtSensor, g.getID());
 		assertThat(idOfGlassAtSensor, is(not(g2.getID())));
-		
-		// how do I mock family.conveyor if conveyorfamilyentity is used and isn't a mock?
-		// set mockconveyor to override family.conveyor
 	
 		// next step
-//		family.sensor.pickAndExecuteAnAction();
-//		assertTrue("Conveyor receives hereIsGlass from the sensor", ((MockConveyor)(family.conv)).log.containsString("msgHereIsGlass"));
+		family.sensor.pickAndExecuteAnAction();
+		
+		EventLog convLog = family.getMockConveyor().log;
+		assertTrue("Conveyor receives hereIsGlass from the sensor. Event log: [" + convLog.toString() + "]", convLog.containsString("msgHereIsGlass"));
 	}
 	
 

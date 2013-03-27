@@ -11,7 +11,7 @@ public interface Sensor {
 	public void msgPositionFree(); // from next agent
 
 	// *** SCHEDULER ***
-	public void pickAndExecuteAnAction();
+	public boolean pickAndExecuteAnAction();
 	
 	// *** ACTIONS ***
 	public void actPassOnGlass(Glass g);
