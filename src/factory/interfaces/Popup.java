@@ -7,7 +7,7 @@ public interface Popup {
 	// *** MESSAGES ***
 	public void msgGlassComing(MyGlass myGlass); // from conveyor
 	public void msgPositionFree(); // from next family
-	public void msgGlassDone(Glass g, int index); // from workstation
+	public void msgGlassDone(Glass g, int machineIndex); // from workstation
 
 	// *** ACTIONS ***
 	

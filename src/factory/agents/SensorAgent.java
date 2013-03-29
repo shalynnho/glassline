@@ -61,6 +61,7 @@ public class SensorAgent extends Agent implements Sensor {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// Nothing to do
+		// Maybe detect when glass is /truly/ here before passing it on?
 	}
 
 	// *** ACTIONS ***

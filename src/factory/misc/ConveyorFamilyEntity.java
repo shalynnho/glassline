@@ -21,12 +21,12 @@ import factory.test.mock.MockConveyor;
  */
 public class ConveyorFamilyEntity implements ConveyorFamily {
 	// *** Constructor(s) ***
-	public ConveyorFamilyEntity(Transducer transducer, Workstation workstation) {
+	public ConveyorFamilyEntity(Transducer transducer, Workstation workstation1, Workstation workstation2) {
 		sensor = new SensorAgent(this, transducer);
 		conv = new ConveyorAgent(this, transducer);
-		popup = new PopupAgent(this, transducer, workstation);
+		popup = new PopupAgent(this, transducer, workstation1, workstation2);
 		
-		this.type = workstation.getType();
+		this.type = workstation1.getType(); // workstations should have same type
 	}
 
 	// *** DATA - mostly accessible by contained agents ***
@@ -39,14 +39,16 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	public ConveyorFamily nextFamily;
 	public ConveyorFamily prevFamily;
 
-	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING, FINISHED } // FINISHED means workstation is done processing it
+	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING } //, FINISHED }
 
 	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
 	public RunningState runningState = RunningState.OFF_BC_QUIET;
 	public enum RunningState {
 		ON_BC_SENSOR_TO_CONVEYOR, ON_BC_CONVEYOR_TO_SENSOR, ON_BC_SENSOR_TO_POPUP,
 		OFF_BC_QUIET, OFF_BC_WAITING_AT_SENSOR
-	}
+	} 
+	// if ON_BC_SENSOR_TO_POPUP, there _could_ be other stuff before. 
+	// This just means this is the rightmost reason, and therefore the most relevant reason.
 	
 	public class MyGlass {
 		public MyGlass(Glass g, GlassState s) {

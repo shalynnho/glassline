@@ -6,14 +6,18 @@ import transducer.TChannel;
 import factory.interfaces.Workstation;
 
 /**
- * Temporarily stubbed class (not really an agent, but might be) that would contain RobotAgent and MachineAgent concepts.
- * May be moved to misc later if these internal agents become needed.
+ * Temporarily stubbed class that would contain the RobotAgent and MachineAgent concepts.
  */
 public class WorkstationAgent implements Workstation {
 	// *** Constructor(s) ***
+	public WorkstationAgent(MachineType type, int index) {
+		this.type = type;
+		this.index = index;
+	}
 
 	// *** DATA ***
 	private MachineType type;
+	private int index;
 
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass g) {
@@ -31,5 +35,9 @@ public class WorkstationAgent implements Workstation {
 	
 	public MachineType getType() {
 		return type;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 }

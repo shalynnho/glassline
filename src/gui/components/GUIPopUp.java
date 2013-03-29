@@ -242,4 +242,11 @@ public class GUIPopUp extends GuiComponent implements Serializable
 			pairedMachines[((Integer)args[0])].addPart(part);
 		}
 	}
+
+	public boolean isDown() {
+		return heightState == PopUpHeightState.DOWN;
+	}
+	public boolean isUp() {
+		return heightState == PopUpHeightState.UP;
+	}
 }

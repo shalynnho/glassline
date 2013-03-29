@@ -13,4 +13,5 @@ public interface Workstation {
 	// *** EXTRA ***
 	public MachineType getType();
 	public TChannel getChannel();
+	public int getIndex();
 }
