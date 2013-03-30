@@ -62,7 +62,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	// *** MESSAGES ***
 	@Override
-	public void msgGlassComing(MyGlass myGlass) { // Just to pass on glass object to sensor's list
+	public void msgGlassComing(MyGlass myGlass) {
 		glasses.add(myGlass);
 		if (state == PopupState.DOING_NOTHING) {
 			state = PopupState.ACTIVE;

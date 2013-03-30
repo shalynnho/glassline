@@ -23,7 +23,7 @@ import factory.test.mock.MockWorkstation;
  */
 public class SensorTests {
 	private MockConveyorFamily prevFamily;
-	private MockWorkstation workstation;
+	private MockWorkstation workstation1, workstation2;
 	private Transducer transducer;
 	private MockConveyor conveyor;
 	
@@ -32,18 +32,19 @@ public class SensorTests {
 	@Before
 	public void setUp() {
 		prevFamily = new MockConveyorFamily("Previous Family");
-		workstation = new MockWorkstation("Workstation");
+		workstation1 = new MockWorkstation("Workstation");
+		workstation2 = new MockWorkstation("Workstation");
 		transducer = new Transducer();
 		conveyor = new MockConveyor("Conveyor");
 		
-		family = new ConveyorFamilyEntity(transducer, workstation);
+		family = new ConveyorFamilyEntity(transducer, workstation1, workstation2);
 		family.setPreviousConveyorFamily(prevFamily);
 		family.setConveyor(conveyor);
 	}
 	
 	@Test
-	public void testReceiveHereIsGlass() {
-		assertEquals("Sensor's state starts out as NOTHING_TO_DO", family.sensor.getState(), SensorState.NOTHING_TO_DO);
+	public void testMsgHereIsGlass() {
+		assertEquals("Sensor's state should start out as NOTHING_TO_DO", family.sensor.getState(), SensorState.NOTHING_TO_DO);
 		assertThat(family.sensor.getGlasses().isEmpty(), is(true));
 		
 		Glass g = new Glass();
@@ -51,7 +52,7 @@ public class SensorTests {
 		
 		family.msgHereIsGlass(g);
 		
-		assertEquals("Sensor's state becomes GLASS_JUST_ARRIVED when the family receives a glass", family.sensor.getState(), SensorState.GLASS_JUST_ARRIVED);
+		assertEquals("Sensor's state should become GLASS_JUST_ARRIVED when the family receives a glass", family.sensor.getState(), SensorState.GLASS_JUST_ARRIVED);
 		assertThat(family.sensor.getGlasses().size(), is(1));
 		
 		int idOfGlassAtSensor = family.sensor.getGlasses().get(0).getID();
@@ -59,11 +60,16 @@ public class SensorTests {
 		assertEquals("Sensor should receive proper glass", idOfGlassAtSensor, g.getID());
 		assertThat(idOfGlassAtSensor, is(not(g2.getID())));
 	
-		// next step
 		family.sensor.pickAndExecuteAnAction();
 		
 		EventLog convLog = family.getMockConveyor().log;
-		assertTrue("Conveyor receives hereIsGlass from the sensor. Event log: [" + convLog.toString() + "]", convLog.containsString("msgHereIsGlass"));
+		assertTrue("Conveyor should receive hereIsGlass from the sensor. Event log: [" + convLog.toString() + "]", convLog.containsString("msgHereIsGlass"));
+		assertTrue("Sensor's list of glasses should now be empty.", family.sensor.getGlasses().isEmpty());
+	}
+	
+	@Test
+	public void testMsgPositionFree() {
+		
 	}
 	
 
