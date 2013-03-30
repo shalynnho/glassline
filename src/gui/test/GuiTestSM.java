@@ -34,8 +34,21 @@ public class GuiTestSM implements TReceiver {
 			Integer[] newArgs = new Integer[1];
 			if (((Integer) args[0] % 2) == 0) { // args[0] is index of sensor; if even # sensor (or 0), starts conveyor
 				newArgs[0] = (Integer) args[0] / 2; // index of the conveyor to pass as arg
+				
+				
+				System.out.println("Starting conveyor "+newArgs[0]);
 				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-			}
+				
+				
+			} 
+			// testing
+//			else if ((Integer) args[0] == 11) { // sensor right before drill
+//				// Stopping conveyor that DRILL is on 
+//				newArgs[0] = 5;
+//				System.out.println("Stopping conveyor "+newArgs[0]);
+//				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+//			}
+			
 		} else if (channel == TChannel.CUTTER && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			System.out.println("WORKSTATION_LOAD_FINISHED from CUTTER");
 			t.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_DO_ACTION, null);
@@ -65,8 +78,16 @@ public class GuiTestSM implements TReceiver {
 		} else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 			System.out.println("POPUP_GUI_LOAD_FINISHED for POPUP");
 
-			if (offlineDone)
+			if (offlineDone) {
 				t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
+				
+				// Stopping conveyor that DRILL is on to see if glass stops at popup
+				// Conclusion: it doesn't, so the moment popup is down, glass automoves to next family
+				Integer[] newArgs = new Integer[1];
+				newArgs[0] = 5;
+				System.out.println("Stopping conveyor "+newArgs[0]);
+				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+			}
 			else
 				t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		} else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP) {
@@ -81,14 +102,31 @@ public class GuiTestSM implements TReceiver {
 			t.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_DO_ACTION, args);
 		} else if (channel == TChannel.DRILL && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
 			System.out.println("WORKSTATION_GUI_ACTION_FINISHED for DRILL");
-
+			// looks like 
 			t.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_RELEASE_GLASS, args);
 			offlineDone = true;
-		} else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
+		}
+		
+		// personal additions to test callbacks
+		else  if (channel == TChannel.DRILL && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
+			System.out.println("WORKSTATION_RELEASE_FINISHED for DRILL");
+		}
+		else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_RELEASE_FINISHED) {
+			System.out.println("POPUP_GUI_RELEASE_FINISHED");
+		}
+		
+		
+		else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
 			System.out.println("POPUP_GUI_MOVED_DOWN for POPUP");
 
 			t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-			// offlineDone = false;
+			
+			// Test
+//			System.out.println("Stopping conveyor right after popup release");
+//			Integer[] newArgs = new Integer[1];
+//			newArgs[0] = 6;
+//			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+			
 		} else if (channel == TChannel.WASHER && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			System.out.println("WORKSTATION_LOAD_FINISHED for WASHER");
 

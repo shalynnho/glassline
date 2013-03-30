@@ -195,15 +195,32 @@ public class PopupAgent extends Agent implements Popup {
 			}
 		}
 
-		// From actReleaseGlassFromWorkstation so popup knows to remove glass from list, step 2 (final)
-		// MAY NEED WAITING FOR POPUP TO BE UP BEFORE RELEASING GLASS (another step before this?)
+		// From actReleaseGlassFromWorkstation step 2 (sometimes)
+		if (state == PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION) {
+			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP) {
+				state = PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE;
+				doReleaseGlassFromProperWorkstation();
+			}
+		}
+		// From actReleaseGlassFromWorkstation step 3
 		if (state == PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE) {
 			if (channel == this.workstationChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
+				state = PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION;
+
+				//POPUP_DO_MOVE_DOWN
+				
+				stateChanged();
+			}
+		}
+		// From actReleaseGlassFromWorkstation step 4 (final)
+		if (state == PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION) {
+			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
 				state = PopupState.ACTIVE;
 
+				// When popup is down, next thing that happens is next family automatically gets SENSOR_GUI_PRESSED, so this is the final step
 				Glass glass = finishedGlasses.remove(0); // remove & return first element
 				family.nextFamily.msgHereIsGlass(glass);
-				
+
 				stateChanged();
 			}
 		}
@@ -281,8 +298,19 @@ public class PopupAgent extends Agent implements Popup {
 	 * Releases glass from workstation to next conveyor family
 	 */
 	public void actReleaseGlassFromWorkstation() {
-		state = PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE;
-		//WORKSTATION_RELEASE_PART
+		// Note: popup must be up -> WORKSTATION_RELEASE_FINISHED -> POPUP_GUI_LOAD_FINISHED (implied) -> 
+		// POPUP_GUI_MOVED_DOWN -> automatically moves on
+
+		// Make sure gui is up first
+		if (gui.isDown()) {
+			state = PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION;
+			//POPUP_DO_MOVE_UP
+		} else if (gui.isUp()) { // popup already up
+			state = PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE;
+			doReleaseGlassFromProperWorkstation();
+		} else {
+			System.err.println("Popup should not have been in a state other than up or down - actReleaseGlassFromWorkstation");
+		}
 	}
 
 	// *** EXTRA ***
@@ -354,5 +382,14 @@ public class PopupAgent extends Agent implements Popup {
 
 	private boolean bothWorkstationsOccupiedButAtLeastOneIsDone() {
 		return wsState1 != WorkstationState.FREE && wsState2 != WorkstationState.FREE && atLeastOneWorkstationIsDoneButStillHasGlass();
+	}
+
+	// Choose appropriate workstation and fires WORKSTATION_RELEASE_GLASS. Lower index has higher priority.
+	private void doReleaseGlassFromProperWorkstation() {
+		if (wsState1 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
+				//WORKSTATION_RELEASE_GLASS
+		} else if (wsState2 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
+				//WORKSTATION_RELEASE_GLASS
+		}
 	}
 }

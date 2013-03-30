@@ -44,6 +44,7 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
 	public RunningState runningState = RunningState.OFF_BC_QUIET;
 	public enum RunningState {
+		// On states are listed in order of how they would appear. Off states come in between.
 		ON_BC_SENSOR_TO_CONVEYOR, ON_BC_CONVEYOR_TO_SENSOR, ON_BC_SENSOR_TO_POPUP,
 		OFF_BC_QUIET, OFF_BC_WAITING_AT_SENSOR
 	} 

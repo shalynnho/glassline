@@ -47,7 +47,7 @@ public class Glass {
 		this(new MachineType[0]);
 	}
 
-	// Turn ArrayList into array and call other constructor
+	// Turn List into array and call other constructor
 	public Glass(List<MachineType> recipe) {
 		this(recipe.toArray(new MachineType[recipe.size()]));
 	}
@@ -63,6 +63,10 @@ public class Glass {
 
 	public static int getCurrentID() {
 		return currentID;
+	}
+	
+	public boolean equals(Glass other) {
+		return this.id == other.id;
 	}
 
 	// Quick test
