@@ -161,7 +161,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
 				// TODO: parse args to check if it is this popup
 				state = PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION;
-				//CONVEYOR_DO_START
+				doStartConveyor();
 				family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
 				family.conv.msgTakingGlass();
 			}
@@ -174,9 +174,8 @@ public class PopupAgent extends Agent implements Popup {
 				state = PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION;
 				sensorOccupied = false;
 				family.runningState = RunningState.OFF_BC_QUIET;
-				//CONVEYOR_DO_STOP
-				//POPUP_DO_MOVE_UP
-				// Next: we want WORKSTATION_DO_LOAD_GLASS
+				doStopConveyor();
+				doMovePopupUp();
 			}
 		}
 		// From actLoadSensorsGlassOntoWorkstation, step 4 (final)
@@ -190,7 +189,7 @@ public class PopupAgent extends Agent implements Popup {
 				updateWorkstationState(w, WorkstationState.BUSY);
 				w.msgHereIsGlass(g.getGlass());
 
-				//WORKSTATION_DO_LOAD_GLASS with w.getIndex()
+				doLoadGlassOntoWorkstation(w.getIndex());
 				stateChanged();
 			}
 		}
@@ -206,10 +205,7 @@ public class PopupAgent extends Agent implements Popup {
 		if (state == PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE) {
 			if (channel == this.workstationChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
 				state = PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION;
-
-				//POPUP_DO_MOVE_DOWN
-				
-				stateChanged();
+				doMovePopupDown();
 			}
 		}
 		// From actReleaseGlassFromWorkstation step 4 (final)
@@ -217,9 +213,11 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
 				state = PopupState.ACTIVE;
 
-				// When popup is down, next thing that happens is next family automatically gets SENSOR_GUI_PRESSED, so this is the final step
+				// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 				Glass glass = finishedGlasses.remove(0); // remove & return first element
 				family.nextFamily.msgHereIsGlass(glass);
+
+				doReleaseGlassFromPopup();
 
 				stateChanged();
 			}
@@ -231,29 +229,26 @@ public class PopupAgent extends Agent implements Popup {
 				// TODO: parse args to check if it is this popup
 				// if so:
 				state = PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING;
-				//CONVEYOR_DO_START
+				doStartConveyor();
 				family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
 			}
 		}
-		// From actLoadSensorsGlassOntoPopupAndRelease, step 3
+		// From actLoadSensorsGlassOntoPopupAndRelease, step 3 (final)
 		if (state == PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				// TODO: parse args to check if it is this popup
 				// if so:
-				state = PopupState.WAITING_FOR_POPUP_GLASS_RELEASE;
-				sensorOccupied = false;
-				family.runningState = RunningState.OFF_BC_QUIET;
-				//CONVEYOR_DO_STOP
-				//POPUP_RELEASE_GLASS
-			}
-		}
-		// From actLoadSensorsGlassOntoPopupAndRelease, step 4 (final)
-		if (state == PopupState.WAITING_FOR_POPUP_GLASS_RELEASE) {
-			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
-				// TODO: parse args to check if it is this popup
 				state = PopupState.ACTIVE;
+				sensorOccupied = false;
+
+				// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 				MyGlass mg = glasses.remove(0); // should be first glass
 				family.nextFamily.msgHereIsGlass(mg.getGlass());
+
+				family.runningState = RunningState.OFF_BC_QUIET;
+				doStopConveyor();
+				doReleaseGlassFromPopup();
+
 				stateChanged();
 			}
 		}
@@ -268,11 +263,11 @@ public class PopupAgent extends Agent implements Popup {
 	public void actLoadSensorsGlassOntoPopupAndRelease() {
 		if (gui.isUp()) {
 			state = PopupState.WAITING_FOR_LOW_POPUP_BEFORE_RELEASE;
-			//POPUP_DO_MOVE_DOWN = t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, {thisIndex});
+			doMovePopupDown();
 		} else if (gui.isDown()) { // popup already down
 			state = PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING;
 			family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
-			//CONVEYOR_DO_START
+			doStartConveyor();
 		} else {
 			System.err.println("Popup should not have been in a state other than up or down - actLoadSensorsGlassOntoPopupAndRelease");
 		}
@@ -282,11 +277,11 @@ public class PopupAgent extends Agent implements Popup {
 	public void actLoadSensorsGlassOntoWorkstation() {
 		if (gui.isUp()) {
 			state = PopupState.WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION;			
-			//POPUP_DO_MOVE_DOWN = t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, {thisIndex});
+			doMovePopupDown();
 		} else if (gui.isDown()) { // popup already down
 			state = PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION;
 			family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
-			//CONVEYOR_DO_START
+			doStartConveyor();
 			family.conv.msgTakingGlass();
 		} else {
 			System.err.println("Popup should not have been in a state other than up or down - actLoadSensorsGlassOntoWorkstation");
@@ -304,12 +299,42 @@ public class PopupAgent extends Agent implements Popup {
 		// Make sure gui is up first
 		if (gui.isDown()) {
 			state = PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION;
-			//POPUP_DO_MOVE_UP
+			doMovePopupUp();
 		} else if (gui.isUp()) { // popup already up
 			state = PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE;
 			doReleaseGlassFromProperWorkstation();
 		} else {
 			System.err.println("Popup should not have been in a state other than up or down - actReleaseGlassFromWorkstation");
+		}
+	}
+
+	// *** TRANSDUCER / ANIMATION CALLS ***
+	private void doStartConveyor() {
+		// t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, thisIndex);
+	}
+
+	private void doStopConveyor() {
+		// t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, thisIndex);
+	}
+
+	private void doMovePopupUp() {
+		//POPUP_DO_MOVE_UP
+	}
+
+	private void doMovePopupDown() {
+		//POPUP_DO_MOVE_DOWN = t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, {thisIndex});
+	}
+
+	private void doLoadGlassOntoWorkstation(int workstationIndex) {
+		//WORKSTATION_DO_LOAD_GLASS
+	}
+	
+	// Choose appropriate workstation and fires WORKSTATION_RELEASE_GLASS. Lower index has higher priority.
+	private void doReleaseGlassFromProperWorkstation() {
+		if (wsState1 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
+			//WORKSTATION_RELEASE_GLASS
+		} else if (wsState2 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
+			//WORKSTATION_RELEASE_GLASS
 		}
 	}
 
@@ -382,14 +407,5 @@ public class PopupAgent extends Agent implements Popup {
 
 	private boolean bothWorkstationsOccupiedButAtLeastOneIsDone() {
 		return wsState1 != WorkstationState.FREE && wsState2 != WorkstationState.FREE && atLeastOneWorkstationIsDoneButStillHasGlass();
-	}
-
-	// Choose appropriate workstation and fires WORKSTATION_RELEASE_GLASS. Lower index has higher priority.
-	private void doReleaseGlassFromProperWorkstation() {
-		if (wsState1 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
-				//WORKSTATION_RELEASE_GLASS
-		} else if (wsState2 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
-				//WORKSTATION_RELEASE_GLASS
-		}
 	}
 }

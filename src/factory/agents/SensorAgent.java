@@ -71,6 +71,7 @@ public class SensorAgent extends Agent implements Sensor {
 			// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.
 		}
 		// DO_START_CONVEYOR
+		doStartConveyor();
 		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
 		family.conv.msgHereIsGlass(g);
 	}
@@ -79,6 +80,11 @@ public class SensorAgent extends Agent implements Sensor {
 		family.prevFamily.msgPositionFree();		
 	}	
 
+	// *** TRANSDUCER / ANIMATION CALLS ***
+	private doStartConveyor() {
+		// DO_START_CONVEYOR
+	}
+	
 	// *** EXTRA ***
 	public List<Glass> getGlasses() {
 		return glasses;
@@ -87,4 +93,6 @@ public class SensorAgent extends Agent implements Sensor {
 	public SensorState getState() {
 		return state;
 	}
+
+	
 }
