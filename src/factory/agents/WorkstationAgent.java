@@ -28,6 +28,8 @@ public class WorkstationAgent implements Workstation {
 
 	// *** ACTIONS ***
 
+	// *** TRANSDUCER / ANIMATION CALLS ***
+	
 	// *** EXTRA ***
 	public TChannel getChannel() {
 		return type.getChannel();

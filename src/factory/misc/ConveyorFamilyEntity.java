@@ -62,9 +62,6 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 		public boolean needsProcessing() {
 			return state == GlassState.NEEDS_PROCESSING;
 		}
-		public boolean isFinished() {
-			return state == GlassState.FINISHED;
-		}
 		public void setState(GlassState s) {
 			state = s;
 		}

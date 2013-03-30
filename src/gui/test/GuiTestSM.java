@@ -42,12 +42,13 @@ public class GuiTestSM implements TReceiver {
 				
 			} 
 			// testing
-//			else if ((Integer) args[0] == 11) { // sensor right before drill
-//				// Stopping conveyor that DRILL is on 
-//				newArgs[0] = 5;
+			else if ((Integer) args[0] == 11) { // sensor right before drill
+				// Stopping conveyor that DRILL is on 
+				newArgs[0] = 5;
 //				System.out.println("Stopping conveyor "+newArgs[0]);
 //				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
-//			}
+				System.out.println();
+			}
 			
 		} else if (channel == TChannel.CUTTER && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			System.out.println("WORKSTATION_LOAD_FINISHED from CUTTER");
