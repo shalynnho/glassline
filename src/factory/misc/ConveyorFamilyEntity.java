@@ -12,6 +12,7 @@ import factory.interfaces.Popup;
 import factory.interfaces.Sensor;
 import factory.interfaces.Workstation;
 import factory.test.mock.MockConveyor;
+import factory.test.mock.MockConveyorFamily;
 
 /**
  * Key class that represents my version of the ConveyorFamily design (hence its implementation of ConveyorFamily).
@@ -104,8 +105,14 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	public void setConveyor(Conveyor c) {
 		conv = c;
 	}
+	public void setSensor(Sensor s) {
+		sensor = s;
+	}
 	
 	public MockConveyor getMockConveyor() {
 		return (MockConveyor) conv;
+	}
+	public MockConveyorFamily getMockPrevConveyorFamily() {
+		return (MockConveyorFamily) prevFamily;
 	}
 }

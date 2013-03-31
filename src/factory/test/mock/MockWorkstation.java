@@ -28,4 +28,10 @@ public class MockWorkstation extends MockEntity implements Workstation {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public int getIndex() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

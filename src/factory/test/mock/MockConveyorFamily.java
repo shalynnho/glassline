@@ -10,18 +10,16 @@ public class MockConveyorFamily extends MockEntity implements ConveyorFamily {
 
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		// TODO Auto-generated method stub
-
+		log.add(new LoggedEvent("Received msgHereIsGlass"));
 	}
 
 	@Override
 	public void msgPositionFree() {
-		// TODO Auto-generated method stub
-
+		log.add(new LoggedEvent("Received msgPositionFree"));
 	}
 	
 	@Override
 	public void msgGlassDone(Glass glass, int machineIndex) {
-		
+		log.add(new LoggedEvent("Received msgGlassDone"));
 	}
 }

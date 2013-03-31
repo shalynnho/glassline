@@ -18,14 +18,12 @@ public class MockSensor extends MockEntity implements Sensor {
 
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("Received msgHereIsGlass"));
 	}
 
 	@Override
 	public void msgPositionFree() {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("Received msgPositionFree"));
 	}
 
 	@Override

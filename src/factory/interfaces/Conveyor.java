@@ -1,6 +1,9 @@
 package factory.interfaces;
 
+import java.util.List;
+
 import shared.Glass;
+import factory.agents.ConveyorAgent.ConveyorState;
 
 public interface Conveyor {
 	
@@ -13,4 +16,6 @@ public interface Conveyor {
 	public void actTellSensorPositionFree();
 	
 	// *** EXTRA ***
+	public ConveyorState getState();
+	public List<Glass> getGlasses();
 }

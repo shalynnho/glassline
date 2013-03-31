@@ -11,20 +11,17 @@ public class MockPopup extends MockEntity implements Popup {
 
 	@Override
 	public void msgGlassComing(MyGlass myGlass) {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("Received msgGlassComing"));
 	}
 
 	@Override
 	public void msgPositionFree() {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("Received msgPositionFree"));
 	}
 
 	@Override
 	public void msgGlassDone(Glass g, int index) {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("Received msgGlassDone"));
 	}
 
 }

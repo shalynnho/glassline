@@ -32,8 +32,8 @@ public class SensorTests {
 	@Before
 	public void setUp() {
 		prevFamily = new MockConveyorFamily("Previous Family");
-		workstation1 = new MockWorkstation("Workstation");
-		workstation2 = new MockWorkstation("Workstation");
+		workstation1 = new MockWorkstation("Workstation 1"); // workstations just needed for family constructor
+		workstation2 = new MockWorkstation("Workstation 2");
 		transducer = new Transducer();
 		conveyor = new MockConveyor("Conveyor");
 		
@@ -63,13 +63,27 @@ public class SensorTests {
 		family.sensor.pickAndExecuteAnAction();
 		
 		EventLog convLog = family.getMockConveyor().log;
+		assertThat(family.sensor.getState(), is(SensorState.NOTHING_TO_DO));
 		assertTrue("Conveyor should receive hereIsGlass from the sensor. Event log: [" + convLog.toString() + "]", convLog.containsString("msgHereIsGlass"));
 		assertTrue("Sensor's list of glasses should now be empty.", family.sensor.getGlasses().isEmpty());
 	}
 	
 	@Test
 	public void testMsgPositionFree() {
+		assertEquals("Sensor's state should start out as NOTHING_TO_DO", family.sensor.getState(), SensorState.NOTHING_TO_DO);
+		assertThat(family.sensor.getGlasses().isEmpty(), is(true));
 		
+		family.sensor.msgPositionFree(); // normally sent by conveyor
+		assertEquals("Sensor's state should become SHOULD_NOTIFY_POSITION_FREE", family.sensor.getState(), SensorState.SHOULD_NOTIFY_POSITION_FREE);
+
+		family.sensor.pickAndExecuteAnAction();
+		
+		assertThat(family.sensor.getState(), is(SensorState.NOTHING_TO_DO));
+		
+		EventLog prevFamilyLog = family.getMockPrevConveyorFamily().log;
+		
+		System.out.println(prevFamilyLog.toString());
+		assertTrue("Previous family should receive msgPositionFree. Event log: [" + prevFamilyLog.toString() + "]", prevFamilyLog.containsString("msgPositionFree"));
 	}
 	
 

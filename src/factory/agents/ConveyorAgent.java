@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -27,8 +26,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
 	private Transducer t;
-	private enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
-	public ConveyorState state = ConveyorState.NOTHING_TO_DO;
+	public enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
+	private ConveyorState state = ConveyorState.NOTHING_TO_DO;
 
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 
@@ -105,4 +104,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	
 	// *** EXTRA ***
+	public ConveyorState getState() {
+		return state;
+	}
+	public List<Glass> getGlasses() {
+		return glasses;
+	}
 }

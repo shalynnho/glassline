@@ -16,7 +16,6 @@ public class MockConveyor extends MockEntity implements Conveyor {
 
 	@Override
 	public void msgTakingGlass() {
-		// TODO Auto-generated method stub
 		log.add(new LoggedEvent("Received msgTakingGlass"));
 	}
 
