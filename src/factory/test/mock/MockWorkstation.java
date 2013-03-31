@@ -11,16 +11,15 @@ public class MockWorkstation extends MockEntity implements Workstation {
 
 	public MockWorkstation(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void msgHereIsGlass(Glass g) {
+		log.add(new LoggedEvent("Received msgHereIsGlass"));
 	}
 
 	@Override
 	public MachineType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return MachineType.DRILL;
 	}
 
 	@Override

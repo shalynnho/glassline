@@ -45,7 +45,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	// Mainly used to differentiate between waiting for a transducer event to fire (WAIT_FOR) and when popup should actually check scheduler events (ACTIVE)
 	// if (ACTIVE) is used in scheduler, if (WAIT_FOR_SOMETHING) is used in eventFired to signal the popup is DOING_NOTHING for some animation to finish
-	private enum PopupState { ACTIVE,
+	public enum PopupState { ACTIVE,
 		WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION,
 		WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION,
 		WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION,
@@ -55,7 +55,7 @@ public class PopupAgent extends Agent implements Popup {
 		WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION, 
 		WAITING_FOR_WORKSTATION_GLASS_RELEASE, DOING_NOTHING 
 		} // DOING_NOTHING is the default, doing nothing state - neither checking scheduler nor waiting for an animation to finish
-	private enum WorkstationState { FREE, BUSY, DONE_BUT_STILL_HAS_GLASS }
+	public enum WorkstationState { FREE, BUSY, DONE_BUT_STILL_HAS_GLASS }
 	PopupState state = PopupState.DOING_NOTHING;
 	WorkstationState wsState1 = WorkstationState.FREE;
 	WorkstationState wsState2 = WorkstationState.FREE;
@@ -89,7 +89,7 @@ public class PopupAgent extends Agent implements Popup {
 			stateChanged(); // only check scheduler if doing nothing
 		}
 		// otherwise, popup is busy WAITING_FOR something else to happen, or is already ACTIVE doing something perhaps for the other workstation
-	}	
+	}
 
 	// *** SCHEDULER ***
 	@Override

@@ -11,6 +11,9 @@ public interface Conveyor {
 	public void msgHereIsGlass(Glass g); // from previous sensor
 	public void msgTakingGlass(); // from following popup
 	
+	// *** SCHEDULER ***
+	public boolean pickAndExecuteAnAction();
+	
 	// *** ACTIONS ***
 	public void actTellPopupGlassOnConveyor(Glass g);
 	public void actTellSensorPositionFree();

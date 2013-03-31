@@ -82,7 +82,6 @@ public class SensorTests {
 		
 		EventLog prevFamilyLog = family.getMockPrevConveyorFamily().log;
 		
-		System.out.println(prevFamilyLog.toString());
 		assertTrue("Previous family should receive msgPositionFree. Event log: [" + prevFamilyLog.toString() + "]", prevFamilyLog.containsString("msgPositionFree"));
 	}
 	

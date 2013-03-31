@@ -77,7 +77,7 @@ public class SensorAgent extends Agent implements Sensor {
 	
 	public void actTellPrevFamilyPositionFree() {
 		family.prevFamily.msgPositionFree();		
-	}	
+	}
 
 	// *** TRANSDUCER / ANIMATION CALLS ***
 	private void doStartConveyor() {

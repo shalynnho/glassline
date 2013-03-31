@@ -2,8 +2,8 @@ package factory.interfaces;
 
 import java.util.List;
 
-import factory.agents.SensorAgent.SensorState;
 import shared.Glass;
+import factory.agents.SensorAgent.SensorState;
 
 public interface Sensor {
 	// *** MESSAGES ***
