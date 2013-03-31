@@ -71,7 +71,7 @@ public class ConveyorTests {
 		assertThat(popupLog.containsString("msgGlassComing"), is(true));
 	}
 
-	@Test @Ignore
+	@Test
 	public void testMsgTakingGlass() {
 		// start out with one glass moving along - prepare initial state (initial state already tested above)
 		Glass g = new Glass();
@@ -101,9 +101,9 @@ public class ConveyorTests {
 //	/**
 //	 * Test one glass piece moving along the conveyor.
 //	 */
-//	@Test @Ignore("later")
-//	public void testPassSequence() {
-//		fail("Not yet implemented");
-//	}
+	@Test @Ignore("later")
+	public void testPassSequence() {
+		fail("moved");
+	}
 
 }

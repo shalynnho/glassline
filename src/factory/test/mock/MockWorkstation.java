@@ -7,8 +7,6 @@ import factory.interfaces.Workstation;
 
 
 public class MockWorkstation extends MockEntity implements Workstation {
-	public EventLog log = new EventLog();
-
 	public MockWorkstation(String name) {
 		super(name);
 	}
@@ -25,7 +23,7 @@ public class MockWorkstation extends MockEntity implements Workstation {
 	@Override
 	public TChannel getChannel() {
 		// TODO Auto-generated method stub
-		return null;
+		return getType().getChannel();
 	}
 
 	@Override

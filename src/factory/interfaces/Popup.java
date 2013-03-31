@@ -18,6 +18,10 @@ public interface Popup {
 	// *** ACTIONS ***
 	
 	// *** EXTRA ***
-	public List<Glass> getGlasses();
+	public List<MyGlass> getGlasses();
 	public PopupState getState();
+	public List<Glass> getFinishedGlasses();
+	public void setIsUp(boolean b);
+	public boolean getNextPosFree();
+	public void seedFinishedGlasses();
 }
