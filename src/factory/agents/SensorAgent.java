@@ -70,18 +70,13 @@ public class SensorAgent extends Agent implements Sensor {
 			// Wait until conveyor is officially in the proper off state.
 			// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.
 		}
-		doStartConveyor();
+		family.doStartConveyor();
 		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
 		family.conv.msgHereIsGlass(g);
 	}
 	
 	public void actTellPrevFamilyPositionFree() {
 		family.prevFamily.msgPositionFree();		
-	}
-
-	// *** TRANSDUCER / ANIMATION CALLS ***
-	private void doStartConveyor() {
-		// DO_START_CONVEYOR
 	}
 	
 	// *** EXTRA ***
@@ -92,6 +87,4 @@ public class SensorAgent extends Agent implements Sensor {
 	public SensorState getState() {
 		return state;
 	}
-
-	
 }

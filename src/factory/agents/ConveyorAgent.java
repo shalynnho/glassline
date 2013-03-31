@@ -76,7 +76,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				if (event == TEvent.SENSOR_GUI_PRESSED) {
 					// parse args to check if it is this sensor
 					// if so:
-					doStopConveyor();
+					family.doStopConveyor();
 					family.runningState = RunningState.OFF_BC_WAITING_AT_SENSOR;
 				}
 			}
@@ -96,11 +96,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	public void actTellSensorPositionFree() {
 		family.sensor.msgPositionFree();
-	}
-	
-	// *** TRANSDUCER / ANIMATION CALLS ***
-	private void doStopConveyor() {
-		// t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, thisIndex);
 	}
 	
 	// *** EXTRA ***
