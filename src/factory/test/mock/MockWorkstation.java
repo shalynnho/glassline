@@ -22,7 +22,6 @@ public class MockWorkstation extends MockEntity implements Workstation {
 
 	@Override
 	public TChannel getChannel() {
-		// TODO Auto-generated method stub
 		return getType().getChannel();
 	}
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import shared.Glass;
 import factory.agents.PopupAgent.PopupState;
+import factory.agents.PopupAgent.WorkstationState;
 import factory.misc.ConveyorFamilyEntity.MyGlass;
 
 public interface Popup {
@@ -24,4 +25,5 @@ public interface Popup {
 	public void setIsUp(boolean b);
 	public boolean getNextPosFree();
 	public void seedFinishedGlasses();
+	public void setWorkstationState(int i, WorkstationState s);
 }

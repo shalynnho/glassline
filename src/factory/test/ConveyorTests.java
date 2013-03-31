@@ -97,11 +97,7 @@ public class ConveyorTests {
 		assertThat(sensorLog.containsString("msgPositionFree"), is(true));
 	}	
 	
-	
-//	/**
-//	 * Test one glass piece moving along the conveyor.
-//	 */
-	@Test @Ignore("later")
+	@Test @Ignore("dummy")
 	public void testPassSequence() {
 		fail("moved");
 	}

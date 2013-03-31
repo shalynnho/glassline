@@ -25,6 +25,7 @@ public class PopupAgent extends Agent implements Popup {
 		this.workstation2 = workstation2;
 
 		t.register(this, TChannel.SENSOR);
+		t.register(this, TChannel.POPUP);
 		t.register(this, family.workstationChannel);
 	}
 
@@ -132,6 +133,8 @@ public class PopupAgent extends Agent implements Popup {
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// Most checks here involve seeing if state is a form of WAITING_FOR, which happen from scheduler actions.
 
+//		System.out.println(channel + " | " + event);
+
 		// Exception: we must update sensor status regardless of the state.
 		if (!sensorOccupied) { // should only bother to check if sensor is not occupied - here, the popup only cares about listening to see if a glass has arrived at the preceding sensor
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
@@ -194,7 +197,6 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == family.workstationChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
 				setState(PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION);
 				family.doMovePopupDown();
-				System.out.println("reached");
 			}
 		}
 		// From actReleaseGlassFromWorkstation step 4 (final)
@@ -205,6 +207,7 @@ public class PopupAgent extends Agent implements Popup {
 				// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 				Glass glass = finishedGlasses.remove(0); // remove & return first element
 				family.nextFamily.msgHereIsGlass(glass);
+				nextPosFree = false;
 
 				family.doReleaseGlassFromPopup();
 
@@ -293,9 +296,10 @@ public class PopupAgent extends Agent implements Popup {
 	public void doReleaseGlassFromProperWorkstation() {
 		if (wsState1 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
 			// WORKSTATION_RELEASE_GLASS
-			// t.fireEvent(workstation1.getChannel(), TEvent.WORKSTATION_RELEASE_FINISHED, new Object[]{workstation1.getIndex()});
+			t.fireEvent(workstation1.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation1.getIndex() });
 		} else if (wsState2 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
 			// WORKSTATION_RELEASE_GLASS
+			t.fireEvent(workstation2.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation2.getIndex() });
 		}
 	}
 
@@ -382,11 +386,18 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	public void setState(PopupState s) {
-		System.out.println("changing state from " + state + " to " + s);
-		state = s;
+//		 System.out.println("changing state from " + state + " to " + s);
+		 state = s;
 	}
-
+	
 	// Testing helpers
+	public void setWorkstationState(int i, WorkstationState s) {
+		if (i == 1) {
+			wsState1 = s;
+		} else {
+			wsState2 = s;
+		}
+	}
 	// public void setNextPosFree(boolean b) {
 	// nextPosFree = b;
 	// }

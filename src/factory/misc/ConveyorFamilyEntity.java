@@ -27,23 +27,24 @@ import factory.test.mock.MockSensor;
 public class ConveyorFamilyEntity implements ConveyorFamily {
 	// *** Constructor(s) ***
 	public ConveyorFamilyEntity(Transducer transducer, Workstation workstation1, Workstation workstation2) {
-		sensor = new SensorAgent(this, transducer);
-		conv = new ConveyorAgent(this, transducer);
-		popup = new PopupAgent(this, transducer, workstation1, workstation2);
-		
 		this.t = transducer;
 		this.type = workstation1.getType(); // workstations should have same type
 		this.conveyorIndex = 0; // default
-	}
-	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, Workstation workstation1, Workstation workstation2) {
+		this.workstationChannel = workstation1.getChannel();
+		
 		sensor = new SensorAgent(this, transducer);
 		conv = new ConveyorAgent(this, transducer);
 		popup = new PopupAgent(this, transducer, workstation1, workstation2);
-		
+	}
+	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, Workstation workstation1, Workstation workstation2) {
 		this.type = workstation1.getType(); // workstations should have same type
 		this.conveyorIndex = convIndex;
 		this.popupIndex = popupIndex;
 		this.workstationChannel = workstation1.getChannel();
+		
+		sensor = new SensorAgent(this, transducer);
+		conv = new ConveyorAgent(this, transducer);
+		popup = new PopupAgent(this, transducer, workstation1, workstation2);
 	}
 
 	// *** DATA - mostly accessible by contained agents ***
@@ -182,5 +183,8 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	}
 	public MockConveyorFamily getMockPrevConveyorFamily() {
 		return (MockConveyorFamily) prevFamily;
+	}
+	public MockConveyorFamily getMockNextConveyorFamily() {
+		return (MockConveyorFamily) nextFamily;
 	}
 }

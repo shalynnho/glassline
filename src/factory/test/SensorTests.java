@@ -84,6 +84,4 @@ public class SensorTests {
 		
 		assertTrue("Previous family should receive msgPositionFree. Event log: [" + prevFamilyLog.toString() + "]", prevFamilyLog.containsString("msgPositionFree"));
 	}
-	
-
 }

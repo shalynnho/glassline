@@ -164,15 +164,19 @@ public class Transducer {
 		boolean active = false;
 
 		if (!toBeRegistered.isEmpty()) {
+//			System.out.println("things to register");
 			performRegister(toBeRegistered.poll());
 			active = true;
 		} else if (!toBeUnregistered.isEmpty()) {
+//			System.out.println("things to unregister");
 			performUnregister(toBeUnregistered.poll());
 			active = true;
 		} else if (!toBeFired.isEmpty()) {
+//			System.out.println("things to fire");
 			performFireEvent(toBeFired.poll());
 			active = true;
 		} else {
+//			System.out.println("no events to process");
 			if (debugScheduler)
 				System.out.println("Transducer: " + "no events to process!");
 		}
