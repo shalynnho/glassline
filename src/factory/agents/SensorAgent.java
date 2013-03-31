@@ -66,22 +66,13 @@ public class SensorAgent extends Agent implements Sensor {
 
 	// *** ACTIONS ***
 	public void actPassOnGlass(Glass g) {
-		// If already on, don't change running state and no need to start conveyor
-		if (family.conveyorIsOn()) {
-			// conveyor is already on and should automatically pass on the glass
-			family.conv.msgHereIsGlass(g);
-		} else { // only start conveyor and change running state if conveyor was previously off
-			while (family.runningState != RunningState.OFF_BC_QUIET) {
-				// Wait until conveyor is officially in the proper off state.
-				// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.
-			}
-			// ISSUE: POPUP COULD TURN OFF RIGHT AFTER THIS METHOD...
-			doStartConveyor();
-			family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
-			family.conv.msgHereIsGlass(g);
+		while (family.runningState != RunningState.OFF_BC_QUIET) { // only supports one glass at a time
+			// Wait until conveyor is officially in the proper off state.
+			// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.
 		}
-
-		
+		doStartConveyor();
+		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
+		family.conv.msgHereIsGlass(g);
 	}
 	
 	public void actTellPrevFamilyPositionFree() {

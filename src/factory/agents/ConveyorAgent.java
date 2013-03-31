@@ -25,47 +25,48 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	
 	// *** DATA ***
-	public static final int CAPACITY = 3;
-	private int spaceFree = CAPACITY;
-	private boolean toldSensor = false;
-
 	private ConveyorFamilyEntity family;
 	private Transducer t;
 	private enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
 	public ConveyorState state = ConveyorState.NOTHING_TO_DO;
-	
-	// Glasses that this conveyor must tell popup about
-	private List<Glass> newGlasses = Collections.synchronizedList(new ArrayList<Glass>());
-	// Normal list of glasses on conveyor
-	private List<Glass> glassesOnConveyor = Collections.synchronizedList(new ArrayList<Glass>());
+
+	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 
 	// *** MESSAGES ***
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		spaceFree--;
-		toldSensor = false;
-		newGlasses.add(g);
+		state = ConveyorState.GLASS_JUST_ARRIVED; // previous sensor should have already started the conveyor
+		// at this point, this should be true: family.runningState == RunningState.ON_BC_SENSOR_TO_CONVEYOR
+		glasses.add(g);
 		stateChanged();
 	}
 
 	@Override
 	public void msgTakingGlass() {
-		spaceFree++;
-		glassesOnConveyor.remove(0);
+		state = ConveyorState.SHOULD_NOTIFY_POSITION_FREE;
+		glasses.remove(0);
 		stateChanged();
 	}
 	
 	// *** SCHEDULER ***
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if (!newGlasses.isEmpty()) {
-			actTellPopupGlassOnConveyor(); // removes glass from newGlasses and adds to glassesOnConveyor
+		if (state == ConveyorState.GLASS_JUST_ARRIVED) {
+			// !glasses.isEmpty() should be true
+			state = ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR;
+			actTellPopupGlassOnConveyor(glasses.get(0));
 			return true;
-		} else if (spaceFree > 0 && !toldSensor) {
+		} else if (state == ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR) { // technically could be merged into NOTHING_TO_DO
+			// Do nothing. Next thing that happens is conveyor auto-stops via eventFired, popup agent realizes sensorOccupied = true, 
+			// does actLoadGlassOntoPopup which *then tells this conveyor agent msgTakingGlass()*
+			return false;
+		} else if (state == ConveyorState.SHOULD_NOTIFY_POSITION_FREE) {
+			state = ConveyorState.NOTHING_TO_DO;
 			actTellSensorPositionFree();
-			return true;
+			return false;
+		} else { // NOTHING_TO_DO
+			return false;
 		}
-		return false;
 	}
 	
 	@Override
@@ -77,7 +78,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 					// parse args to check if it is this sensor
 					// if so:
 					doStopConveyor();
-
 					family.runningState = RunningState.OFF_BC_WAITING_AT_SENSOR;
 				}
 			}
@@ -85,10 +85,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	
 	// *** ACTIONS ***
-	public void actTellPopupGlassOnConveyor() {
-		Glass g = newGlasses.remove(0);
-		glassesOnConveyor.add(g);
-
+	public void actTellPopupGlassOnConveyor(Glass g) {
 		GlassState glassState = family.decideIfGlassNeedsProcessing(g); // conveyor decides this since it has time
 		MyGlass myGlass = family.new MyGlass(g, glassState);
 
@@ -99,7 +96,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 
 	public void actTellSensorPositionFree() {
-		toldSensor = true;
 		family.sensor.msgPositionFree();
 	}
 	

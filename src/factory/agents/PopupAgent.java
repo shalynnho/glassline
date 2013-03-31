@@ -80,10 +80,7 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	@Override
-	public void msgGlassDone(Glass g, int machineIndex) { // int needed?
-		/* 
-		Need to enforce that one workstation is dealt with at a time.
-		*/
+	public void msgGlassDone(Glass g, int machineIndex) {
 		updateWorkstationState(machineIndex, WorkstationState.DONE_BUT_STILL_HAS_GLASS);
 		finishedGlasses.add(g);
 
@@ -92,13 +89,10 @@ public class PopupAgent extends Agent implements Popup {
 			stateChanged(); // only check scheduler if doing nothing
 		}
 		// otherwise, popup is busy WAITING_FOR something else to happen, or is already ACTIVE doing something perhaps for the other workstation
-		
 	}	
 
 	// *** SCHEDULER ***
 	@Override
-	// TODONOW: DEAL WITH SECOND WORKSTATION. WHICH RELEASES FIRST? HOW?
-	// sensor's glass -> workstation 1 -> workstation 2 (wks order dependent on who got part first?)
 	public boolean pickAndExecuteAnAction() {
 		// ACTIVE is set by transducer and incoming messages. We only take action if we are 'active'.
 		if (state == PopupState.ACTIVE) {
@@ -133,8 +127,6 @@ public class PopupAgent extends Agent implements Popup {
 				} else {
 					System.err.println("Null unhandled glass!");
 				}
-
-				// Handle finished glasses
 			}
 		} // returning true above is actually meaningless since all act methods lead to WAIT state, so we just reach false anyway. 
 		state = PopupState.DOING_NOTHING; // this could interfere with other wait states if you returned true above
@@ -147,14 +139,13 @@ public class PopupAgent extends Agent implements Popup {
 
 		// Exception: we must update sensor status regardless of the state.
 		if (!sensorOccupied) { // should only bother to check if sensor is not occupied - here, the popup only cares about listening to see if a glass has arrived at the preceding sensor
-			if (channel == TChannel.SENSOR) {
+			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
-				if (event == TEvent.SENSOR_GUI_PRESSED) {
-					// TODO: parse args to check if it is this sensor
-					state = PopupState.ACTIVE;
-					sensorOccupied = true;
-					stateChanged();
-				}
+				
+				// TODO: parse args to check if it is this sensor
+				state = PopupState.ACTIVE;
+				sensorOccupied = true;
+				stateChanged();
 			}
 		}
 

@@ -39,18 +39,15 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	public ConveyorFamily nextFamily;
 	public ConveyorFamily prevFamily;
 
-	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING } //, FINISHED }
-
+	public enum GlassState { NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING }
 
 	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
 	public RunningState runningState = RunningState.OFF_BC_QUIET;
-	public enum RunningState { // ABANDONED!
+	public enum RunningState {
 		// On states are listed in order of how they would appear. Off states come in between.
 		ON_BC_SENSOR_TO_CONVEYOR, ON_BC_CONVEYOR_TO_SENSOR, ON_BC_SENSOR_TO_POPUP,
 		OFF_BC_QUIET, OFF_BC_WAITING_AT_SENSOR
-	} 
-	// if ON_BC_SENSOR_TO_POPUP, there _could_ be other stuff before. 
-	// This just means this is the rightmost reason, and therefore the most relevant reason.
+	}
 	
 	public class MyGlass {
 		public MyGlass(Glass g, GlassState s) {
