@@ -4,6 +4,7 @@ import java.util.List;
 
 import shared.Glass;
 import factory.agents.PopupAgent.PopupState;
+import factory.agents.PopupAgent.WorkstationState;
 import factory.interfaces.Popup;
 import factory.misc.ConveyorFamilyEntity.MyGlass;
 
@@ -53,6 +54,24 @@ public class MockPopup extends MockEntity implements Popup {
 
 	@Override
 	public void setIsUp(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean getNextPosFree() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void seedFinishedGlasses() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setWorkstationState(int i, WorkstationState s) {
 		// TODO Auto-generated method stub
 		
 	}

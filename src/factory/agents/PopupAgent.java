@@ -139,49 +139,51 @@ public class PopupAgent extends Agent implements Popup {
 		if (!sensorOccupied) { // should only bother to check if sensor is not occupied - here, the popup only cares about listening to see if a glass has arrived at the preceding sensor
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
-
-				// TODO: parse args to check if it is this sensor
-				setState(PopupState.ACTIVE);
-				sensorOccupied = true;
-				stateChanged();
+				if (family.thisSensor(args)) {
+					setState(PopupState.ACTIVE);
+					sensorOccupied = true;
+					stateChanged();
+				}
 			}
 		}
 
 		// From actLoadSensorsGlassOntoWorkstation, step 2 (sometimes)
 		if (state == PopupState.WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
-				// TODO: parse args to check if it is this popup
-				setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION);
-				family.doStartConveyor();
-				family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
-				family.conv.msgTakingGlass();
+				if (family.thisPopup(args)) {
+					setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION);
+					family.doStartConveyor();
+					family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
+					family.conv.msgTakingGlass();
+				}
 			}
 		}
 		// From actLoadSensorsGlassOntoWorkstation, step 3
 		else if (state == PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
-				// TODO: parse args to check if it is this sensor
-				// if so:
-				setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
-				sensorOccupied = false;
-				family.runningState = RunningState.OFF_BC_QUIET;
-				family.doStopConveyor();
-				family.doMovePopupUp();
+				if (family.thisSensor(args)) {
+					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
+					sensorOccupied = false;
+					family.runningState = RunningState.OFF_BC_QUIET;
+					family.doStopConveyor();
+					family.doMovePopupUp();
+				}
 			}
 		}
 		// From actLoadSensorsGlassOntoWorkstation, step 4 (final)
 		else if (state == PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP) {
-				// TODO: parse args to check if it is this popup
-				setState(PopupState.ACTIVE);
-				MyGlass g = glasses.remove(0); // first glass should be the one
-
-				Workstation w = getWorkstationWithState(WorkstationState.FREE);
-				updateWorkstationState(w, WorkstationState.BUSY);
-				w.msgHereIsGlass(g.getGlass());
-
-				family.doLoadGlassOntoWorkstation(w.getIndex());
-				stateChanged();
+				if (family.thisPopup(args)) {
+					setState(PopupState.ACTIVE);
+					MyGlass g = glasses.remove(0); // first glass should be the one
+	
+					Workstation w = getWorkstationWithState(WorkstationState.FREE);
+					updateWorkstationState(w, WorkstationState.BUSY);
+					w.msgHereIsGlass(g.getGlass());
+	
+					family.doLoadGlassOntoWorkstation(w.getIndex());
+					stateChanged();
+				}
 			}
 		}
 
@@ -218,30 +220,30 @@ public class PopupAgent extends Agent implements Popup {
 		// From actLoadSensorsGlassOntoPopupAndRelease, step 2 (sometimes)
 		else if (state == PopupState.WAITING_FOR_LOW_POPUP_BEFORE_RELEASE) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
-				// TODO: parse args to check if it is this popup
-				// if so:
-				setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING);
-				family.doStartConveyor();
-				family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
+				if (family.thisPopup(args)) {
+					setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING);
+					family.doStartConveyor();
+					family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
+				}
 			}
 		}
 		// From actLoadSensorsGlassOntoPopupAndRelease, step 3 (final)
 		else if (state == PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
-				// TODO: parse args to check if it is this popup
-				// if so:
-				setState(PopupState.ACTIVE);
-				sensorOccupied = false;
-
-				// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
-				MyGlass mg = glasses.remove(0); // should be first glass
-				family.nextFamily.msgHereIsGlass(mg.getGlass());
-
-				family.runningState = RunningState.OFF_BC_QUIET;
-				family.doStopConveyor();
-				family.doReleaseGlassFromPopup();
-
-				stateChanged();
+				if (family.thisPopup(args)) {
+					setState(PopupState.ACTIVE);
+					sensorOccupied = false;
+	
+					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
+					MyGlass mg = glasses.remove(0); // should be first glass
+					family.nextFamily.msgHereIsGlass(mg.getGlass());
+	
+					family.runningState = RunningState.OFF_BC_QUIET;
+					family.doStopConveyor();
+					family.doReleaseGlassFromPopup();
+	
+					stateChanged();
+				}
 			}
 		}
 	}

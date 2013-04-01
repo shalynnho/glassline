@@ -133,6 +133,18 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	}
 
 	// *** EXTRA ***
+	
+	// Quick helpers for parsing args in eventFired
+	public boolean thisSensor(Object args[]) {
+		return (Integer) args[0] == getSensorIndex();
+	}
+	public boolean thisPopup(Object args[]) {
+		return (Integer) args[0] == getPopupIndex();
+	}
+	public boolean thisConveyor(Object args[]) {
+		return (Integer) args[0] == getConveyorIndex();
+	}
+	
 	public void setNextConveyorFamily(ConveyorFamily f) {
 		nextFamily = f;
 	}
@@ -146,6 +158,9 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 		else
 			gs = GlassState.DOES_NOT_NEED_PROCESSING;
 		return gs;
+	}
+	public int getSensorIndex() { // based on conveyor index
+		return conveyorIndex*2;
 	}
 	
 	public int getConveyorIndex() {

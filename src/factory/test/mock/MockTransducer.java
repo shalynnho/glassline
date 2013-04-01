@@ -4,8 +4,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-
-public class MockTransducer extends Transducer {
+public class MockTransducer extends Transducer { // not used
 	public EventLog log = new EventLog();
 	
 	@Override
