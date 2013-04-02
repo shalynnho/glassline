@@ -68,14 +68,33 @@ public class ConveyorAgentUnitTest extends TestCase {
 			conveyor.pickAndExecuteAnAction(); // gs == moving, should tell anim to start conveyor
 			wait(timer, sem, waitTime);
 			
-			assertTrue(
-					"Mock animation should have been told to start conveyor. Event log: "
-					+ anim.log.toString(), anim.log.containsString(
-					"Channel: " + TChannel.CONVEYOR + ", Event: " + TEvent.CONVEYOR_DO_START + ", Arguments: " + id + "."));
-			assertEquals(
-					"Only 1 event should have been sent to the animation. Event log: "
-							+ anim.log.toString(), 1, anim.log.size());
+			t.fireEvent(TChannel.SENSOR, TEvent.SENSOR_GUI_RELEASED, frontSensorArgs); // gs == moving
+			wait(timer, sem, waitTime);
 			
+			if (i == 0) { // only should have to start conveyor the first time
+				assertTrue(
+						"Mock animation should have been told to start conveyor. Event log: "
+						+ anim.log.toString(), anim.log.containsString(
+						"Channel: " + TChannel.CONVEYOR + ", Event: " + TEvent.CONVEYOR_DO_START + ", Arguments: " + id + "."));
+				assertEquals(
+						"Only 1 event should have been sent to the animation. Event log: "
+								+ anim.log.toString(), 1, anim.log.size());
+				anim.log.clear();
+			}
+			
+			assertTrue(
+					"Mock CF should have been told conveyor is open. Event log: "
+							+ cf.log.toString(), cf.log
+							.containsString("Received message msgPositionFree."));
+			assertEquals(
+					"Only 1 message should have been sent to the CF. Event log: "
+							+ cf.log.toString(), 1, cf.log.size());
+			anim.log.clear();
+			p.log.clear();
+			cf.log.clear();
+		}
+		
+		for (int i = 0; i < numGlass; ++i) {
 			conveyor.pickAndExecuteAnAction(); // nothing should happen; if it does something, test will fail later
 			
 			t.fireEvent(TChannel.SENSOR, TEvent.SENSOR_GUI_PRESSED, backSensorArgs); // gs == atEnd
@@ -89,8 +108,8 @@ public class ConveyorAgentUnitTest extends TestCase {
 					+ anim.log.toString(), anim.log.containsString(
 					"Channel: " + TChannel.CONVEYOR + ", Event: " + TEvent.CONVEYOR_DO_STOP + ", Arguments: " + id + "."));
 			assertEquals(
-					"Only 2 events should have been sent to the animation. Event log: "
-							+ anim.log.toString(), 2, anim.log.size());
+					"Only 1 event should have been sent to the animation. Event log: "
+							+ anim.log.toString(), 1, anim.log.size());
 			assertTrue(
 					"Mock popup should have been told about glass. Event log: "
 							+ p.log.toString(), p.log
@@ -121,34 +140,19 @@ public class ConveyorAgentUnitTest extends TestCase {
 			t.fireEvent(TChannel.SENSOR, TEvent.SENSOR_GUI_RELEASED, backSensorArgs); // gs == done
 			wait(timer, sem, waitTime);
 			
-			conveyor.pickAndExecuteAnAction(); // should stop conveyor and tell previous CF that it's ready for more glass
+			conveyor.pickAndExecuteAnAction(); // should remove glass from glass list
 			wait(timer, sem, waitTime);
-			
-			assertTrue(
-					"Mock animation should have been told to stop conveyor. Event log: "
-					+ anim.log.toString(), anim.log.containsString(
-					"Channel: " + TChannel.CONVEYOR + ", Event: " + TEvent.CONVEYOR_DO_STOP + ", Arguments: " + id + "."));
-			assertEquals(
-					"Only 2 events should have been sent to the animation. Event log: "
-							+ anim.log.toString(), 2, anim.log.size());
-			assertTrue(
-					"Mock CF should have been told conveyor is open. Event log: "
-							+ cf.log.toString(), cf.log
-							.containsString("Received message msgPositionFree."));
-			assertEquals(
-					"Only 1 message should have been sent to the CF. Event log: "
-							+ cf.log.toString(), 1, cf.log.size());
 			
 			conveyor.pickAndExecuteAnAction(); // nothing should happen
 			assertEquals(
-					"Only 2 events should have been sent to the animation. Event log: "
-							+ anim.log.toString(), 2, anim.log.size());
+					"Only 1 event should have been sent to the animation. Event log: "
+							+ anim.log.toString(), 1, anim.log.size());
 			assertEquals(
 					"Only 1 message should have been sent to the popup. Event log: "
 							+ p.log.toString(), 1, p.log.size());
 			assertEquals(
-					"Only 1 message should have been sent to the CF. Event log: "
-							+ cf.log.toString(), 1, cf.log.size());
+					"No messages should have been sent to the CF. Event log: "
+							+ cf.log.toString(), 0, cf.log.size());
 			
 			anim.log.clear();
 			p.log.clear();

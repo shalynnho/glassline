@@ -1,7 +1,9 @@
 package engine.agent.evan;
 
+import java.util.*;
+
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.*;
 import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
@@ -13,13 +15,21 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 	private Popup p;
 	private Transducer t;
 	private int id; // place in GUI
-
-	private Glass g; // current piece of glass
-
-	enum GlassState {pending, arrived, moving, atEnd, waiting, sent, done, none};
-	private GlassState gs;
-
-	private boolean posFree; // popup ready
+	
+	enum GlassState {pending, arrived, moving, atEnd, waiting, sent, done};
+	private class MyGlass {
+		public Glass g;
+		public GlassState gs;
+		
+		public MyGlass(Glass g) {
+			this.g = g;
+			this.gs = GlassState.pending;
+		}
+	}
+	
+	private List<MyGlass> glasses;
+	
+	private boolean posFree, moving; // popup ready
 	
 	/* Assigns references from arguments and sets other data appropriately. */
 	public ConveyorAgent(String name, ConveyorFamily cf, Popup pop, Transducer trans, int index) {
@@ -31,9 +41,9 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 		t.register(this, TChannel.SENSOR);
 		id = index;
 		
-		g = null;
-		gs = GlassState.none;
+		glasses = new ArrayList<MyGlass>();
 		posFree = false;
+		moving = false;
 		prevCF.msgPositionFree(); // conveyor starts open
 	}
 	
@@ -41,9 +51,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 	
 	/* From previous CF. */
 	public void msgHereIsGlass(Glass g) {
-		this.g = g;
-		if (gs == GlassState.none) // it could have arrived already, maybe in a buggy scenario (if-statement included for resiliency)
-			gs = GlassState.pending;
+		glasses.add(new MyGlass(g));
 		stateChanged();
 	}
 	
@@ -59,18 +67,35 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 		
 		if (sensorID == id * 2) {
 			if (event == TEvent.SENSOR_GUI_PRESSED) { // if front sensor pressed
-				gs = GlassState.arrived;
+				for (MyGlass mg : glasses)
+					if (mg.gs == GlassState.pending) {
+						mg.gs = GlassState.arrived;
+						break;
+					}
 				stateChanged();
-			}/* else if (event == TEvent.SENSOR_GUI_RELEASED) { // if front sensor released
-				gs = GlassState.moving;
+			} else if (event == TEvent.SENSOR_GUI_RELEASED) { // if front sensor released
+				for (MyGlass mg : glasses)
+					if (mg.gs == GlassState.arrived) {
+						mg.gs = GlassState.moving;
+						prevCF.msgPositionFree();
+						break;
+					}
 				stateChanged();
-			} */
+			}
 		} else if (sensorID == id * 2 + 1) {
 			if (event == TEvent.SENSOR_GUI_PRESSED) { // if back sensor pressed
-				gs = GlassState.atEnd;
+				for (MyGlass mg : glasses)
+					if (mg.gs == GlassState.moving) {
+						mg.gs = GlassState.atEnd;
+						break;
+					}
 				stateChanged();
 			} else if (event == TEvent.SENSOR_GUI_RELEASED) { // if back sensor released
-				gs = GlassState.done;
+				for (MyGlass mg : glasses)
+					if (mg.gs == GlassState.sent) {
+						mg.gs = GlassState.done;
+						break;
+					}
 				stateChanged();
 			}
 		}
@@ -78,67 +103,72 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
-		if (gs == GlassState.pending) {}
-		else if (gs == GlassState.arrived) {
-			startConveyor();
-			return true;
-		} else if (gs == GlassState.moving) {}
-		else if (gs == GlassState.atEnd) {
-			tellPopupReadyAndWait();
-			return true;
-		} else if (gs == GlassState.waiting && posFree) {
-			sendGlass(); // send to popup
-			return true;
-		} else if (gs == GlassState.sent) {}
-		else if (gs == GlassState.done) {
-			readyForMore(); // tell popup glass has arrived
-			return true;
-		} else if (gs == GlassState.none) {}
-
+		for (MyGlass mg : glasses)
+			if (mg.gs == GlassState.done) {
+				removeGlass(mg); // remove mg from glasses
+				return true;
+			}
+		for (MyGlass mg : glasses)
+			if (mg.gs == GlassState.waiting) {
+				if (posFree) {
+					sendGlass(mg); // send to popup
+					return true;
+				} else {
+					return false; // shouldn't do anything else if glass waiting and next conveyor is full
+				}
+			}
+		for (MyGlass mg : glasses)
+			if (mg.gs == GlassState.atEnd) {
+				tellPopupReadyAndWait(mg);
+				return true;
+			}
+		for (MyGlass mg : glasses)
+			if (mg.gs == GlassState.arrived) {
+				doStartConveyor(); // start conveyor if conveyor isn't moving
+				return true;
+			}
+		
 		return false;
 	}
 	
 	// *** ACTIONS ***
-	
-	/* Start conveyor in animation and change state. */
-	private void startConveyor() {
-		doStartConveyor();
-		gs = GlassState.moving;
-	}
 
 	/* Tell Popup about next glass and wait to pass it off. */
-	private void tellPopupReadyAndWait() {
+	private void tellPopupReadyAndWait(MyGlass mg) {
 		doStopConveyor();
-		p.msgNextGlass(g);
-		gs = GlassState.waiting;
+		p.msgNextGlass(mg.g);
+		mg.gs = GlassState.waiting;
 	}
 	
 	/* Start this conveyor so animation sends glass to popup. Popup is waiting for glass right now. */
-	private void sendGlass() {
+	private void sendGlass(MyGlass mg) {
 		doStartConveyor();
-		gs = GlassState.sent;
+		mg.gs = GlassState.sent;
 	}
 	
-	/* Reset states and tell previous CF ready. */
-	private void readyForMore() {
-		gs = GlassState.none;
-		posFree = false; // popup now occupied
-		doStopConveyor();
-		prevCF.msgPositionFree(); // this conveyor now free
+	/* Remove mg from glasses. */
+	private void removeGlass(MyGlass mg) {
+		glasses.remove(mg);
 	}
 	
 	// *** ANIMATION ACTIONS ***
 	
 	/* Make animation start this conveyor. */
 	private void doStartConveyor() {
-		Integer[] args = {id};
-		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+		if (!moving) {
+			Integer[] args = {id};
+			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+			moving = true;
+		}
 	}
 	
 	/* Make animation stop this conveyor. */
 	private void doStopConveyor() {
-		Integer[] args = {id};
-		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+		if (moving) {
+			Integer[] args = {id};
+			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+			moving = false;
+		}
 	}
 	
 	// *** EXTRA ***
