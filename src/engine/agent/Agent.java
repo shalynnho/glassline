@@ -1,5 +1,6 @@
 package engine.agent;
 
+import engine.agent.shay.interfaces.TransducerIfc;
 import engine.util.StringUtil;
 import gui.panels.subcontrolpanels.TracePanel;
 
@@ -7,8 +8,8 @@ import java.util.concurrent.Semaphore;
 
 import transducer.TChannel;
 import transducer.TEvent;
-import transducer.Transducer;
 import transducer.TReceiver;
+import transducer.Transducer;
 
 /**
  * Superclass for all threaded Agents. Agents have a thread devoted to their scheduler and subclasses must override pickAndExecuteAnAction(). 
@@ -46,11 +47,11 @@ public abstract class Agent implements TReceiver {
 		this(agentName, null);
 	}
 
-	protected Agent(String agentName, Transducer ft) {
+	protected Agent(String agentName, TransducerIfc ft) {
 		name = agentName;
-		transducer = ft;
+		transducer = (Transducer) ft;
 	}
-
+	
 	/**
 	 * Return agent name for messages. Default is to return java instance name, unless the name is specified.
 	 */
