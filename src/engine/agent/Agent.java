@@ -62,12 +62,12 @@ public abstract class Agent implements TReceiver {
 		return name;
 	}
 
-//	/**
-//	 * Returns the name
-//	 */
-//	public String toString() {
-//		return getName();
-//	}
+	/**
+	 * Returns the name
+	 */
+	public String toString() {
+		return getName();
+	}
 
 	/**
 	 * Returns the transducer
