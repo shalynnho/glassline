@@ -8,8 +8,8 @@ import java.util.concurrent.Semaphore;
 
 import transducer.TChannel;
 import transducer.TEvent;
-import transducer.TReceiver;
 import transducer.Transducer;
+import transducer.TReceiver;
 
 /**
  * Superclass for all threaded Agents. Agents have a thread devoted to their scheduler and subclasses must override pickAndExecuteAnAction(). 
@@ -51,7 +51,7 @@ public abstract class Agent implements TReceiver {
 		name = agentName;
 		transducer = (Transducer) ft;
 	}
-	
+
 	/**
 	 * Return agent name for messages. Default is to return java instance name, unless the name is specified.
 	 */
@@ -184,4 +184,30 @@ public abstract class Agent implements TReceiver {
 			this.interrupt();
 		}
 	}
+	
+	/** From the restaurant agent */
+	
+	/** Print message */
+	protected void print(String msg) {
+		print(msg, null);
+	}
+	
+	public void testprint(String msg) {
+		print(msg, null);
+	}
+
+	/** Print message with exception stack trace */
+	protected void print(String msg, Throwable e) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(getName());
+		sb.append(": ");
+		sb.append(msg);
+		sb.append("\n");
+		if (e != null) {
+			sb.append(StringUtil.stackTraceString(e));
+		}
+		System.out.print(sb.toString());
+	}
+	
+	
 }

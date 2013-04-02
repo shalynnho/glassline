@@ -97,4 +97,8 @@ public class Glass {
 			System.out.println();
 		}
 	}
+	
+	public Map<MachineType, Boolean> getRecipe() {
+		return recipe;
+	}
 }
