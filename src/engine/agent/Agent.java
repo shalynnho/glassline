@@ -1,5 +1,6 @@
 package engine.agent;
 
+import engine.agent.shay.interfaces.TransducerIfc;
 import engine.util.StringUtil;
 import gui.panels.subcontrolpanels.TracePanel;
 
@@ -46,9 +47,9 @@ public abstract class Agent implements TReceiver {
 		this(agentName, null);
 	}
 
-	protected Agent(String agentName, Transducer ft) {
+	protected Agent(String agentName, TransducerIfc ft) {
 		name = agentName;
-		transducer = ft;
+		transducer = (Transducer) ft;
 	}
 
 	/**
@@ -207,4 +208,6 @@ public abstract class Agent implements TReceiver {
 		}
 		System.out.print(sb.toString());
 	}
+	
+	
 }

@@ -8,11 +8,13 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
+import engine.agent.shay.interfaces.TransducerIfc;
+
 /**
  * This class is the fundamental support for front/back end communication. 
  * Any class implementing the TReceiver interface can use the Transducer to listen to events on any property channel.
  */
-public class Transducer {
+public class Transducer implements TransducerIfc {
 	/**
 	 * Switches what debug prints are on
 	 */
