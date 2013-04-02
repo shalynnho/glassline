@@ -1,9 +1,9 @@
-package factory_david.agents;
+package engine.agent.david.agents;
 
 import shared.Glass;
 import shared.enums.MachineType;
 import transducer.TChannel;
-import factory_david.interfaces.Workstation;
+import engine.agent.david.interfaces.Workstation;
 
 /**
  * Temporarily stubbed class that would contain the RobotAgent and MachineAgent concepts.

@@ -1,4 +1,4 @@
-package factory_david.agents;
+package engine.agent.david.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,23 +9,22 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
-import factory_david.interfaces.Conveyor;
-import factory_david.misc.ConveyorFamilyEntity;
-import factory_david.misc.ConveyorFamilyEntity.GlassState;
-import factory_david.misc.ConveyorFamilyEntity.MyGlass;
-import factory_david.misc.ConveyorFamilyEntity.RunningState;
+import engine.agent.david.interfaces.Conveyor;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.david.misc.ConveyorFamilyEntity.GlassState;
+import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
+import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 
 public class ConveyorAgent extends Agent implements Conveyor {
 	// *** Constructor(s) ***
 	public ConveyorAgent(ConveyorFamilyEntity f, Transducer transducer) {
+		super("Conveyor", transducer);
 		family = f;
-		t = transducer;
-		t.register(this, TChannel.SENSOR);
+		transducer.register(this, TChannel.SENSOR);
 	}
 	
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
-	private Transducer t;
 	public enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
 	private ConveyorState state = ConveyorState.NOTHING_TO_DO;
 

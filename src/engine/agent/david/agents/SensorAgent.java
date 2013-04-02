@@ -1,4 +1,4 @@
-package factory_david.agents;
+package engine.agent.david.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,20 +10,19 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
-import factory_david.interfaces.Sensor;
-import factory_david.misc.ConveyorFamilyEntity;
-import factory_david.misc.ConveyorFamilyEntity.RunningState;
+import engine.agent.david.interfaces.Sensor;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 
 public class SensorAgent extends Agent implements Sensor {
 	// *** Constructor(s) ***
 	public SensorAgent(ConveyorFamilyEntity f, Transducer transducer) {
+		super("Sensor", transducer);
 		family = f;
-		t = transducer;
 	}
 
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
-	private Transducer t;
 	public enum SensorState { SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO, GLASS_JUST_ARRIVED }
 	private SensorState state = SensorState.NOTHING_TO_DO;
 

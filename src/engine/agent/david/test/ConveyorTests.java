@@ -1,4 +1,4 @@
-package factory_david.test;
+package engine.agent.david.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
@@ -8,14 +8,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import engine.agent.david.agents.ConveyorAgent.ConveyorState;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.david.test.mock.EventLog;
+import engine.agent.david.test.mock.MockPopup;
+import engine.agent.david.test.mock.MockSensor;
+import engine.agent.david.test.mock.MockWorkstation;
+
 import shared.Glass;
 import transducer.Transducer;
-import factory_david.agents.ConveyorAgent.ConveyorState;
-import factory_david.misc.ConveyorFamilyEntity;
-import factory_david.test.mock.EventLog;
-import factory_david.test.mock.MockPopup;
-import factory_david.test.mock.MockSensor;
-import factory_david.test.mock.MockWorkstation;
 
 /**
  * Tests for the conveyor in ConveyorFamilyEntity, i.e., family.conv

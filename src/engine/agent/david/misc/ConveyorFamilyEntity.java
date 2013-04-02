@@ -1,22 +1,22 @@
-package factory_david.misc;
+package engine.agent.david.misc;
 
+import engine.agent.david.agents.ConveyorAgent;
+import engine.agent.david.agents.PopupAgent;
+import engine.agent.david.agents.SensorAgent;
+import engine.agent.david.interfaces.Conveyor;
+import engine.agent.david.interfaces.Popup;
+import engine.agent.david.interfaces.Sensor;
+import engine.agent.david.interfaces.Workstation;
+import engine.agent.david.test.mock.MockConveyor;
+import engine.agent.david.test.mock.MockConveyorFamily;
+import engine.agent.david.test.mock.MockPopup;
+import engine.agent.david.test.mock.MockSensor;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
-import factory_david.agents.ConveyorAgent;
-import factory_david.agents.PopupAgent;
-import factory_david.agents.SensorAgent;
-import factory_david.interfaces.Conveyor;
-import factory_david.interfaces.Popup;
-import factory_david.interfaces.Sensor;
-import factory_david.interfaces.Workstation;
-import factory_david.test.mock.MockConveyor;
-import factory_david.test.mock.MockConveyorFamily;
-import factory_david.test.mock.MockPopup;
-import factory_david.test.mock.MockSensor;
 
 /**
  * Key class that represents my version of the ConveyorFamily design (hence its implementation of ConveyorFamily).

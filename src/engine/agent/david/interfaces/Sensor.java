@@ -1,9 +1,10 @@
-package factory_david.interfaces;
+package engine.agent.david.interfaces;
 
 import java.util.List;
 
+import engine.agent.david.agents.SensorAgent.SensorState;
+
 import shared.Glass;
-import factory_david.agents.SensorAgent.SensorState;
 
 public interface Sensor {
 	// *** MESSAGES ***

@@ -1,4 +1,4 @@
-package factory_david.agents;
+package engine.agent.david.agents;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,29 +9,28 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
-import factory_david.interfaces.Popup;
-import factory_david.interfaces.Workstation;
-import factory_david.misc.ConveyorFamilyEntity;
-import factory_david.misc.ConveyorFamilyEntity.GlassState;
-import factory_david.misc.ConveyorFamilyEntity.MyGlass;
-import factory_david.misc.ConveyorFamilyEntity.RunningState;
+import engine.agent.david.interfaces.Popup;
+import engine.agent.david.interfaces.Workstation;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.david.misc.ConveyorFamilyEntity.GlassState;
+import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
+import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 
 public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
 	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, Workstation workstation1, Workstation workstation2) {
+		super("Popup", transducer);
 		family = f;
-		t = transducer;
 		this.workstation1 = workstation1;
 		this.workstation2 = workstation2;
 
-		t.register(this, TChannel.SENSOR);
-		t.register(this, TChannel.POPUP);
-		t.register(this, family.workstationChannel);
+		transducer.register(this, TChannel.SENSOR);
+		transducer.register(this, TChannel.POPUP);
+		transducer.register(this, family.workstationChannel);
 	}
 
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
-	private Transducer t;
 	private Workstation workstation1; // top workstation, higher priority, one with lower index
 	private Workstation workstation2; // bottom workstation
 	private List<MyGlass> glasses = Collections.synchronizedList(new ArrayList<MyGlass>()); // uses MyGlass instead of just Glass so it contains GlassState
@@ -298,10 +297,10 @@ public class PopupAgent extends Agent implements Popup {
 	public void doReleaseGlassFromProperWorkstation() {
 		if (wsState1 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
 			// WORKSTATION_RELEASE_GLASS
-			t.fireEvent(workstation1.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation1.getIndex() });
+			transducer.fireEvent(workstation1.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation1.getIndex() });
 		} else if (wsState2 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
 			// WORKSTATION_RELEASE_GLASS
-			t.fireEvent(workstation2.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation2.getIndex() });
+			transducer.fireEvent(workstation2.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation2.getIndex() });
 		}
 	}
 

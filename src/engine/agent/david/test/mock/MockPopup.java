@@ -1,12 +1,13 @@
-package factory_david.test.mock;
+package engine.agent.david.test.mock;
 
 import java.util.List;
 
+import engine.agent.david.agents.PopupAgent.PopupState;
+import engine.agent.david.agents.PopupAgent.WorkstationState;
+import engine.agent.david.interfaces.Popup;
+import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
+
 import shared.Glass;
-import factory_david.agents.PopupAgent.PopupState;
-import factory_david.agents.PopupAgent.WorkstationState;
-import factory_david.interfaces.Popup;
-import factory_david.misc.ConveyorFamilyEntity.MyGlass;
 
 public class MockPopup extends MockEntity implements Popup {
 	public MockPopup(String name) {

@@ -1,4 +1,4 @@
-package factory_david.test;
+package engine.agent.david.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -9,19 +9,20 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import engine.agent.david.agents.PopupAgent.PopupState;
+import engine.agent.david.agents.PopupAgent.WorkstationState;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.david.misc.ConveyorFamilyEntity.GlassState;
+import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
+import engine.agent.david.test.mock.EventLog;
+import engine.agent.david.test.mock.MockConveyor;
+import engine.agent.david.test.mock.MockConveyorFamily;
+import engine.agent.david.test.mock.MockWorkstation;
+
 import shared.Glass;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
-import factory_david.agents.PopupAgent.PopupState;
-import factory_david.agents.PopupAgent.WorkstationState;
-import factory_david.misc.ConveyorFamilyEntity;
-import factory_david.misc.ConveyorFamilyEntity.GlassState;
-import factory_david.misc.ConveyorFamilyEntity.MyGlass;
-import factory_david.test.mock.EventLog;
-import factory_david.test.mock.MockConveyor;
-import factory_david.test.mock.MockConveyorFamily;
-import factory_david.test.mock.MockWorkstation;
 
 /**
  * Tests for the popup in ConveyorFamilyEntity, i.e., family.popup

@@ -1,11 +1,12 @@
-package factory_david.test.mock;
+package engine.agent.david.test.mock;
 
 
 import java.util.List;
 
+import engine.agent.david.agents.ConveyorAgent.ConveyorState;
+import engine.agent.david.interfaces.Conveyor;
+
 import shared.Glass;
-import factory_david.agents.ConveyorAgent.ConveyorState;
-import factory_david.interfaces.Conveyor;
 
 public class MockConveyor extends MockEntity implements Conveyor {
 	public MockConveyor(String name) {

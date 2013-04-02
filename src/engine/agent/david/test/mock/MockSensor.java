@@ -1,12 +1,13 @@
-package factory_david.test.mock;
+package engine.agent.david.test.mock;
 
 import java.util.List;
 
+import engine.agent.david.agents.SensorAgent.SensorState;
+import engine.agent.david.interfaces.Sensor;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+
 import shared.Glass;
 import transducer.Transducer;
-import factory_david.agents.SensorAgent.SensorState;
-import factory_david.interfaces.Sensor;
-import factory_david.misc.ConveyorFamilyEntity;
 
 public class MockSensor extends MockEntity implements Sensor {
 	public MockSensor(String name) {
