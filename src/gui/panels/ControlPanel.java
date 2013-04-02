@@ -1,4 +1,3 @@
-
 package gui.panels;
 
 import gui.panels.subcontrolpanels.GlassInfoPanel;
@@ -26,14 +25,12 @@ import transducer.TChannel;
 import transducer.TReceiver;
 
 /**
- * The ControlPanel class contains the buttons and panels that are responsible
- * for controlling the factory, printing agent traces, and running non-normatives
+ * The ControlPanel class contains the buttons and panels that are responsible for controlling the factory, printing agent traces, and running non-normatives
  * 
  * It is the GUI implementation of the Factory Control System (FCS)
  */
 @SuppressWarnings("serial")
-public class ControlPanel extends JPanel implements TReceiver
-{
+public class ControlPanel extends JPanel implements TReceiver {
 	/**
 	 * The parent panel for communication with the display
 	 */
@@ -82,11 +79,9 @@ public class ControlPanel extends JPanel implements TReceiver
 	public final static Dimension size = new Dimension(400, 880);
 
 	/**
-	 * Creates a ControlPanel with no connections. Used only for testing
-	 * purposes
+	 * Creates a ControlPanel with no connections. Used only for testing purposes
 	 */
-	public ControlPanel()
-	{
+	public ControlPanel() {
 		// manage layout
 		// this.setLayout(new GridLayout(5, 1));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -158,13 +153,11 @@ public class ControlPanel extends JPanel implements TReceiver
 
 	/**
 	 * Creates a ControlPanel with corresponding subpanels.
-	 * @param fPanel
-	 *        the parent FactoryPanel
-	 * @param cCell
-	 *        the ControlCell to link to this ControlPanel
+	 * 
+	 * @param fPanel the parent FactoryPanel
+	 * @param cCell the ControlCell to link to this ControlPanel
 	 */
-	public ControlPanel(FactoryPanel fPanel, Transducer fTransducer)
-	{
+	public ControlPanel(FactoryPanel fPanel, Transducer fTransducer) {
 		this();
 
 		transducer = fTransducer;
@@ -175,99 +168,95 @@ public class ControlPanel extends JPanel implements TReceiver
 	/**
 	 * Sets the parent
 	 */
-	public void setParent(FactoryPanel fp)
-	{
+	public void setParent(FactoryPanel fp) {
 		parent = fp;
 	}
 
 	/**
 	 * Returns the parent FactoryPanel
+	 * 
 	 * @return the parent FactoryPanel
 	 */
-	public FactoryPanel getGuiParent()
-	{
+	public FactoryPanel getGuiParent() {
 		return parent;
 	}
 
 	/**
 	 * Listens to events fired on the transducer, especially from Agents
 	 */
-	public synchronized void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
+	public synchronized void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// TODO implement as needed
 	}
 
 	/**
 	 * Sets the transducer
-	 * @param newTransducer
-	 *        the new transducer to link
+	 * 
+	 * @param newTransducer the new transducer to link
 	 */
-	public void setTransducer(Transducer newTransducer)
-	{
+	public void setTransducer(Transducer newTransducer) {
 		// TODO set the transducer, then register with all the necessary channels
-		//transducer = newTransducer;
-		//transducer.register...
+		// transducer = newTransducer;
+		// transducer.register...
 	}
 
 	/**
 	 * Returns the transducer
+	 * 
 	 * @return the transducer
 	 */
-	public Transducer getTransducer()
-	{
+	public Transducer getTransducer() {
 		return transducer;
 	}
 
 	/**
 	 * Returns the State Panel
+	 * 
 	 * @return the State Panel
 	 */
-	public StatePanel getStatePanel()
-	{
+	public StatePanel getStatePanel() {
 		return statePanel;
 	}
 
 	/**
 	 * Returns the glass info panel, for ease of printing
+	 * 
 	 * @return the glass info panel
 	 */
-	public GlassInfoPanel getGlassInfoPanel()
-	{
+	public GlassInfoPanel getGlassInfoPanel() {
 		return glassInfoPanel;
 	}
 
 	/**
 	 * Returns the glass select panel
+	 * 
 	 * @return the glass select panel
 	 */
-	public GlassSelectPanel getGlassSelectPanel()
-	{
+	public GlassSelectPanel getGlassSelectPanel() {
 		return glassSelectPanel;
 	}
 
 	/**
 	 * Returns the non-norm panel
+	 * 
 	 * @return the NonNormPanel
 	 */
-	public NonNormPanel getNonNormPanel()
-	{
+	public NonNormPanel getNonNormPanel() {
 		return nonNormPanel;
 	}
 
 	/**
 	 * Returns an instance of trace panel
+	 * 
 	 * @return trace panel
 	 */
-	public TracePanel getTracePanel()
-	{
+	public TracePanel getTracePanel() {
 		return tracePanel;
 	}
 
 	/**
 	 * Returns the name of the panel
 	 */
-	public String toString()
-	{
+	public String toString() {
 		return "Control Panel";
 	}
 }

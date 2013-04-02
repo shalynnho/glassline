@@ -1,4 +1,3 @@
-
 package gui.components;
 
 import java.awt.Dimension;
@@ -21,8 +20,7 @@ import transducer.Transducer;
  * GUIComponentOnline is the class for oven, washer, cutter, paint and UVlamp
  */
 @SuppressWarnings("serial")
-public class GUIComponentOnline extends GuiAnimationComponent implements ActionListener, Serializable
-{
+public class GUIComponentOnline extends GuiAnimationComponent implements ActionListener, Serializable {
 	boolean moveTruck = false;
 
 	boolean imageIconChange = false;
@@ -68,18 +66,16 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 
 	ConveyorDirections direction;
 
-	public void setDirection(ConveyorDirections direction)
-	{
+	public void setDirection(ConveyorDirections direction) {
 		this.direction = direction;
 	}
 
 	/**
 	 * The protected constructor for GUIComponentOnline
-	 * @param type
-	 *        The type of machine
+	 * 
+	 * @param type The type of machine
 	 */
-	public GUIComponentOnline(MachineType type, Transducer t)
-	{
+	public GUIComponentOnline(MachineType type, Transducer t) {
 		this.type = type;
 		transducer = t;
 		initializeImages();
@@ -90,8 +86,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	/**
 	 * Moves from conveyor to machine
 	 */
-	public void msgPartPlaceOnMachine(GUIGlass guiPart)
-	{
+	public void msgPartPlaceOnMachine(GUIGlass guiPart) {
 		isAnimating = true;
 		initializeTargetPos();
 		// partOriginalLoc = new Point(guiPart.getCenterX(), guiPart.getCenterY());
@@ -103,49 +98,35 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	/**
 	 * Method to activate animation once part is on the machine
 	 */
-	public void partIsOnMachine()
-	{
+	public void partIsOnMachine() {
 		// ((OnlineMachineAgent) myAgent).msgDoneMovingFromConveyorToOnline();
 	}
 
 	/**
-	 * Method that initializes the imageicons for the specific machines
-	 * based on the MachineType enum
+	 * Method that initializes the imageicons for the specific machines based on the MachineType enum
 	 */
-	public void initializeImages()
-	{
-		if (type == MachineType.CUTTER)
-		{
-			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("cutter");
+	public void initializeImages() {
+		if (type == MachineType.CUTTER) {
+			imageicons = (ArrayList<ImageIcon>) ImageIcons.getIconList("cutter");
 			channel = TChannel.CUTTER;
 			transducer.register(this, TChannel.CUTTER);
-		}
-		else if (type == MachineType.OVEN)
-		{
-			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("oven");
+		} else if (type == MachineType.OVEN) {
+			imageicons = (ArrayList<ImageIcon>) ImageIcons.getIconList("oven");
 			channel = TChannel.OVEN;
 			transducer.register(this, TChannel.OVEN);
-		}
-		else if (type == MachineType.UV_LAMP)
-		{
-			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("uvLamp");
+		} else if (type == MachineType.UV_LAMP) {
+			imageicons = (ArrayList<ImageIcon>) ImageIcons.getIconList("uvLamp");
 			channel = TChannel.UV_LAMP;
 			transducer.register(this, TChannel.UV_LAMP);
-		}
-		else if (type == MachineType.WASHER)
-		{
-			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("washer");
+		} else if (type == MachineType.WASHER) {
+			imageicons = (ArrayList<ImageIcon>) ImageIcons.getIconList("washer");
 			channel = TChannel.WASHER;
 			transducer.register(this, TChannel.WASHER);
-		}
-		else if (type == MachineType.PAINT)
-		{
-			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("paint");
+		} else if (type == MachineType.PAINT) {
+			imageicons = (ArrayList<ImageIcon>) ImageIcons.getIconList("paint");
 			channel = TChannel.PAINTER;
 			transducer.register(this, TChannel.PAINTER);
-		}
-		else
-		{
+		} else {
 
 			System.exit(0);
 		}
@@ -156,8 +137,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	/**
 	 * Method to initialize the target position based on what machine it is.
 	 */
-	public void initializeTargetPos()
-	{
+	public void initializeTargetPos() {
 		// if(type == MachineType.CUTTER)
 		// partFinalPos = new Point(getCenterX(), getCenterY());
 		// else if(type == MachineType.OVEN)
@@ -173,40 +153,29 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	/**
 	 * Method that does the machine animation
 	 */
-	public void doAnimate()
-	{
-		if (counter < imageicons.size())
-		{
+	public void doAnimate() {
+		if (counter < imageicons.size()) {
 			setIcon(imageicons.get(counter));
 			counter++;
-		}
-		else
-		{
+		} else {
 
 			setIcon(imageicons.get(0));
 			counter = 0;
-			
+
 			animationState = AnimationState.IDLE;
 
-		
 			transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, null);
 		}
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
-	{
+	public void actionPerformed(ActionEvent e) {
 
-		if (animationState == AnimationState.MOVING)
-		{
+		if (animationState == AnimationState.MOVING) {
 			movePartsIn();
-		}
-		else if (animationState == AnimationState.ANIMATING)
-		{
+		} else if (animationState == AnimationState.ANIMATING) {
 			doAnimate();
-		}
-		else if (animationState == AnimationState.DONE)
-		{
+		} else if (animationState == AnimationState.DONE) {
 			movePartsOut();
 		}
 
@@ -215,31 +184,23 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 
 	/**
 	 * Setter for the MachineType for GUIComponent
-	 * @param t
-	 *        The new type for the component
+	 * 
+	 * @param t The new type for the component
 	 */
-	public void setType(MachineType t, float degrees)
-	{
+	public void setType(MachineType t, float degrees) {
 		Dimension oldDim = new Dimension(getIcon().getIconWidth(), getIcon().getIconHeight());
 		type = t;
 		initializeImages();
-		Dimension deltaDim = new Dimension(getIcon().getIconWidth() - oldDim.width, getIcon().getIconHeight()
-			- oldDim.height);
-		if (degrees != 0.0f)
-		{
-			setBounds(getX() - deltaDim.width / 2, getY() - deltaDim.height / 2, getIcon().getIconWidth() * 5,
-				getIcon().getIconHeight() * 5);
-		}
-		else
-		{
-			setBounds(getX() - deltaDim.width / 2, getY() - deltaDim.height / 2, getIcon().getIconWidth(), getIcon()
-				.getIconHeight());
+		Dimension deltaDim = new Dimension(getIcon().getIconWidth() - oldDim.width, getIcon().getIconHeight() - oldDim.height);
+		if (degrees != 0.0f) {
+			setBounds(getX() - deltaDim.width / 2, getY() - deltaDim.height / 2, getIcon().getIconWidth() * 5, getIcon().getIconHeight() * 5);
+		} else {
+			setBounds(getX() - deltaDim.width / 2, getY() - deltaDim.height / 2, getIcon().getIconWidth(), getIcon().getIconHeight());
 		}
 	}
 
 	@Override
-	public void addPart(GUIGlass part)
-	{
+	public void addPart(GUIGlass part) {
 		this.guiPart = part;
 		animationState = AnimationState.MOVING;
 	}
@@ -247,73 +208,55 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	/**
 	 * Called from the actionPerformed method.
 	 * 
-	 * For the GUIPart in the movingPosition of the GUIConveyor, increments its position toward partFinalPos.
-	 * Also increments the position of the GUIConveyorArrow(s) in the same direction and magnitude as the GUIParts.
-	 * Upon completion of a "one block" movement of the parts, informs the agent.
+	 * For the GUIPart in the movingPosition of the GUIConveyor, increments its position toward partFinalPos. Also increments the position of the GUIConveyorArrow(s) in the same direction and
+	 * magnitude as the GUIParts. Upon completion of a "one block" movement of the parts, informs the agent.
 	 */
-	private void movePartsIn()
-	{
+	private void movePartsIn() {
 
-		if (direction.equals(ConveyorDirections.DOWN))
-		{
+		if (direction.equals(ConveyorDirections.DOWN)) {
 			if (guiPart.getCenterY() < getCenterY())
 				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() + 1);
-			else{
-				animationState = AnimationState./*ANIMATING*/IDLE;//changed by monroe
+			else {
+				animationState = AnimationState./* ANIMATING */IDLE;// changed by monroe
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
 			}
-		}
-		else if (direction.equals(ConveyorDirections.UP))
-		{
+		} else if (direction.equals(ConveyorDirections.UP)) {
 			if (guiPart.getCenterY() > getCenterY())
 				guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() - 1);
-			else{
-				animationState = AnimationState./*ANIMATING*/IDLE;//changed by monroe
+			else {
+				animationState = AnimationState./* ANIMATING */IDLE;// changed by monroe
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
 			}
-		}
-		else if (direction.equals(ConveyorDirections.LEFT))
-		{
+		} else if (direction.equals(ConveyorDirections.LEFT)) {
 			if (guiPart.getCenterX() > getCenterX())
 				guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
-			else{
-				animationState = AnimationState./*ANIMATING*/IDLE;//changed by monroe
+			else {
+				animationState = AnimationState./* ANIMATING */IDLE;// changed by monroe
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
 			}
-		}
-		else
-		{
+		} else {
 			if (guiPart.getCenterX() < getCenterX())
 				guiPart.setCenterLocation(guiPart.getCenterX() + 1, guiPart.getCenterY());
-			else{
-				animationState = AnimationState./*ANIMATING*/IDLE;//changed by monroe
+			else {
+				animationState = AnimationState./* ANIMATING */IDLE;// changed by monroe
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
 			}
 		}
 
 	}
 
-	private void movePartsOut()
-	{
+	private void movePartsOut() {
 
-		if (direction.equals(ConveyorDirections.DOWN))
-		{
+		if (direction.equals(ConveyorDirections.DOWN)) {
 			guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() + 1);
-		}
-		else if (direction.equals(ConveyorDirections.UP))
-		{
+		} else if (direction.equals(ConveyorDirections.UP)) {
 			guiPart.setCenterLocation(guiPart.getCenterX(), guiPart.getCenterY() - 1);
-		}
-		else if (direction.equals(ConveyorDirections.LEFT))
-		{
+		} else if (direction.equals(ConveyorDirections.LEFT)) {
 			guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
-		}
-		else
-		{
+		} else {
 			guiPart.setCenterLocation(guiPart.getCenterX() + 1, guiPart.getCenterY());
 		}
-		if (!guiPart.getBounds().intersects(getBounds()))
-		{
+		if (!guiPart.getBounds().intersects(getBounds())) {
 			nextComponent.addPart(guiPart);
 			guiPart = null;
 			animationState = AnimationState.IDLE;
@@ -323,18 +266,15 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	}
 
 	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 
 		if (channel.toString().equals(this.channel))
 			;
 		{
-			if (event == TEvent.WORKSTATION_DO_ACTION)
-			{
-				animationState = AnimationState./*MOVING*/ANIMATING;//changed by monroe
+			if (event == TEvent.WORKSTATION_DO_ACTION) {
+				animationState = AnimationState./* MOVING */ANIMATING;// changed by monroe
 			}
-			if (event == TEvent.WORKSTATION_RELEASE_GLASS)
-			{
+			if (event == TEvent.WORKSTATION_RELEASE_GLASS) {
 				animationState = AnimationState.DONE;
 				releasePart = true;
 			}

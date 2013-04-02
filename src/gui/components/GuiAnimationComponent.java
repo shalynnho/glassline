@@ -1,4 +1,3 @@
-
 package gui.components;
 
 import java.awt.event.ActionEvent;
@@ -10,8 +9,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 
 @SuppressWarnings("serial")
-public class GuiAnimationComponent extends GuiComponent
-{
+public class GuiAnimationComponent extends GuiComponent {
 
 	/** ArrayList of ImageIcons */
 	protected ArrayList<ImageIcon> imageIcons = new ArrayList<ImageIcon>();
@@ -19,8 +17,7 @@ public class GuiAnimationComponent extends GuiComponent
 	/** Flag if an animation is running */
 	boolean isAnimating;
 
-	enum AnimationState
-	{
+	enum AnimationState {
 		IDLE, ANIMATING, DONE, MOVING
 	};
 
@@ -32,20 +29,17 @@ public class GuiAnimationComponent extends GuiComponent
 	int counter;
 
 	@Override
-	public void actionPerformed(ActionEvent ae)
-	{
-		
+	public void actionPerformed(ActionEvent ae) {
+
 	}
 
-	GuiAnimationComponent()
-	{
+	GuiAnimationComponent() {
 		super();
 	}
 
 	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
-		
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+
 	}
 
 }

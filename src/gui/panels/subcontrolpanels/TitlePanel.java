@@ -1,4 +1,3 @@
-
 package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
@@ -15,8 +14,7 @@ import javax.swing.SwingConstants;
  * The TitlePanel holds a title "Factory Control"
  */
 @SuppressWarnings("serial")
-public class TitlePanel extends JPanel
-{
+public class TitlePanel extends JPanel {
 	/** The control panel this is linked to */
 	ControlPanel parent;
 
@@ -25,11 +23,10 @@ public class TitlePanel extends JPanel
 
 	/**
 	 * Creates a new TitlePanel and links the control panel to it
-	 * @param cPanel
-	 *        the ControlPanel linked to it
+	 * 
+	 * @param cPanel the ControlPanel linked to it
 	 */
-	public TitlePanel(ControlPanel cPanel)
-	{
+	public TitlePanel(ControlPanel cPanel) {
 		parent = cPanel;
 
 		this.setBackground(Color.black);
@@ -49,8 +46,7 @@ public class TitlePanel extends JPanel
 	/**
 	 * Creates a new TitlePanel with a chosen text
 	 */
-	public TitlePanel(ControlPanel cPanel, String title)
-	{
+	public TitlePanel(ControlPanel cPanel, String title) {
 		this(cPanel);
 		titleLabel = new JLabel(title);
 	}
@@ -58,17 +54,16 @@ public class TitlePanel extends JPanel
 	/**
 	 * Sets the title text
 	 */
-	public void setText(String s)
-	{
+	public void setText(String s) {
 		titleLabel.setText(s);
 	}
 
 	/**
 	 * Returns the parent panel
+	 * 
 	 * @return the parent panel
 	 */
-	public ControlPanel getGuiParent()
-	{
+	public ControlPanel getGuiParent() {
 		return parent;
 	}
 }

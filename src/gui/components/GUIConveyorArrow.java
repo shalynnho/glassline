@@ -1,4 +1,3 @@
-
 package gui.components;
 
 import java.awt.Graphics;
@@ -15,8 +14,7 @@ import transducer.TEvent;
  * A graphical representation of a dynamic arrow on a GUIConveyor, indicating direction of movement
  */
 @SuppressWarnings("serial")
-public class GUIConveyorArrow extends GuiComponent implements Serializable
-{
+public class GUIConveyorArrow extends GuiComponent implements Serializable {
 	/**
 	 * A number representing the arrow's block on the conveyor
 	 */
@@ -26,38 +24,27 @@ public class GUIConveyorArrow extends GuiComponent implements Serializable
 	public ConveyorDirections direction;
 
 	/**
-	 * because GUIConveyors can be created before they are given a location, this is checked to see if the
-	 * GUIConveyorArrow needs to be given a location
+	 * because GUIConveyors can be created before they are given a location, this is checked to see if the GUIConveyorArrow needs to be given a location
 	 */
 	public boolean hasBeenPlaced = false;
 
 	/**
 	 * Constructor which chooses the appropriate ImageIcon based on the direction parameter
 	 * 
-	 * @param dir
-	 *        conveyor direction
-	 * @param pos
-	 *        position in line on the conveyor
+	 * @param dir conveyor direction
+	 * @param pos position in line on the conveyor
 	 */
-	public GUIConveyorArrow(ConveyorDirections dir, int pos)
-	{
+	public GUIConveyorArrow(ConveyorDirections dir, int pos) {
 		this.direction = dir;
 		posInLine = pos;
 
-		if (direction == ConveyorDirections.UP)
-		{
+		if (direction == ConveyorDirections.UP) {
 			setIcon(new ImageIcon("imageicons/arrowLaneArrow_up.png"));
-		}
-		else if (direction == ConveyorDirections.DOWN)
-		{
+		} else if (direction == ConveyorDirections.DOWN) {
 			setIcon(new ImageIcon("imageicons/arrowLaneArrow_down.png"));
-		}
-		else if (direction == ConveyorDirections.LEFT)
-		{
+		} else if (direction == ConveyorDirections.LEFT) {
 			setIcon(new ImageIcon("imageicons/arrowLaneArrow_left.png"));
-		}
-		else if (direction == ConveyorDirections.RIGHT)
-		{
+		} else if (direction == ConveyorDirections.RIGHT) {
 			setIcon(new ImageIcon("imageicons/arrowLaneArrow_right.png"));
 		}
 
@@ -65,37 +52,33 @@ public class GUIConveyorArrow extends GuiComponent implements Serializable
 
 	/**
 	 * Function to get the arrow's position on the conveyor
+	 * 
 	 * @return The part's position in line
 	 */
-	public int getPosInLine()
-	{
+	public int getPosInLine() {
 		return posInLine;
 	}
 
 	/**
 	 * Sets the arrow's position in line
-	 * @param newpos
-	 *        The part's new position in line
+	 * 
+	 * @param newpos The part's new position in line
 	 */
-	public void setPosInLine(int newpos)
-	{
+	public void setPosInLine(int newpos) {
 		posInLine = newpos;
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0)
-	{
+	public void actionPerformed(ActionEvent arg0) {
 		repaint();
 	}
 
-	public void paint(Graphics g)
-	{
+	public void paint(Graphics g) {
 		super.paint(g);
 	}
 
 	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
-	
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+
 	}
 }

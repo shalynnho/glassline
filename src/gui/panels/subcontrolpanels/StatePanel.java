@@ -214,8 +214,7 @@ public class StatePanel extends JPanel {
 	 */
 	public class StartButtonListener implements ActionListener {
 		/**
-		 * Invoked whenever the button is clicked, starts the control cell.
-		 * Note that this button is disabled unless a kit config exists and the factory is stopped.
+		 * Invoked whenever the button is clicked, starts the control cell. Note that this button is disabled unless a kit config exists and the factory is stopped.
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			System.out.println("Control Panel START button clicked.");

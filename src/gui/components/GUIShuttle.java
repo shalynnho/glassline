@@ -1,4 +1,3 @@
-
 package gui.components;
 
 import java.awt.Graphics;
@@ -11,12 +10,10 @@ import transducer.TChannel;
 import transducer.TEvent;
 
 /**
- * GUIConveyorConnector is a graphical representation of the conveyer connector
- * component connecting conveyors
+ * GUIConveyorConnector is a graphical representation of the conveyer connector component connecting conveyors
  */
 @SuppressWarnings("serial")
-public class GUIShuttle extends GuiComponent
-{
+public class GUIShuttle extends GuiComponent {
 
 	/** the current GUI glass part */
 	GUIGlass currentPart;
@@ -61,36 +58,27 @@ public class GUIShuttle extends GuiComponent
 	boolean trashPart = false;
 
 	/**
-	 * A constructor for GUIConveyorConnector that takes in a cardinal direction
-	 * and sets the correct direction-image and velocity direction
-	 * @param dir
-	 *        the conveyor direction
+	 * A constructor for GUIConveyorConnector that takes in a cardinal direction and sets the correct direction-image and velocity direction
+	 * 
+	 * @param dir the conveyor direction
 	 */
-	public GUIShuttle(ConveyorDirections dir)
-	{
+	public GUIShuttle(ConveyorDirections dir) {
 		direction = dir;
 		this.rotates = true;
 
-		if (direction == ConveyorDirections.UP)
-		{
+		if (direction == ConveyorDirections.UP) {
 			setIcon(upConnector);
 			setvX(0);
 			setvY(-6);
-		}
-		else if (direction == ConveyorDirections.DOWN)
-		{
+		} else if (direction == ConveyorDirections.DOWN) {
 			setIcon(downConnector);
 			setvX(0);
 			setvY(6);
-		}
-		else if (direction == ConveyorDirections.LEFT)
-		{
+		} else if (direction == ConveyorDirections.LEFT) {
 			setIcon(leftConnector);
 			setvX(-6);
 			setvY(0);
-		}
-		else if (direction == ConveyorDirections.RIGHT)
-		{
+		} else if (direction == ConveyorDirections.RIGHT) {
 			setIcon(rightConnector);
 			setvX(6);
 			setvY(0);
@@ -99,39 +87,28 @@ public class GUIShuttle extends GuiComponent
 	}
 
 	/**
-	 * A constructor for corner GUIConveyorConnectors that takes in a cardinal direction
-	 * and sets the correct direction-image and velocity direction, and says it rotates
+	 * A constructor for corner GUIConveyorConnectors that takes in a cardinal direction and sets the correct direction-image and velocity direction, and says it rotates
 	 * 
-	 * @param dir
-	 *        the conveyor direction
-	 * @param rotates
-	 *        this GUIConveyorConnector rotates the part
+	 * @param dir the conveyor direction
+	 * @param rotates this GUIConveyorConnector rotates the part
 	 */
-	public GUIShuttle(ConveyorDirections dir, boolean rotates)
-	{
+	public GUIShuttle(ConveyorDirections dir, boolean rotates) {
 		direction = dir;
 		this.rotates = true;
 
-		if (direction == ConveyorDirections.UP)
-		{
+		if (direction == ConveyorDirections.UP) {
 			setIcon(upConnector);
 			setvX(0);
 			setvY(-6);
-		}
-		else if (direction == ConveyorDirections.DOWN)
-		{
+		} else if (direction == ConveyorDirections.DOWN) {
 			setIcon(downConnector);
 			setvX(0);
 			setvY(6);
-		}
-		else if (direction == ConveyorDirections.LEFT)
-		{
+		} else if (direction == ConveyorDirections.LEFT) {
 			setIcon(leftConnector);
 			setvX(-6);
 			setvY(0);
-		}
-		else if (direction == ConveyorDirections.RIGHT)
-		{
+		} else if (direction == ConveyorDirections.RIGHT) {
 			setIcon(rightConnector);
 			setvX(6);
 			setvY(0);
@@ -141,66 +118,42 @@ public class GUIShuttle extends GuiComponent
 	}
 
 	/**
-	 * Moves a GUIPart one block in a direction.
-	 * Before moving a block, calls alignPart to make sure the part is squarely on the conveyor.
+	 * Moves a GUIPart one block in a direction. Before moving a block, calls alignPart to make sure the part is squarely on the conveyor.
 	 */
-	public void actionPerformed(ActionEvent ae)
-	{
-		if (part != null)
-		{
+	public void actionPerformed(ActionEvent ae) {
+		if (part != null) {
 			movePart();
 		}
 
 	}
 
-	private void movePart()
-	{
-		if (direction == ConveyorDirections.UP)
-		{
-			if (part.getCenterX() > getCenterX())
-			{
+	private void movePart() {
+		if (direction == ConveyorDirections.UP) {
+			if (part.getCenterX() > getCenterX()) {
 				part.setCenterLocation(part.getCenterX() - 1, part.getCenterY());
-			}
-			else
-			{
+			} else {
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
 			}
-		}
-		else if (direction == ConveyorDirections.DOWN)
-		{
-			if (part.getCenterX() < getCenterX())
-			{
+		} else if (direction == ConveyorDirections.DOWN) {
+			if (part.getCenterX() < getCenterX()) {
 				part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
-			}
-			else
-			{
+			} else {
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() + 1);
 			}
-		}
-		else if (direction == ConveyorDirections.LEFT)
-		{
-			if (part.getCenterY() < getCenterY())
-			{
+		} else if (direction == ConveyorDirections.LEFT) {
+			if (part.getCenterY() < getCenterY()) {
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() + 1);
-			}
-			else
-			{
+			} else {
 				part.setCenterLocation(part.getCenterX() - 1, part.getCenterY());
 			}
-		}
-		else if (direction == ConveyorDirections.RIGHT)
-		{
-			if (part.getCenterY() > getCenterY())
-			{
+		} else if (direction == ConveyorDirections.RIGHT) {
+			if (part.getCenterY() > getCenterY()) {
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
-			}
-			else
-			{
+			} else {
 				part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
 			}
 		}
-		if (!part.getBounds().intersects(getBounds()))
-		{
+		if (!part.getBounds().intersects(getBounds())) {
 			nextComponent.addPart(part);
 			part = null;
 		}
@@ -208,11 +161,10 @@ public class GUIShuttle extends GuiComponent
 
 	/**
 	 * adds a GUIPart to this connector
-	 * @param part
-	 *        the GUIPart to add to the GUIConveyorConnector
+	 * 
+	 * @param part the GUIPart to add to the GUIConveyorConnector
 	 */
-	public void msgHereIsGUIPart(GUIGlass part)
-	{
+	public void msgHereIsGUIPart(GUIGlass part) {
 		this.currentPart = part;
 
 		doneAligning = false;
@@ -222,53 +174,43 @@ public class GUIShuttle extends GuiComponent
 	/**
 	 * This message tells GUIConveyorConnector to initiate a one-block move
 	 */
-	public void msgDoMoveOneBlock()
-	{
-		if (!moving)
-		{
+	public void msgDoMoveOneBlock() {
+		if (!moving) {
 
 			moving = true;
 			moveCounter = 0;
-		}
-		else
-		{
+		} else {
 			movementQueue++;
 		}
 	}
 
 	/**
 	 * lets the backend agent give the frontend GUI a reference to the agent
-	 * @param agent
-	 *        the agent for this GUIConveyorConnector
+	 * 
+	 * @param agent the agent for this GUIConveyorConnector
 	 */
-	public void paint(Graphics g)
-	{
+	public void paint(Graphics g) {
 		super.paint(g);
 	}
 
-	public int getvX()
-	{
+	public int getvX() {
 		return vX;
 	}
 
-	public void setvX(int vX)
-	{
+	public void setvX(int vX) {
 		this.vX = vX;
 	}
 
-	public int getvY()
-	{
+	public int getvY() {
 		return vY;
 	}
 
-	public void setvY(int vY)
-	{
+	public void setvY(int vY) {
 		this.vY = vY;
 	}
 
 	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 
 	}
 }

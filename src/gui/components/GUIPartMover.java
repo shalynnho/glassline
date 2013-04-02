@@ -1,4 +1,3 @@
-
 package gui.components;
 
 import java.awt.Graphics;
@@ -14,8 +13,7 @@ import transducer.TEvent;
  * Class to represent the robot that moves the part around once its on the conveyor
  */
 @SuppressWarnings("serial")
-public class GUIPartMover extends GuiComponent implements Serializable
-{
+public class GUIPartMover extends GuiComponent implements Serializable {
 	/**
 	 * The time it takes to transition the alpha
 	 */
@@ -34,8 +32,7 @@ public class GUIPartMover extends GuiComponent implements Serializable
 	/**
 	 * Public constructor for GUIPartMover
 	 */
-	public GUIPartMover()
-	{
+	public GUIPartMover() {
 		setIcon(new ImageIcon("imageicons/partMoverRobotImage.png"));
 		transitionSpeed = 0.1f;
 		transitioningIn = false;
@@ -45,34 +42,29 @@ public class GUIPartMover extends GuiComponent implements Serializable
 	/**
 	 * Message to make robot to fade in
 	 */
-	public void msgFadeIn()
-	{
+	public void msgFadeIn() {
 		transitioningIn = true;
 	}
 
 	/**
 	 * Message to make robot to fade out
 	 */
-	public void msgFadeOut()
-	{
+	public void msgFadeOut() {
 		transitioningOut = true;
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0)
-	{
+	public void actionPerformed(ActionEvent arg0) {
 
 		repaint();
 	}
 
-	public void paint(Graphics g)
-	{
+	public void paint(Graphics g) {
 		super.paint(g);
 	}
 
 	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
-		
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+
 	}
 }

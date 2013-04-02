@@ -11,8 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.Timer;
 
 /**
- * The FactoryFrame is the highest level GUI class in the Factory Project. 
- * It is responsible only for managing monitor display and initializing the panels.
+ * The FactoryFrame is the highest level GUI class in the Factory Project. It is responsible only for managing monitor display and initializing the panels.
  */
 @SuppressWarnings("serial")
 public class FactoryFrame extends JFrame {
@@ -53,14 +52,14 @@ public class FactoryFrame extends JFrame {
 
 		// make top container panel
 		topPanel = new JPanel();
-		JScrollPane pane = new JScrollPane(topPanel); 
-		
+		JScrollPane pane = new JScrollPane(topPanel);
+
 		topPanel.setLayout(new CardLayout());
 
 		// add top panel to frame
 		this.setResizable(false); // allow or disallow resizing the frame
 		this.add(pane);
-		
+
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBackground(Color.black);
 		this.setForeground(Color.black);

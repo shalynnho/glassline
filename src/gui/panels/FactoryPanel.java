@@ -8,9 +8,8 @@ import javax.swing.JPanel;
 import transducer.Transducer;
 
 /**
- * The FactoryPanel is highest level panel in the actual kitting cell. 
- * The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. 
- * It is responsible for handling communication between the back and front end.
+ * The FactoryPanel is highest level panel in the actual kitting cell. The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. It is responsible for
+ * handling communication between the back and front end.
  */
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
@@ -75,7 +74,7 @@ public class FactoryPanel extends JPanel {
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 
-		//ConveyorFamily fam1 = new ConveyorFamily(transducer)
+		// ConveyorFamily fam1 = new ConveyorFamily(transducer)
 
 		System.out.println("Back end initialization finished.");
 	}

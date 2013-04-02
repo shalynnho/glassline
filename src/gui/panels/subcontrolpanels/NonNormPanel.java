@@ -1,4 +1,3 @@
-
 package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
@@ -19,22 +18,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * The NonNormPanel is responsible for initiating and managing non-normative
- * situations. It contains buttons for each possible non-norm.
+ * The NonNormPanel is responsible for initiating and managing non-normative situations. It contains buttons for each possible non-norm.
  * 
- * The non-normative situations are:
- * 1.
- * 2.
- * 3.
- * 4.
- * 5.
- * 6.
- * 7.
- * 8.
+ * The non-normative situations are: 1. 2. 3. 4. 5. 6. 7. 8.
  */
 @SuppressWarnings("serial")
-public class NonNormPanel extends JPanel
-{
+public class NonNormPanel extends JPanel {
 	/** The number of different havoc actions that exist */
 	public static final int NUM_NON_NORMS = 8;
 
@@ -50,11 +39,9 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Creates a new HavocPanel and links the control panel to it
 	 * 
-	 * @param cp
-	 *        the ControlPanel linked to it
+	 * @param cp the ControlPanel linked to it
 	 */
-	public NonNormPanel(ControlPanel cp)
-	{
+	public NonNormPanel(ControlPanel cp) {
 		parent = cp;
 
 		this.setBackground(Color.black);
@@ -101,8 +88,7 @@ public class NonNormPanel extends JPanel
 		nonNormButtons.get(6).addActionListener(new NonNorm7Listener());
 		nonNormButtons.get(7).addActionListener(new NonNorm8Listener());
 
-		for (int i = 0; i < NUM_NON_NORMS; i++)
-		{
+		for (int i = 0; i < NUM_NON_NORMS; i++) {
 			nonNormButtons.get(i).setBackground(Color.white);
 			nonNormButtons.get(i).setForeground(Color.black);
 			nonNormButtons.get(i).setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -124,8 +110,7 @@ public class NonNormPanel extends JPanel
 		colorLinesPanel1.add(clLabel1);
 		this.add(colorLinesPanel1);
 
-		for (JButton j : nonNormButtons)
-		{
+		for (JButton j : nonNormButtons) {
 			buttonPanel.add(j);
 		}
 		buttonPanel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
@@ -144,21 +129,18 @@ public class NonNormPanel extends JPanel
 	 * 
 	 * @return the parent panel
 	 */
-	public ControlPanel getGuiParent()
-	{
+	public ControlPanel getGuiParent() {
 		return parent;
 	}
 
 	/**
 	 * Non-norm 1
 	 */
-	public class NonNorm1Listener implements ActionListener
-	{
+	public class NonNorm1Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -166,13 +148,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 2
 	 */
-	public class NonNorm2Listener implements ActionListener
-	{
+	public class NonNorm2Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -180,13 +160,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 3
 	 */
-	public class NonNorm3Listener implements ActionListener
-	{
+	public class NonNorm3Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -194,13 +172,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 4
 	 */
-	public class NonNorm4Listener implements ActionListener
-	{
+	public class NonNorm4Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -208,13 +184,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 5
 	 */
-	public class NonNorm5Listener implements ActionListener
-	{
+	public class NonNorm5Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -222,13 +196,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 6
 	 */
-	public class NonNorm6Listener implements ActionListener
-	{
+	public class NonNorm6Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -236,13 +208,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 7
 	 */
-	public class NonNorm7Listener implements ActionListener
-	{
+	public class NonNorm7Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}
@@ -250,13 +220,11 @@ public class NonNormPanel extends JPanel
 	/**
 	 * Non-norm 8
 	 */
-	public class NonNorm8Listener implements ActionListener
-	{
+	public class NonNorm8Listener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
-		public void actionPerformed(ActionEvent ae)
-		{
+		public void actionPerformed(ActionEvent ae) {
 
 		}
 	}

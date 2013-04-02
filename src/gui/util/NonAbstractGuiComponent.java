@@ -1,4 +1,3 @@
-
 package gui.util;
 
 import java.awt.event.ActionEvent;
@@ -11,24 +10,20 @@ import transducer.TEvent;
 import gui.components.GuiComponent;
 
 @SuppressWarnings("serial")
-public class NonAbstractGuiComponent extends GuiComponent
-{
+public class NonAbstractGuiComponent extends GuiComponent {
 
 	/** a constructor for setting image Icon */
-	public NonAbstractGuiComponent(ImageIcon icon)
-	{
+	public NonAbstractGuiComponent(ImageIcon icon) {
 		super(icon);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent ae)
-	{
+	public void actionPerformed(ActionEvent ae) {
 
 	}
 
 	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
-		
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+
 	}
 }

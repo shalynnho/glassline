@@ -1,4 +1,3 @@
-
 package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
@@ -14,13 +13,11 @@ import javax.swing.JPanel;
  * The logo panel is a place holder
  */
 @SuppressWarnings("serial")
-public class LogoPanel extends JPanel
-{
+public class LogoPanel extends JPanel {
 	/** The control panel this is linked to */
 	ControlPanel parent;
 
-	public LogoPanel(ControlPanel cp)
-	{
+	public LogoPanel(ControlPanel cp) {
 		parent = cp;
 
 		JLabel logoLabel = new JLabel();
