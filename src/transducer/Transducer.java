@@ -157,7 +157,7 @@ public class Transducer {
 	/**
 	 * Processes the next event in the transducer's queue
 	 */
-	private boolean processNextEvent() {
+	public boolean processNextEvent() {
 		if (debugScheduler)
 			System.out.println("Transducer: " + "processing next event...");
 
