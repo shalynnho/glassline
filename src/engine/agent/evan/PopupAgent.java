@@ -9,13 +9,12 @@ import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class PopupAgent extends Agent implements Popup, TReceiver {
+public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	
 	private ConveyorFamily nextCF;
 	private Conveyor c;
-	private WorkStation mach[];
-	private Transducer t;
+	private Workstation mach[];
 	private int id; // place in animation
 	
 	enum GlassState {pending, needsProcessing, atMachine, doneProcessing, waiting};
@@ -40,7 +39,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 	private boolean mFree[], up, posFree; // machine free, up or down, nextCF position free
 	
 	/* Assigns references from arguments and sets other data appropriately. */
-	public PopupAgent(String name, ConveyorFamily cf, Conveyor conv, WorkStation machines[], MachineType mType, Transducer trans, int index) {
+	public PopupAgent(String name, ConveyorFamily cf, Conveyor conv, Workstation machines[], MachineType mType, Transducer trans, int index) {
 		super(name, trans);
 		
 		nextCF = cf;
@@ -48,9 +47,8 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 		mach = machines;
 		mt = mType;
 		mtc = mt.getChannel();
-		t = trans;
-		t.register(this, TChannel.POPUP);
-		t.register(this, mtc);
+		transducer.register(this, TChannel.POPUP);
+		transducer.register(this, mtc);
 		id = index;
 		
 		glasses = new ArrayList<MyGlass>();
@@ -99,7 +97,6 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 				animSem[3].release();
 		} else if (channel == mtc && event == TEvent.WORKSTATION_LOAD_FINISHED) // machine load finished
 			animSem[4].release(); // only one WorkStation is loaded at a time so doesn't matter which one (ignore args)
-
 	}
 
 	/* Scheduler.  Determine what action is called for, and do it. */
@@ -180,7 +177,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 	private void doMoveUp() {
 		if (!up) { // move up only if necessary
 			Integer args[] = {id};
-			t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
+			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 			doWaitAnimation(1); // wait for move up to finish
 			up = true;
 		}
@@ -190,7 +187,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 	private void doMoveDown() {
 		if (up) { // move down only if necessary
 			Integer args[] = {id};
-			t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
+			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 			doWaitAnimation(2); // wait for move down to finish
 			up = false;
 		}
@@ -199,7 +196,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 	/* Make animation load machine i. */
 	private void doMachineLoad(int i) {
 		Integer args[] = {i};
-		t.fireEvent(mtc, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+		transducer.fireEvent(mtc, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 		doWaitAnimation(4); // wait for machine load to finish
 		mFree[i] = false;
 	}
@@ -207,7 +204,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 	/* Make animation release glass from machine i. */
 	private void doMachineRelease(int i) {
 		Integer args[] = {i};
-		t.fireEvent(mtc, TEvent.WORKSTATION_RELEASE_GLASS, args);
+		transducer.fireEvent(mtc, TEvent.WORKSTATION_RELEASE_GLASS, args);
 		doWaitAnimation(0); // wait for popup load to finish
 		mFree[i] = true;
 	}
@@ -215,7 +212,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver {
 	/* Make animation release glass from popup. */
 	private void doReleaseGlass(MyGlass mg) {
 		Integer args[] = {id};
-		t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
 		doWaitAnimation(3); // wait for glass release to finish
 	}
 	

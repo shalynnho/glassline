@@ -1,19 +1,17 @@
 package engine.agent.evan;
 
 import java.util.*;
-
 import shared.Glass;
 import shared.interfaces.*;
 import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
+public class ConveyorAgent extends Agent implements Conveyor {
 	// *** DATA ***
 	
 	private ConveyorFamily prevCF;
 	private Popup p;
-	private Transducer t;
 	private int id; // place in GUI
 	
 	enum GlassState {pending, arrived, moving, atEnd, waiting, sent, done};
@@ -37,8 +35,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 		
 		prevCF = cf;
 		p = pop;
-		t = trans;
-		t.register(this, TChannel.SENSOR);
+		transducer.register(this, TChannel.SENSOR);
 		id = index;
 		
 		glasses = new ArrayList<MyGlass>();
@@ -157,7 +154,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 	private void doStartConveyor() {
 		if (!moving) {
 			Integer[] args = {id};
-			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
 			moving = true;
 		}
 	}
@@ -166,7 +163,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver {
 	private void doStopConveyor() {
 		if (moving) {
 			Integer[] args = {id};
-			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 			moving = false;
 		}
 	}
