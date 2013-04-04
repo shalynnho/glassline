@@ -1,5 +1,6 @@
 package gui.panels;
 
+import engine.agent.david.misc.ConveyorFamilyEntity;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -74,8 +75,11 @@ public class FactoryPanel extends JPanel {
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 
-		// ConveyorFamily fam1 = new ConveyorFamily(transducer)
-
+		// David's
+//		ConveyorFamilyEntity davidConvFamily = new ConveyorFamilyEntity(transducer, 7, 2, Workstation workstation1, Workstation workstation2);
+//		davidConvFamily.setPrevConveyorFamily(f1);
+//		davidConvFamily.setNextConveyorFamily(f);
+		
 		System.out.println("Back end initialization finished.");
 	}
 

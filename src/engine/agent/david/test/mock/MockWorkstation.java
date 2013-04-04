@@ -15,17 +15,14 @@ public class MockWorkstation extends MockEntity implements Workstation {
 		log.add(new LoggedEvent("Received msgHereIsGlass"));
 	}
 
-	@Override
 	public MachineType getType() {
 		return MachineType.DRILL;
 	}
 
-	@Override
 	public TChannel getChannel() {
 		return getType().getChannel();
 	}
 
-	@Override
 	public int getIndex() {
 		// TODO Auto-generated method stub
 		return 0;
