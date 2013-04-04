@@ -2,7 +2,7 @@ package engine.agent.shay.test.mock;
 
 import shared.Glass;
 import engine.agent.shay.ConveyorFamily;
-import engine.agent.shay.ConveyorState;
+import engine.agent.shay.enums.ConveyorState;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.Popup;
 

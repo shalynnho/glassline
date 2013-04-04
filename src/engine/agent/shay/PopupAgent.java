@@ -8,6 +8,8 @@ import shared.enums.MachineType;
 import transducer.TChannel;
 import transducer.TEvent;
 import engine.agent.Agent;
+import engine.agent.shay.enums.ConveyorState;
+import engine.agent.shay.enums.PopupGlassState;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.Popup;
 import engine.agent.shay.interfaces.TransducerIfc;

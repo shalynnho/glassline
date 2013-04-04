@@ -2,7 +2,7 @@ package engine.agent.shay.interfaces;
 
 import shared.Glass;
 import engine.agent.shay.ConveyorFamily;
-import engine.agent.shay.ConveyorState;
+import engine.agent.shay.enums.ConveyorState;
 
 public interface Conveyor {
 
