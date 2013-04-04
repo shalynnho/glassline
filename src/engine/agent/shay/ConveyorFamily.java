@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import shared.Glass;
 import shared.enums.MachineType;
+import engine.agent.shay.enums.ConveyorState;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.Popup;
 import engine.agent.shay.interfaces.TransducerIfc;

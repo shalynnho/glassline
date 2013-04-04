@@ -1,4 +1,4 @@
-package engine.agent.shay;
+package engine.agent.shay.enums;
 
 public enum ConveyorState {
 	ON_POS_FREE,
