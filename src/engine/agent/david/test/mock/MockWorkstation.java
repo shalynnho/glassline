@@ -2,8 +2,8 @@ package engine.agent.david.test.mock;
 
 import shared.Glass;
 import shared.enums.MachineType;
+import shared.interfaces.Workstation;
 import transducer.TChannel;
-import engine.agent.david.interfaces.Workstation;
 
 
 public class MockWorkstation extends MockEntity implements Workstation {
