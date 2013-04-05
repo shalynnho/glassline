@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
+import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import engine.agent.david.interfaces.Popup;
-import engine.agent.david.interfaces.Workstation;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.david.misc.ConveyorFamilyEntity.GlassState;
 import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;

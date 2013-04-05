@@ -50,8 +50,8 @@ public class PopupAgentUnitTest extends TestCase {
 		TChannel[] channels = {TChannel.POPUP, mtc};
 		MockAnimation anim = new MockAnimation("anim1", t, channels);
 		
-		MockWorkStation[] mach = new MockWorkStation[2];
-		mach[0] = new MockWorkStation("ws0"); mach[1] = new MockWorkStation("ws1");
+		MockWorkstation[] mach = new MockWorkstation[2];
+		mach[0] = new MockWorkstation("ws0"); mach[1] = new MockWorkstation("ws1");
 		
 		popup = new PopupAgent("p" + id, cf, c, mach, mt, t, id);
 		

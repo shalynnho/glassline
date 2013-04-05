@@ -13,7 +13,7 @@ public class ConveyorFamilyImplementation implements ConveyorFamily {
 	private PopupAgent p;
 	
 	public ConveyorFamilyImplementation(ConveyorFamily prev, ConveyorFamily next, Transducer t,
-			WorkStation mach[], MachineType mt, int cid, int pid) {
+			Workstation mach[], MachineType mt, int cid, int pid) {
 		c = new ConveyorAgent("c" + cid, prev, p, t, cid);
 		p = new PopupAgent("p" + pid, next, c, mach, mt, t, pid);
 		c.setPopup(p);
