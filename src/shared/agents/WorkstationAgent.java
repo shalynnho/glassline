@@ -46,13 +46,15 @@ public class WorkstationAgent extends Agent implements Workstation {
 		stateChanged();
 	}
 	
-	/* Transducer event. */
+	/* Transducer event. All events are on this workstation's machine type TChannel. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
-			gs = GlassState.arrived;
-			stateChanged();
-		} else if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
-			waitSem.release();
+		if ((Integer)args[0] == index) {
+			if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
+				gs = GlassState.arrived;
+				stateChanged();
+			} else if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+				waitSem.release(); // don't need stateChanged because sem release wakes agent
+		}
 	}
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
