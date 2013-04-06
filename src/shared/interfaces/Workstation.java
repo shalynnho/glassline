@@ -1,4 +1,4 @@
-package engine.agent.david.interfaces;
+package shared.interfaces;
 
 import shared.Glass;
 import shared.enums.MachineType;

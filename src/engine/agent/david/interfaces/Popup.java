@@ -7,12 +7,12 @@ import engine.agent.david.agents.PopupAgent.WorkstationState;
 import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
 
 import shared.Glass;
+import shared.interfaces.PopupWorkstationInterface;
 
-public interface Popup {
+public interface Popup extends PopupWorkstationInterface {
 	// *** MESSAGES ***
 	public void msgGlassComing(MyGlass myGlass); // from conveyor
 	public void msgPositionFree(); // from next family
-	public void msgGlassDone(Glass g, int machineIndex); // from workstation
 
 	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction();
