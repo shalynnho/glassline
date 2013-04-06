@@ -160,7 +160,7 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 		return gs;
 	}
 	public int getSensorIndex() { // based on conveyor index
-		return conveyorIndex*2;
+		return conveyorIndex*2 + 1; // returns 2nd sensor
 	}
 	
 	public int getConveyorIndex() {
