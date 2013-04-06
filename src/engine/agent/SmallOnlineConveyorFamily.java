@@ -7,18 +7,23 @@ import java.util.concurrent.Semaphore;
 
 import shared.Glass;
 import shared.interfaces.ConveyorFamily;
+import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 
 // INCOMPLETE
 public class SmallOnlineConveyorFamily extends Agent {
 	// *** Constructor(s) ***
-	public SmallOnlineConveyorFamily(int index) {
-		this.conveyorIndex = index;
+	// Make sure to do setNextConveyorFamily, etc. upon creation
+	public SmallOnlineConveyorFamily(int cIndex, Workstation w) {
+		this.conveyorIndex = cIndex;
+		this.workstation = w;
 	}
 
 	// *** DATA ***
 	private int conveyorIndex;
+	private Workstation workstation;
+	
 	private boolean posFree = false;
 	private boolean sensorReached = false;
 	private boolean started = false;
@@ -42,7 +47,7 @@ public class SmallOnlineConveyorFamily extends Agent {
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		if (posFree && !glasses.isEmpty() && sensorReached) {
-			actPutGlassOnMachineAndPassOn();
+			actLoadGlassOntoWorkstationAndPassOn();
 			return true;
 		} else if (!glasses.isEmpty() && !sensorReached && !started) {
 			actStartConveyor();
@@ -69,12 +74,16 @@ public class SmallOnlineConveyorFamily extends Agent {
 				doStopConveyor();
 			}
 		}
+		
+		// TODO: listen for workstation events and work animSem
+		
+		
 	}
 
 	// *** ACTIONS ***
-	public void actPutGlassOnMachineAndPassOn() {
+	public void actLoadGlassOntoWorkstationAndPassOn() {
 		Glass g = glasses.remove(0);
-		doPutGlassOnMachine(g);
+		doLoadGlassOntoWorkstation();
 		doPassOnGlass(g);
 		next.msgHereIsGlass(g);
 		posFree = false;
@@ -94,12 +103,15 @@ public class SmallOnlineConveyorFamily extends Agent {
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[] { conveyorIndex });
 	}
 
-	private void doPutGlassOnMachine(Glass g) {
-
+	private void doLoadGlassOntoWorkstation() {
+		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstation.getIndex() });
+		// TODO: wait until workstation done loading
+		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_ACTION, new Integer[] { workstation.getIndex() });
+		// TODO: wait until workstation done action
 	}
 
 	private void doPassOnGlass(Glass g) {
-
+		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Integer[] { workstation.getIndex() });
 	}
 
 	// *** EXTRA ***
