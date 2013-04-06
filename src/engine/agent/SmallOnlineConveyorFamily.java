@@ -15,7 +15,6 @@ public class SmallOnlineConveyorFamily extends Agent {
 	// *** Constructor(s) ***
 	public SmallOnlineConveyorFamily(int index) {
 		this.conveyorIndex = index;
-
 	}
 
 	// *** DATA ***
@@ -26,7 +25,7 @@ public class SmallOnlineConveyorFamily extends Agent {
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 	private ConveyorFamily prev, next;
 
-	private Semaphore animSem[];
+	private Semaphore animSem[]; // not used yet
 
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass glass) {
@@ -63,13 +62,12 @@ public class SmallOnlineConveyorFamily extends Agent {
 			else if (thisSensor2(args)) {
 				sensorReached = false;
 			}
-			
 		} else if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 			// When the glass reaches the 2nd sensor
 			if (thisSensor2(args)) {
 				sensorReached = true;
 				doStopConveyor();
-			}			
+			}
 		}
 	}
 
@@ -89,11 +87,11 @@ public class SmallOnlineConveyorFamily extends Agent {
 
 	// *** ANIMATION ACTIONS ***
 	private void doStartConveyor() {
-		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, new Integer[]{conveyorIndex});
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, new Integer[] { conveyorIndex });
 	}
 
 	private void doStopConveyor() {
-		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[]{conveyorIndex});
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[] { conveyorIndex });
 	}
 
 	private void doPutGlassOnMachine(Glass g) {
@@ -105,6 +103,14 @@ public class SmallOnlineConveyorFamily extends Agent {
 	}
 
 	// *** EXTRA ***
+	public void setNextConveyorFamily(ConveyorFamily f) {
+		next = f;
+	}
+
+	public void setPreviousConveyorFamily(ConveyorFamily f) {
+		prev = f;
+	}
+
 	public int getSensor1Index() {
 		return conveyorIndex * 2; // returns 1st sensor
 	}
