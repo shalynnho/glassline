@@ -86,7 +86,7 @@ public enum MachineType {
 		case BREAKOUT:
 			return TChannel.BREAKOUT;
 		default:
-			return TChannel.NULL_CHANNEL;
+			return null;
 		}
 	}
 	

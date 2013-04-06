@@ -12,7 +12,4 @@ public enum TChannel {
 
 	// individual workstations
 	BREAKOUT, MANUAL_BREAKOUT, CROSS_SEAMER, DRILL, GRINDER, CUTTER, WASHER, UV_LAMP, OVEN, PAINTER,
-	
-	// null
-	NULL_CHANNEL;
 }
