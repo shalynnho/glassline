@@ -6,6 +6,7 @@ import gui.drivers.FactoryFrame;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import shared.enums.MachineType;
 import transducer.Transducer;
 
 /**
@@ -76,10 +77,13 @@ public class FactoryPanel extends JPanel {
 		// ===========================================================================
 
 		// David's
+		// WorkstationAgent breakoutWorkstation = new WorkstationAgent("Breakout", MachineType.BREAKOUT, 1, transducer);
+		// SmallOnlineConveyorFamily breakoutFamily = new SmallOnlineConveyorFamily(2, breakoutWorkstation);
+
 //		ConveyorFamilyEntity davidConvFamily = new ConveyorFamilyEntity(transducer, 7, 2, Workstation workstation1, Workstation workstation2);
 //		davidConvFamily.setPrevConveyorFamily(f1);
 //		davidConvFamily.setNextConveyorFamily(f);
-		
+
 		System.out.println("Back end initialization finished.");
 	}
 

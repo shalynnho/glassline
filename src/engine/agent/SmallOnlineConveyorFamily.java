@@ -11,13 +11,21 @@ import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 
-// INCOMPLETE
+/**
+ * @author David Zhang
+ */
 public class SmallOnlineConveyorFamily extends Agent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily, etc. upon creation
 	public SmallOnlineConveyorFamily(int cIndex, Workstation w) {
 		this.conveyorIndex = cIndex;
 		this.workstation = w;
+
+		// Animation delay semaphores
+		animSem = new Semaphore[2]; // index 0 -> WORKSTATION_LOAD_FINISHED, 1 -> WORKSTATION_GUI_ACTION_FINISHED
+		for (int i=0; i<animSem.length; i++) {
+			animSem[i] = new Semaphore(0);
+		}
 	}
 
 	// *** DATA ***
@@ -59,11 +67,11 @@ public class SmallOnlineConveyorFamily extends Agent {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
-			// When the glass passes the 1st sensor
+			// When the glass moves past the 1st sensor
 			if (thisSensor1(args)) {
 				prev.msgPositionFree();
 			}
-			// When the glass passes the 2nd sensor
+			// When the glass moves past the 2nd sensor
 			else if (thisSensor2(args)) {
 				sensorReached = false;
 			}
@@ -75,8 +83,12 @@ public class SmallOnlineConveyorFamily extends Agent {
 			}
 		}
 		
-		// TODO: listen for workstation events and work animSem
-		
+		// Listen for workstation events so you know when an animation is done
+		if (channel == workstation.getChannel() && event == TEvent.WORKSTATION_LOAD_FINISHED) {
+			animSem[0].release();
+		} else if (channel == workstation.getChannel() && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
+			animSem[1].release();
+		}
 		
 	}
 
@@ -105,9 +117,10 @@ public class SmallOnlineConveyorFamily extends Agent {
 
 	private void doLoadGlassOntoWorkstation() {
 		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstation.getIndex() });
-		// TODO: wait until workstation done loading
+		doWaitAnimation(0); // wait until workstation done loading, i.e., WORKSTATION_LOAD_FINISHED
+		
 		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_ACTION, new Integer[] { workstation.getIndex() });
-		// TODO: wait until workstation done action
+		doWaitAnimation(1); // wait until workstation done action, i.e., WORKSTATION_GUI_ACTION_FINISHED
 	}
 
 	private void doPassOnGlass(Glass g) {
@@ -146,5 +159,14 @@ public class SmallOnlineConveyorFamily extends Agent {
 
 	public boolean thisConveyor(Object args[]) {
 		return (Integer) args[0] == getConveyorIndex();
+	}
+
+	// Wait on an animation action using a semaphore acquire
+	private void doWaitAnimation(int i) {
+		try {
+			animSem[i].acquire(); // wait for animation action to finish
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
