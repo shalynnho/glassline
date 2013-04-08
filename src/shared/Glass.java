@@ -15,7 +15,7 @@ public class Glass {
 	private Map<MachineType, Boolean> recipe;
 
 	// the set of all possible machine types
-	private static final MachineType machineIDs[] = { MachineType.CUTTER, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.DRILL, MachineType.WASHER, MachineType.PAINT, MachineType.UV_LAMP, MachineType.OVEN };
+	private static final MachineType machineIDs[] = { MachineType.CUTTER, MachineType.BREAKOUT, MachineType.MANUAL_BREAKOUT, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.DRILL, MachineType.WASHER, MachineType.PAINT, MachineType.UV_LAMP, MachineType.OVEN };
 
 	/**
 	 * Glass constructor. Gives glass a unique id based on how many pieces of glass have been created so far. Creates recipe map by adding true for machine IDs in the argument array and false for all

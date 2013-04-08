@@ -11,9 +11,6 @@ import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 
-/**
- * @author David Zhang
- */
 public class SmallOnlineConveyorFamily extends Agent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily, etc. upon creation

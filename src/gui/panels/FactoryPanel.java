@@ -1,11 +1,15 @@
 package gui.panels;
 
-import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.BinRobotAgent;
 import gui.drivers.FactoryFrame;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import shared.Glass;
 import shared.enums.MachineType;
 import transducer.Transducer;
 
@@ -45,6 +49,7 @@ public class FactoryPanel extends JPanel {
 		// initialize and run
 		this.initialize();
 		this.initializeBackEnd();
+		this.createGlassesAndRun();
 	}
 
 	/**
@@ -73,9 +78,18 @@ public class FactoryPanel extends JPanel {
 	 */
 	private void initializeBackEnd() {
 		// ===========================================================================
-		// TODO initialize and start Agent threads here
+		// TODO initialize asnd start Agent threads here
 		// ===========================================================================
 
+		// Initial robot that has the glasses
+		BinRobotAgent binRobot = new BinRobotAgent();
+		
+		// Create some glasses to be run through the glassline, and give them to the initial robot
+		List<Glass> glasses = new ArrayList<Glass>();
+		glasses.add(new Glass(new MachineType[]{MachineType.CUTTER, MachineType.BREAKOUT, MachineType.CROSS_SEAMER }));
+		binRobot.seedGlasses(glasses);
+		
+		// TODO: connect with our conveyor families
 		// David's
 		// WorkstationAgent breakoutWorkstation = new WorkstationAgent("Breakout", MachineType.BREAKOUT, 1, transducer);
 		// SmallOnlineConveyorFamily breakoutFamily = new SmallOnlineConveyorFamily(2, breakoutWorkstation);
@@ -87,6 +101,13 @@ public class FactoryPanel extends JPanel {
 		System.out.println("Back end initialization finished.");
 	}
 
+	/**
+	 * Create glasses of various types and run
+	 */
+	private void createGlassesAndRun() {
+		
+	}
+	
 	/**
 	 * Returns the parent frame of this panel
 	 * 
