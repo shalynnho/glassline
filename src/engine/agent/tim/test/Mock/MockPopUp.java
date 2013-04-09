@@ -7,7 +7,7 @@ import java.util.List;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.OfflineConveyorFamily;
-import shared.interfaces.PopupWorkstationInterface;
+import shared.interfaces.PopupWorkstationInteraction;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -18,7 +18,7 @@ import engine.agent.tim.misc.ConveyorFamilyImp;
 import engine.agent.tim.misc.MyGlassPopUp;
 import engine.agent.tim.misc.MyGlassPopUp.processState;
 
-public class MockPopUp extends MockAgent implements PopUp, PopupWorkstationInterface {
+public class MockPopUp extends MockAgent implements PopUp, PopupWorkstationInteraction {
 	
 	// Data:	
 

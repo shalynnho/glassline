@@ -7,9 +7,9 @@ import engine.agent.david.agents.PopupAgent.WorkstationState;
 import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
 
 import shared.Glass;
-import shared.interfaces.PopupWorkstationInterface;
+import shared.interfaces.PopupWorkstationInteraction;
 
-public interface Popup extends PopupWorkstationInterface {
+public interface Popup extends PopupWorkstationInteraction {
 	// *** MESSAGES ***
 	public void msgGlassComing(MyGlass myGlass); // from conveyor
 	public void msgPositionFree(); // from next family
