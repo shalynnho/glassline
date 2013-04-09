@@ -21,19 +21,19 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	
 	private int myIndex;
 	
-	enum GlassState {PENDING, ARRIVED, MOVING, END, WAITING, SENT, DONE, NO_ACTION};
+	enum GlassState {PENDING, ARRIVED, MOVING, WAITING_AT_END, PASSED, DONE, NO_ACTION};
 	
 	private class MyGlass {
-		public Glass g;
-		public GlassState gs;
+		public Glass glass;
+		public GlassState state;
 		
 		public MyGlass(Glass g) {
-			this.g = g;
-			this.gs = GlassState.PENDING;
+			this.glass = g;
+			this.state = GlassState.PENDING;
 		}
 	}
 	
-	private LinkedList<MyGlass> glass;
+	private LinkedList<MyGlass> glassList;
 
 	/*
 	 * Make sure you setConveyorFamily and setWorkstation immediately after construction.
@@ -43,7 +43,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		
 		transducer.register(this, TChannel.SENSOR);
 		myIndex = index;
-		glass = new LinkedList<MyGlass>();
+		glassList = new LinkedList<MyGlass>();
 		recPosFree = true;
 		aniSem = new Semaphore(0);
 		
@@ -59,7 +59,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	 *            - the glass that is passed to the conveyor
 	 */
 	public void msgHereIsGlass(Glass g) {
-		glass.add(new MyGlass(g));
+		glassList.add(new MyGlass(g));
 		stateChanged();
 	}
 
@@ -67,14 +67,14 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		
-		for (MyGlass g : glass)
-			if (g.gs == GlassState.DONE) {
+		for (MyGlass g : glassList)
+			if (g.state == GlassState.DONE) {
 				actRemoveFromList(g);
 				return true;
 			}
 		
-		for (MyGlass g : glass)
-			if (g.gs == GlassState.WAITING) {
+		for (MyGlass g : glassList)
+			if (g.state == GlassState.WAITING_AT_END) {
 				if (recPosFree) {
 					// send to next LineComponent
 					actSendGlassToNext(g);
@@ -85,8 +85,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				}
 			}
 		
-		for (MyGlass g : glass)
-			if (g.gs == GlassState.ARRIVED) {
+		for (MyGlass g : glassList)
+			if (g.state == GlassState.ARRIVED) {
 				powerConveyor(true);
 				return true;
 			}
@@ -97,11 +97,13 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	// ***** ACTIONS ***** //
 	
 	private void actRemoveFromList(MyGlass g) {
-		glass.remove(g);
+		glassList.remove(g);
 	}
 	
 	private void actSendGlassToNext(MyGlass g) {
-		next.msgHereIsGlass(g.g);
+		powerConveyor(true);
+		g.state = GlassState.PASSED;
+		next.msgHereIsGlass(g.glass);
 		previous.msgPositionFree();
 	}
 
@@ -138,7 +140,45 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		int sensorID = (Integer)args[0];
 		
 		if (channel.equals(TChannel.SENSOR)) {
-			
+			if (event == TEvent.SENSOR_GUI_PRESSED) {
+				if (sensorID == myIndex * 2) {	// front sensor pressed (using Evan's alg)
+					for (MyGlass g : glassList) {
+						if (g.state == GlassState.PENDING) {
+							g.state = GlassState.ARRIVED;
+							previous.msgPositionFree();
+							break;
+						}
+					}
+					stateChanged();
+				} else if (sensorID == myIndex * 2 + 1) {	// back sensor pressed
+					for (MyGlass g : glassList) {
+						if (g.state == GlassState.MOVING) {
+							g.state = GlassState.WAITING_AT_END;
+							powerConveyor(false);
+							break;
+						}
+					}
+					stateChanged();
+				}
+			} else if (event == TEvent.SENSOR_GUI_RELEASED) {
+				if (sensorID == myIndex * 2) {	// front sensor released (using Evan's alg)
+					for (MyGlass g : glassList) {
+						if (g.state == GlassState.ARRIVED) {
+							g.state = GlassState.MOVING;
+							break;
+						}
+					}
+					stateChanged();
+				} else if (sensorID == myIndex * 2 + 1) {	// back sensor released
+					for (MyGlass g : glassList) {
+						if (g.state == GlassState.PASSED) {
+							g.state = GlassState.DONE;
+							break;
+						}
+					}
+					stateChanged();
+				}
+			}
 		}
 	}
 }
