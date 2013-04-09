@@ -5,10 +5,11 @@ import java.util.List;
 
 import shared.Glass;
 import shared.interfaces.ConveyorFamily;
+import shared.interfaces.LineComponent;
 import transducer.TChannel;
 import transducer.TEvent;
 
-public class BinRobotAgent extends Agent {
+public class BinRobotAgent extends Agent implements LineComponent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily upon creation
 	public BinRobotAgent() {}
@@ -22,6 +23,10 @@ public class BinRobotAgent extends Agent {
 	public void msgPositionFree() { // from first conveyor family
 		posFree = true;
 		stateChanged();
+	}
+
+	public void msgHereIsGlass(Glass g) {
+		// dummy method, not used: just need this so we can implement LineComponent
 	}
 	
 	// *** SCHEDULER ***
