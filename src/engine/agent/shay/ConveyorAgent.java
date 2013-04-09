@@ -21,7 +21,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	
 	private int myIndex;
 	
-	enum GlassState {PENDING, ARRIVED, MOVING, WAITING_AT_END, PASSED, DONE, NO_ACTION};
+	enum GlassState {PENDING, ARRIVED, MOVING, WAITING_AT_END, PASSED, DONE};
 	
 	private class MyGlass {
 		public Glass glass;
