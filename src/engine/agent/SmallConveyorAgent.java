@@ -6,20 +6,18 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import shared.Glass;
-import shared.agents.OnlineWorkstationAgent;
-import shared.enums.MachineType;
 import shared.interfaces.ConveyorFamily;
 import shared.interfaces.LineComponent;
+import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 
-public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
+public class SmallConveyorAgent extends Agent implements LineComponent {
 	// *** Constructor(s) ***
-	// Make sure to do setNextConveyorFamily, etc. upon creation
-	public SmallOnlineConveyorFamily(int cIndex, MachineType type, LineComponent before, LineComponent after) {
+	// Make sure to do setNextLineComponent, etc. upon creation
+	public SmallConveyorAgent(int cIndex, Workstation w) {
 		this.conveyorIndex = cIndex;
-		this.workstation = new OnlineWorkstationAgent(type.toString() + "wks", type, this.transducer, before, after);
-		// constructor: (String name, MachineType mt, Transducer t, LineComponent b, LineComponent a)
+		this.workstation = w;
 
 		// Animation delay semaphores
 		animSem = new Semaphore[2]; // index 0 -> WORKSTATION_LOAD_FINISHED, 1 -> WORKSTATION_GUI_ACTION_FINISHED
@@ -30,7 +28,7 @@ public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 
 	// *** DATA ***
 	private int conveyorIndex;
-	private OnlineWorkstationAgent workstation;
+	private Workstation workstation;
 	
 	private boolean posFree = false;
 	private boolean sensorReached = false;
@@ -38,7 +36,7 @@ public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
 	private ConveyorFamily prev, next;
 
-	private Semaphore animSem[]; // not used yet
+	private Semaphore animSem[];
 
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass glass) {
@@ -128,11 +126,11 @@ public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 	}
 
 	// *** EXTRA ***
-	public void setNextConveyorFamily(ConveyorFamily f) {
+	public void setNextLineComponent(ConveyorFamily f) {
 		next = f;
 	}
 
-	public void setPreviousConveyorFamily(ConveyorFamily f) {
+	public void setPreviousLineComponent(ConveyorFamily f) {
 		prev = f;
 	}
 
