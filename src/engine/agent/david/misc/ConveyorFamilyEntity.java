@@ -13,7 +13,7 @@ import engine.agent.david.test.mock.MockSensor;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.ConveyorFamily;
-import shared.interfaces.Workstation;
+import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -26,7 +26,7 @@ import transducer.Transducer;
  */
 public class ConveyorFamilyEntity implements ConveyorFamily {
 	// *** Constructor(s) ***
-	public ConveyorFamilyEntity(Transducer transducer, Workstation workstation1, Workstation workstation2) {
+	public ConveyorFamilyEntity(Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
 		this.t = transducer;
 		this.type = workstation1.getType(); // workstations should have same type
 		this.conveyorIndex = 0; // default
@@ -37,7 +37,7 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 		popup = new PopupAgent(this, transducer, workstation1, workstation2);
 	}
 
-	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, Workstation workstation1, Workstation workstation2) {
+	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
 		this.type = workstation1.getType(); // workstations should have same type
 		this.conveyorIndex = convIndex;
 		this.popupIndex = popupIndex;

@@ -2,11 +2,11 @@ package engine.agent.david.test.mock;
 
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.Workstation;
+import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 
 
-public class MockWorkstation extends MockEntity implements Workstation {
+public class MockWorkstation extends MockEntity implements OfflineWorkstation {
 	public MockWorkstation(String name) {
 		super(name);
 	}

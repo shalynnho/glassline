@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.Workstation;
+import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -18,7 +18,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 
 public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
-	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, Workstation workstation1, Workstation workstation2) {
+	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
 		super("Popup", transducer);
 		family = f;
 		this.workstation1 = workstation1;
@@ -31,8 +31,8 @@ public class PopupAgent extends Agent implements Popup {
 
 	// *** DATA ***
 	private ConveyorFamilyEntity family;
-	private Workstation workstation1; // top workstation, higher priority, one with lower index
-	private Workstation workstation2; // bottom workstation
+	private OfflineWorkstation workstation1; // top workstation, higher priority, one with lower index
+	private OfflineWorkstation workstation2; // bottom workstation
 	private List<MyGlass> glasses = Collections.synchronizedList(new ArrayList<MyGlass>()); // uses MyGlass instead of just Glass so it contains GlassState
 	// A glass is removed from glasses when it is messaged to a workstation. Then, workstation eventually sends glass back,
 	// and the glass is added to finishedGlasses.
@@ -176,7 +176,7 @@ public class PopupAgent extends Agent implements Popup {
 					setState(PopupState.ACTIVE);
 					MyGlass g = glasses.remove(0); // first glass should be the one
 	
-					Workstation w = getWorkstationWithState(WorkstationState.FREE);
+					OfflineWorkstation w = getWorkstationWithState(WorkstationState.FREE);
 					updateWorkstationState(w, WorkstationState.BUSY);
 					w.msgHereIsGlass(g.getGlass());
 	
@@ -349,7 +349,7 @@ public class PopupAgent extends Agent implements Popup {
 		return wsState1 == state || wsState2 == state;
 	}
 
-	private void updateWorkstationState(Workstation w, WorkstationState state) {
+	private void updateWorkstationState(OfflineWorkstation w, WorkstationState state) {
 		if (w.getIndex() % 2 == 0) // 0 or even index means top machine (machine 1)
 			wsState1 = state;
 		else
@@ -376,7 +376,7 @@ public class PopupAgent extends Agent implements Popup {
 		return wsState1 != WorkstationState.FREE && wsState2 != WorkstationState.FREE && atLeastOneWorkstationIsDoneButStillHasGlass();
 	}
 
-	private Workstation getWorkstationWithState(WorkstationState s) {
+	private OfflineWorkstation getWorkstationWithState(WorkstationState s) {
 		if (wsState1 == s) {
 			return workstation1;
 		} else if (wsState2 == s) {

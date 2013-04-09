@@ -7,7 +7,7 @@ import java.util.List;
 import shared.Glass;
 import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
-import shared.interfaces.Workstation;
+import shared.interfaces.OfflineWorkstation;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.TransducerIfc;
 
@@ -18,13 +18,13 @@ public class BigOnlineConveyorFamily implements shared.interfaces.ConveyorFamily
 	
 	private Conveyor startConveyor;
 	private Conveyor endConveyor;
-	private Workstation workstation;
+	private OfflineWorkstation workstation;
 	private MachineType type;
 	private boolean recPosFree;
 	
 	private List<Glass> glass = Collections.synchronizedList(new ArrayList<Glass>());
 	
-	public BigOnlineConveyorFamily(ConveyorAgent start, ConveyorAgent end, Workstation o, TransducerIfc t) {
+	public BigOnlineConveyorFamily(ConveyorAgent start, ConveyorAgent end, OfflineWorkstation o, TransducerIfc t) {
 		startConveyor = start;
 		endConveyor = end;
 		workstation = (OnlineWorkstationAgent) o;

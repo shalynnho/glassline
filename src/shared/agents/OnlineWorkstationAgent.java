@@ -5,13 +5,13 @@ import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
-import shared.interfaces.Workstation;
+import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 
-public class OnlineWorkstationAgent extends Agent implements LineComponent, Workstation {
+public class OnlineWorkstationAgent extends Agent implements LineComponent, OfflineWorkstation {
 	private MachineType type;
 	private TChannel channel;
 	private Glass glass;
