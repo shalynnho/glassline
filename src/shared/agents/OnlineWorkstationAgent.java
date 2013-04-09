@@ -1,13 +1,17 @@
 package shared.agents;
 
 import java.util.concurrent.Semaphore;
+
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
-import transducer.*;
+import shared.interfaces.Workstation;
+import transducer.TChannel;
+import transducer.TEvent;
+import transducer.Transducer;
 import engine.agent.Agent;
 
-public class OnlineWorkstationAgent extends Agent implements LineComponent {
+public class OnlineWorkstationAgent extends Agent implements LineComponent, Workstation {
 	private MachineType type;
 	private TChannel channel;
 	private Glass glass;
@@ -114,5 +118,11 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	
 	public TChannel getChannel() {
 		return channel;
+	}
+
+	@Override
+	public int getIndex() {
+		// TODO Auto-generated method stub
+		return -1;
 	}
 }

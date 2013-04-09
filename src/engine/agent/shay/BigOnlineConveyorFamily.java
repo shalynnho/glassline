@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
+import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
 import shared.interfaces.Workstation;
 import engine.agent.shay.interfaces.Conveyor;
