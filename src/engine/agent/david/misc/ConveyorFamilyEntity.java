@@ -1,5 +1,12 @@
 package engine.agent.david.misc;
 
+import shared.Glass;
+import shared.enums.MachineType;
+import shared.interfaces.OfflineConveyorFamily;
+import shared.interfaces.OfflineWorkstation;
+import transducer.TChannel;
+import transducer.TEvent;
+import transducer.Transducer;
 import engine.agent.david.agents.ConveyorAgent;
 import engine.agent.david.agents.PopupAgent;
 import engine.agent.david.agents.SensorAgent;
@@ -10,13 +17,6 @@ import engine.agent.david.test.mock.MockConveyor;
 import engine.agent.david.test.mock.MockConveyorFamily;
 import engine.agent.david.test.mock.MockPopup;
 import engine.agent.david.test.mock.MockSensor;
-import shared.Glass;
-import shared.enums.MachineType;
-import shared.interfaces.OfflineConveyorFamily;
-import shared.interfaces.OfflineWorkstation;
-import transducer.TChannel;
-import transducer.TEvent;
-import transducer.Transducer;
 
 /**
  * Key class that represents my version of the ConveyorFamily design (hence its implementation of ConveyorFamily). Contains agents to represent the ConveyorFamily, whose interface is broadly used by
@@ -141,6 +141,12 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	// *** EXTRA ***
 
+	public void startThreads() {
+		((SensorAgent) sensor).startThread();
+		((ConveyorAgent) conv).startThread();
+		((PopupAgent) popup).startThread();
+	}
+	
 	// Quick helpers for parsing args in eventFired
 	public boolean thisSensor(Object args[]) {
 		return (Integer) args[0] == getSensorIndex();

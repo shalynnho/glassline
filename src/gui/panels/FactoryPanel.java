@@ -1,7 +1,9 @@
 package gui.panels;
 
 import engine.agent.BinRobotAgent;
+import engine.agent.OfflineWorkstationAgent;
 import engine.agent.SmallOnlineConveyorFamilyImp;
+import engine.agent.david.misc.ConveyorFamilyEntity;
 import gui.drivers.FactoryFrame;
 
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ import transducer.Transducer;
  */
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
+	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
+	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION;
+	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
 
@@ -57,7 +62,7 @@ public class FactoryPanel extends JPanel {
 //	private OfflineWorkstationAgent crossSeamerWorkstation;
 //	private ConveyorFamilyImp crossSeamerFamily;
 //
-//	// Grinder - David's
+	// Grinder - David's
 //	private OfflineWorkstationAgent grinderWorkstation;
 //	private ConveyorFamilyEntity grinderFamily;
 //
@@ -91,7 +96,6 @@ public class FactoryPanel extends JPanel {
 		// initialize and run
 		this.initialize();
 		this.initializeBackEnd();
-		this.createGlassesAndRun();
 	}
 
 	/**
@@ -123,22 +127,29 @@ public class FactoryPanel extends JPanel {
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 
-		// Initial robot that has the glasses
-		binRobot = new BinRobotAgent("Bin Robot", transducer);
-
-		// Cutter
-//		BigOnlineConveyorFamily cutterFamily = new BigOnlineConveyorFamily(..);
-		cutterFamily = new SmallOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0);
-		
-		// Breakout
-		breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 1);
-		
-		// Connect them!
-		binRobot.setNextLineComponent(cutterFamily);
-		cutterFamily.setPreviousLineComponent(binRobot);
-		
-		cutterFamily.setNextLineComponent(breakoutFamily);
-		breakoutFamily.setPreviousLineComponent(cutterFamily);
+		if (RUN_MODE == RunMode.FINAL_SUBMISSION) {
+			// Initial robot that has the glasses
+			binRobot = new BinRobotAgent("Bin Robot", transducer);
+	
+			// Cutter
+	//		BigOnlineConveyorFamily cutterFamily = new BigOnlineConveyorFamily(..);
+			cutterFamily = new SmallOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0);
+			
+			// Breakout
+			breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 1);
+			
+			// Connect them!
+			binRobot.setNextLineComponent(cutterFamily);
+			cutterFamily.setPreviousLineComponent(binRobot);
+			
+			cutterFamily.setNextLineComponent(breakoutFamily);
+			breakoutFamily.setPreviousLineComponent(cutterFamily);
+			
+			// Set things in motion!
+			createGlassesAndRun();
+		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
+			prepareDavidsTest();
+		}
 		
 		System.out.println("Backend initialization finished.");
 	}
@@ -161,6 +172,25 @@ public class FactoryPanel extends JPanel {
 		breakoutFamily.startThreads();
 	}
 
+	private void prepareDavidsTest() {
+		// Prepare agents
+		OfflineWorkstationAgent grinderWks1 = new OfflineWorkstationAgent("Grinder workstation 1", MachineType.GRINDER, 0, transducer);
+		OfflineWorkstationAgent grinderWks2 = new OfflineWorkstationAgent("Grinder workstation 2", MachineType.GRINDER, 1, transducer);
+		
+		ConveyorFamilyEntity grinderFamily = new ConveyorFamilyEntity(transducer, 5, 0, grinderWks1, grinderWks2);
+		
+		// Make sure all conveyors leading up to my first conveyor family are on and just passing the glass along
+		// TODO
+		
+		// Make sure the last one sends msgHereIsGlass
+		// TODO
+		
+		// Start agent threads
+		grinderWks1.startThread();
+		grinderWks2.startThread();
+		grinderFamily.startThreads();
+	}
+	
 	/**
 	 * Returns the parent frame of this panel
 	 * 
