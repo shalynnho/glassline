@@ -7,6 +7,7 @@ import java.util.List;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.ConveyorFamily;
+import shared.interfaces.PopupWorkstationInterface;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -17,7 +18,7 @@ import engine.agent.tim.misc.ConveyorFamilyImp;
 import engine.agent.tim.misc.MyGlassPopUp;
 import engine.agent.tim.misc.MyGlassPopUp.processState;
 
-public class MockPopUp extends MockAgent implements PopUp {
+public class MockPopUp extends MockAgent implements PopUp, PopupWorkstationInterface {
 	
 	// Data:	
 
@@ -111,12 +112,6 @@ public class MockPopUp extends MockAgent implements PopUp {
 	}
 
 	@Override
-	public void msgDoneProcessingGlass(Glass glass) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public int getFreeChannels() {
 		// TODO Auto-generated method stub
 		return 2 - glassToBeProcessed.size();
@@ -141,5 +136,11 @@ public class MockPopUp extends MockAgent implements PopUp {
 		else {
 			return false;
 		}
+	}
+
+	@Override
+	public void msgGlassDone(Glass g, int index) {
+		// TODO Auto-generated method stub
+		
 	}	
 }
