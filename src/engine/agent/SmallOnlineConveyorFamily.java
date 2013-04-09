@@ -7,11 +7,12 @@ import java.util.concurrent.Semaphore;
 
 import shared.Glass;
 import shared.interfaces.ConveyorFamily;
+import shared.interfaces.LineComponent;
 import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 
-public class SmallOnlineConveyorFamily extends Agent {
+public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily, etc. upon creation
 	public SmallOnlineConveyorFamily(int cIndex, Workstation w) {
@@ -113,15 +114,15 @@ public class SmallOnlineConveyorFamily extends Agent {
 	}
 
 	private void doLoadGlassOntoWorkstation() {
-		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstation.getIndex() });
+		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, null);
 		doWaitAnimation(0); // wait until workstation done loading, i.e., WORKSTATION_LOAD_FINISHED
 		
-		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_ACTION, new Integer[] { workstation.getIndex() });
+		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_ACTION, null);
 		doWaitAnimation(1); // wait until workstation done action, i.e., WORKSTATION_GUI_ACTION_FINISHED
 	}
 
 	private void doPassOnGlass(Glass g) {
-		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Integer[] { workstation.getIndex() });
+		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, null);
 	}
 
 	// *** EXTRA ***

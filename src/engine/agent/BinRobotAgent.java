@@ -17,7 +17,6 @@ public class BinRobotAgent extends Agent {
 	private List<Glass> glasses = new ArrayList<Glass>();
 	private boolean posFree = false;
 	private ConveyorFamily next;
-
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() { // from first conveyor family
