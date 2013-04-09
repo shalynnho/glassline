@@ -1,4 +1,4 @@
-package shared.agents;
+package engine.agent;
 
 import java.util.concurrent.Semaphore;
 import shared.Glass;
@@ -8,7 +8,6 @@ import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
-import engine.agent.Agent;
 
 public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation {
 	// *** DATA ***

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import shared.Glass;
-import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
 import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.LineComponent;

@@ -1,6 +1,8 @@
 package gui.panels;
 
 import engine.agent.BinRobotAgent;
+import engine.agent.OfflineWorkstationAgent;
+import engine.agent.OnlineWorkstationAgent;
 import engine.agent.SmallOnlineConveyorFamily;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
@@ -14,8 +16,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import shared.Glass;
-import shared.agents.OfflineWorkstationAgent;
-import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
 import transducer.Transducer;
 
