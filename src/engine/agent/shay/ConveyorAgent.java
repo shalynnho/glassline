@@ -12,11 +12,8 @@ import engine.agent.shay.interfaces.TransducerIfc;
 
 public class ConveyorAgent extends Agent implements Conveyor {
 	
-	private BigOnlineConveyorFamily family;
 	private LineComponent previous, next;
-
 	private boolean recPosFree;
-	
 	private int myIndex;
 	
 	enum GlassState {PENDING, ARRIVED, MOVING, WAITING_AT_END, PASSED, DONE};
@@ -34,7 +31,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private LinkedList<MyGlass> glassList;
 
 	/*
-	 * Make sure you setConveyorFamily and setWorkstation immediately after construction.
+	 * Make sure to setPreviousLineComponent and setNextLineComponent immediately after construction.
 	 */
 	public ConveyorAgent(String name, TransducerIfc t, int index) {
 		super(name, t);
