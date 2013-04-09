@@ -1,4 +1,4 @@
-package engine.agent.shay;
+package engine.agent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,7 @@ import java.util.List;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
-import engine.agent.OnlineWorkstationAgent;
+import engine.agent.shay.ConveyorAgent;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.TransducerIfc;
 

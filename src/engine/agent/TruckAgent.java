@@ -3,14 +3,11 @@ package engine.agent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-
 import shared.Glass;
 import shared.interfaces.LineComponent;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
-
-
 
 public class TruckAgent extends Agent implements LineComponent {
 	// *** Constructor(s) ***
@@ -19,7 +16,7 @@ public class TruckAgent extends Agent implements LineComponent {
 		super(name, trans);
 		animSem = new Semaphore[2]; // [0] -> load, [1] -> empty
 	}
-
+	
 	// *** DATA ***
 	private List<Glass> glasses = new ArrayList<Glass>();
 	private LineComponent prev;
@@ -30,7 +27,7 @@ public class TruckAgent extends Agent implements LineComponent {
 	public void msgPositionFree() {
 		// dummy method, not used: just need this so we can implement LineComponent
 	}
-
+	
 	public void msgHereIsGlass(Glass g) {
 		alreadyTold = false;
 		glasses.add(g);
@@ -38,7 +35,7 @@ public class TruckAgent extends Agent implements LineComponent {
 	}
 	
 	// *** SCHEDULER ***
-	@Override
+	
 	public boolean pickAndExecuteAnAction() {
 		if (!glasses.isEmpty()) {
 			actLoadAndEmptyTruck();
@@ -49,8 +46,7 @@ public class TruckAgent extends Agent implements LineComponent {
 		}
 		return false;
 	}
-
-	@Override
+	
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.TRUCK) {
 			if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
