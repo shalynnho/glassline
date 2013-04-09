@@ -10,7 +10,7 @@ public class GuiTestSM implements TReceiver {
 
 	boolean offlineDone = false;
 
-	public GuiTestSM(Transducer t) {
+	public GuiTestSM(Transducer t, boolean startImmediately) {
 		this.t = t;
 		t.register(this, TChannel.CUTTER);
 		t.register(this, TChannel.SENSOR);
@@ -24,7 +24,8 @@ public class GuiTestSM implements TReceiver {
 		t.register(this, TChannel.PAINTER);
 		t.register(this, TChannel.TRUCK);
 
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		if (startImmediately)
+			t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 	}
 
 	@Override
@@ -35,11 +36,8 @@ public class GuiTestSM implements TReceiver {
 			if (((Integer) args[0] % 2) == 0) { // args[0] is index of sensor; if even # sensor (or 0), starts conveyor
 				newArgs[0] = (Integer) args[0] / 2; // index of the conveyor to pass as arg
 				
-				
 				System.out.println("Starting conveyor "+newArgs[0]);
 				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-				
-				
 			} 
 			// testing
 			else if ((Integer) args[0] == 11) { // sensor right before drill
@@ -47,9 +45,7 @@ public class GuiTestSM implements TReceiver {
 				newArgs[0] = 5;
 //				System.out.println("Stopping conveyor "+newArgs[0]);
 //				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
-				System.out.println();
 			}
-			
 		} else if (channel == TChannel.CUTTER && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			System.out.println("WORKSTATION_LOAD_FINISHED from CUTTER");
 			t.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_DO_ACTION, null);
@@ -60,14 +56,10 @@ public class GuiTestSM implements TReceiver {
 		} else if (channel == TChannel.BREAKOUT && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			System.out.println("WORKSTATION_LOAD_FINISHED from BREAKOUT");
 			t.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_DO_ACTION, null);
-
-
 		} else if (channel == TChannel.BREAKOUT && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
 			System.out.println("WORKSTATION_GUI_ACTION_FINISHED for BREAKOUT");
 
 			t.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, null);
-
-
 		} else if (channel == TChannel.MANUAL_BREAKOUT && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			System.out.println("WORKSTATION_LOAD_FINISHED for MANUAL_BREAKOUT");
 

@@ -2,6 +2,7 @@ package engine.agent.david.misc;
 
 import shared.Glass;
 import shared.enums.MachineType;
+import shared.interfaces.LineComponent;
 import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
@@ -38,6 +39,7 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	}
 
 	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
+		this.t = transducer;
 		this.type = workstation1.getType(); // workstations should have same type
 		this.conveyorIndex = convIndex;
 		this.popupIndex = popupIndex;
@@ -58,8 +60,8 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	public Conveyor conv;
 	public Popup popup;
 
-	public OfflineConveyorFamily nextFamily;
-	public OfflineConveyorFamily prevFamily;
+	public LineComponent next;
+	public LineComponent prev;
 
 	public enum GlassState {
 		NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING
@@ -114,10 +116,12 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	// *** TRANSDUCER / ANIMATION CALLS ***
 	public void doStartConveyor() {
+		System.err.println("index: "+conveyorIndex);
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, new Integer[] { conveyorIndex });
 	}
 
 	public void doStopConveyor() {
+		System.err.println("conveyor STOPPED");
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[] { conveyorIndex });
 	}
 
@@ -160,12 +164,12 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 		return (Integer) args[0] == getConveyorIndex();
 	}
 
-	public void setNextConveyorFamily(OfflineConveyorFamily f) {
-		nextFamily = f;
+	public void setNextLineComponent(LineComponent l) {
+		next = l;
 	}
 
-	public void setPreviousConveyorFamily(OfflineConveyorFamily f) {
-		prevFamily = f;
+	public void setPreviousLineComponent(LineComponent l) {
+		prev = l;
 	}
 
 	public GlassState decideIfGlassNeedsProcessing(Glass g) {
@@ -223,10 +227,10 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	}
 
 	public MockConveyorFamily getMockPrevConveyorFamily() {
-		return (MockConveyorFamily) prevFamily;
+		return (MockConveyorFamily) prev;
 	}
 
 	public MockConveyorFamily getMockNextConveyorFamily() {
-		return (MockConveyorFamily) nextFamily;
+		return (MockConveyorFamily) next;
 	}
 }

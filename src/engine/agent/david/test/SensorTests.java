@@ -39,7 +39,7 @@ public class SensorTests {
 		conveyor = new MockConveyor("Conveyor");
 		
 		family = new ConveyorFamilyEntity(transducer, workstation1, workstation2);
-		family.setPreviousConveyorFamily(prevFamily);
+		family.setPreviousLineComponent(prevFamily);
 		family.setConveyor(conveyor);
 	}
 	

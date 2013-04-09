@@ -49,7 +49,7 @@ public class PopupTests {
 		family.setConveyor(conv);
 		
 		nextFamily = new MockConveyorFamily("Next family");
-		family.setNextConveyorFamily(nextFamily);
+		family.setNextLineComponent(nextFamily);
 	}
 	
 	@Test

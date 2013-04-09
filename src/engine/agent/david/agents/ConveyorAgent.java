@@ -33,6 +33,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	// *** MESSAGES ***
 	@Override
 	public void msgHereIsGlass(Glass g) {
+		print("Received msgHereIsGlass");
 		state = ConveyorState.GLASS_JUST_ARRIVED; // previous sensor should have already started the conveyor
 		// at this point, this should be true: family.runningState == RunningState.ON_BC_SENSOR_TO_CONVEYOR
 		glasses.add(g);
@@ -41,6 +42,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	@Override
 	public void msgTakingGlass() {
+		print("Received msgTakingGlass");
 		state = ConveyorState.SHOULD_NOTIFY_POSITION_FREE;
 		glasses.remove(0);
 		stateChanged();
@@ -73,10 +75,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			if (channel == TChannel.SENSOR) {
 				// When the sensor right after the conveyor has been pressed, stop the conveyor
 				if (event == TEvent.SENSOR_GUI_PRESSED) {
-					// parse args to check if it is this sensor
-					// if so:
-					family.doStopConveyor();
-					family.runningState = RunningState.OFF_BC_WAITING_AT_SENSOR;
+					if (family.thisSensor(args)) {
+						family.doStopConveyor();
+						family.runningState = RunningState.OFF_BC_WAITING_AT_SENSOR;
+					}
 				}
 			}
 		}
@@ -84,6 +86,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	
 	// *** ACTIONS ***
 	public void actTellPopupGlassOnConveyor(Glass g) {
+		print("Doing actTellPopupGlassOnConveyor");
 		GlassState glassState = family.decideIfGlassNeedsProcessing(g); // conveyor decides this since it has time
 		MyGlass myGlass = family.new MyGlass(g, glassState);
 
@@ -94,6 +97,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 
 	public void actTellSensorPositionFree() {
+		print("Doing actTellSensorPositionFree");
 		family.sensor.msgPositionFree();
 	}
 	

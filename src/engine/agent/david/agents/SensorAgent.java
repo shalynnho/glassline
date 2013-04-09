@@ -30,12 +30,14 @@ public class SensorAgent extends Agent implements Sensor {
 	
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass g) {
+		print("Received msgHereIsGlass");
 		state = SensorState.GLASS_JUST_ARRIVED;
 		glasses.add(g);
 		stateChanged();
 	}
 	
 	public void msgPositionFree() {
+		print("Received msgPositionFree");
 		state = SensorState.SHOULD_NOTIFY_POSITION_FREE;
 		stateChanged();
 	}
@@ -65,17 +67,21 @@ public class SensorAgent extends Agent implements Sensor {
 
 	// *** ACTIONS ***
 	public void actPassOnGlass(Glass g) {
+		print("Doing actPassOnGlass");
+		System.err.println("RUNNING STATE: "+family.runningState);
 		while (family.runningState != RunningState.OFF_BC_QUIET) { // only supports one glass at a time
 			// Wait until conveyor is officially in the proper off state.
 			// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.
 		}
 		family.doStartConveyor();
+		System.err.println("conveyor should have started!");
 		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
-		family.conv.msgHereIsGlass(g);
+		family.conv.msgHereIsGlass(g); // ERROR: this somehow make conveyor stop
 	}
 	
 	public void actTellPrevFamilyPositionFree() {
-		family.prevFamily.msgPositionFree();		
+		print("Doing actTellPrevFamilyPositionFree");
+		family.prev.msgPositionFree();
 	}
 	
 	// *** EXTRA ***

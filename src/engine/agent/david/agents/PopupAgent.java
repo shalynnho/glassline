@@ -58,6 +58,7 @@ public class PopupAgent extends Agent implements Popup {
 	// *** MESSAGES ***
 	@Override
 	public void msgGlassComing(MyGlass myGlass) {
+		print("Received msgGlassComing");
 		glasses.add(myGlass);
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -67,6 +68,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	@Override
 	public void msgPositionFree() {
+		print("Received msgPositionFree");
 		nextPosFree = true;
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -76,6 +78,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	@Override
 	public void msgGlassDone(Glass g, int machineIndex) {
+		print("Received msgGlassDone");
 		updateWorkstationState(machineIndex, WorkstationState.DONE_BUT_STILL_HAS_GLASS);
 		finishedGlasses.add(g);
 
@@ -102,8 +105,13 @@ public class PopupAgent extends Agent implements Popup {
 			}
 			// Case 2-x deal with when sensor is occupied, which adds complications.
 			else {
+				System.err.println("in popup sched - not reached properly?");
 				MyGlass g = getNextUnhandledGlass(); // the *unhandled* glass - we make the glass at the sensor more important than any glass at a workstation
 				if (g != null) { // should be present since sensorOccupied = true
+					System.err.println("in popup sched 2");
+					// TODONOW: WORKSTATION NOT SENDING POS FREE / GLASS DONE?
+					// Check glass recipe
+					
 					// Case 2: Regardless of workstation, just load sensor's glass and pass it on - no workstation interaction
 					if (nextPosFree && !g.needsProcessing()) {
 						actLoadSensorsGlassOntoPopupAndRelease();
@@ -136,9 +144,11 @@ public class PopupAgent extends Agent implements Popup {
 
 		// Exception: we must update sensor status regardless of the state.
 		if (!sensorOccupied) { // should only bother to check if sensor is not occupied - here, the popup only cares about listening to see if a glass has arrived at the preceding sensor
+			System.err.println("reached popup sensor check");
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
 				if (family.thisSensor(args)) {
+					System.err.println("reached popup sensor check 2");
 					setState(PopupState.ACTIVE);
 					sensorOccupied = true;
 					stateChanged();
@@ -207,7 +217,7 @@ public class PopupAgent extends Agent implements Popup {
 
 				// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 				Glass glass = finishedGlasses.remove(0); // remove & return first element
-				family.nextFamily.msgHereIsGlass(glass);
+				family.next.msgHereIsGlass(glass);
 				nextPosFree = false;
 
 				family.doReleaseGlassFromPopup();
@@ -235,7 +245,7 @@ public class PopupAgent extends Agent implements Popup {
 	
 					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 					MyGlass mg = glasses.remove(0); // should be first glass
-					family.nextFamily.msgHereIsGlass(mg.getGlass());
+					family.next.msgHereIsGlass(mg.getGlass());
 	
 					family.runningState = RunningState.OFF_BC_QUIET;
 					family.doStopConveyor();
@@ -253,6 +263,7 @@ public class PopupAgent extends Agent implements Popup {
 	 * Loads glass from sensor onto popup and then releases to next conveyor family Multi-step with eventFired
 	 */
 	public void actLoadSensorsGlassOntoPopupAndRelease() {
+		print("Doing actLoadSensorsGlassOntoPopupAndRelease");
 		if (isUp) {
 			setState(PopupState.WAITING_FOR_LOW_POPUP_BEFORE_RELEASE);
 			family.doMovePopupDown();
@@ -265,6 +276,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	// Multi-step with eventFired
 	public void actLoadSensorsGlassOntoWorkstation() {
+		print("Doing actLoadSensorsGlassOntoWorkstation");
 		if (isUp) {
 			setState(PopupState.WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION);
 			family.doMovePopupDown();
@@ -280,6 +292,7 @@ public class PopupAgent extends Agent implements Popup {
 	 * Releases glass from workstation to next conveyor family
 	 */
 	public void actReleaseGlassFromWorkstation() {
+		print("Doing actReleaseGlassFromWorkstation");
 		// Note: popup must be up -> WORKSTATION_RELEASE_FINISHED -> POPUP_GUI_LOAD_FINISHED (implied) ->
 		// POPUP_GUI_MOVED_DOWN -> automatically moves on
 

@@ -1,10 +1,9 @@
 package gui.panels;
 
 import engine.agent.BinRobotAgent;
-import engine.agent.OfflineWorkstationAgent;
 import engine.agent.SmallOnlineConveyorFamilyImp;
-import engine.agent.david.misc.ConveyorFamilyEntity;
 import gui.drivers.FactoryFrame;
+import gui.test.DavidsOfflineCFIntegrationTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,6 +147,7 @@ public class FactoryPanel extends JPanel {
 			// Set things in motion!
 			createGlassesAndRun();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
+			System.err.println("Running in OFFLINE TEST MODE");
 			DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
 		}
 		

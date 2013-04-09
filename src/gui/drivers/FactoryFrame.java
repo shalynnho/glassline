@@ -26,7 +26,7 @@ public class FactoryFrame extends JFrame {
 	/**
 	 * The default frames per second. The speed slider will start at (the closest value to) this value.
 	 */
-	public static final int DEFAULT_FRAMES_PER_SECOND = 24;
+	public static final int DEFAULT_FRAMES_PER_SECOND = 150;//24;
 
 	/**
 	 * The universal timer that synchronizes GUI events
