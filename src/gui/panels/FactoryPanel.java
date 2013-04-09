@@ -14,7 +14,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import shared.Glass;
-import shared.agents.WorkstationAgent;
+import shared.agents.OfflineWorkstationAgent;
+import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
 import transducer.Transducer;
 
@@ -44,44 +45,44 @@ public class FactoryPanel extends JPanel {
 
 	/* ConveyorFamilies & accompanying workstation */
 	// Cutter
-	private OnlineWorkstationAgent cutterWorkstation;
-	private BigOnlineConveyorFamily cutterFamily;
-	
-	// Breakout
-	private OnlineWorkstationAgent breakoutWorkstation;
-	private SmallOnlineConveyorFamily breakoutFamily;
-	
-	// Manual Breakout
-	private OnlineWorkstationAgent manualBreakoutWorkstation;
-	private BigOnlineConveyorFamily manualBreakoutFamily;
-	
-	// Drill - Evan's
-	private OfflineWorkstationAgent drillWorkstation;
-	private ConveyorFamilyImplementation drillFamily;
-	
-	// CrossSeamer - Tim's
-	private OfflineWorkstationAgent crossSeamerWorkstation;
-	private ConveyorFamilyImp crossSeamerFamily;
-	
-	// Grinder - David's
-	private OfflineWorkstationAgent grinderWorkstation;
-	private ConveyorFamilyEntity grinderFamily;
-	
-	// Washer
-	private OnlineWorkstationAgent washerWorkstation;
-	private BigOnlineConveyorFamily washerFamily;
-	
-	// Painter
-	private OnlineWorkstationAgent painterWorkstation;
-	private SmallOnlineConveyorFamily painterFamily;
-	
-	// UV Lamp
-	private OnlineWorkstationAgent lampWorkstation;
-	private BigOnlineConveyorFamily lampFamily;
-	
-	// Oven
-	private OnlineWorkstationAgent ovenWorkstation;
-	private BigOnlineConveyorFamily ovenFamily;
+//	private OnlineWorkstationAgent cutterWorkstation;
+//	private BigOnlineConveyorFamily cutterFamily;
+//
+//	// Breakout
+//	private OnlineWorkstationAgent breakoutWorkstation;
+//	private SmallOnlineConveyorFamily breakoutFamily;
+//
+//	// Manual Breakout
+//	private OnlineWorkstationAgent manualBreakoutWorkstation;
+//	private BigOnlineConveyorFamily manualBreakoutFamily;
+//
+//	// Drill - Evan's
+//	private OfflineWorkstationAgent drillWorkstation;
+//	private ConveyorFamilyImplementation drillFamily;
+//
+//	// CrossSeamer - Tim's
+//	private OfflineWorkstationAgent crossSeamerWorkstation;
+//	private ConveyorFamilyImp crossSeamerFamily;
+//
+//	// Grinder - David's
+//	private OfflineWorkstationAgent grinderWorkstation;
+//	private ConveyorFamilyEntity grinderFamily;
+//
+//	// Washer
+//	private OnlineWorkstationAgent washerWorkstation;
+//	private BigOnlineConveyorFamily washerFamily;
+//
+//	// Painter
+//	private OnlineWorkstationAgent painterWorkstation;
+//	private SmallOnlineConveyorFamily painterFamily;
+//
+//	// UV Lamp
+//	private OnlineWorkstationAgent lampWorkstation;
+//	private BigOnlineConveyorFamily lampFamily;
+//
+//	// Oven
+//	private OnlineWorkstationAgent ovenWorkstation;
+//	private BigOnlineConveyorFamily ovenFamily;
 
 	/**
 	 * Constructor links this panel to its frame
@@ -137,8 +138,8 @@ public class FactoryPanel extends JPanel {
 		binRobot = new BinRobotAgent();
 
 		// Cutter
-		 cutterWorkstation = new OnlineWorkstationAgent("Cutter wks", MachineType.CUTTER, 0, transducer)
-		 BigOnlineConveyorFamily cutterFamily;
+//		cutterWorkstation = new OnlineWorkstationAgent("Cutter wks", MachineType.CUTTER, transducer);
+//		BigOnlineConveyorFamily cutterFamily;
 
 //		// Breakout
 //		breakoutWorkstation = new WorkstationAgent("Breakout wks", MachineType.BREAKOUT, 1, transducer);

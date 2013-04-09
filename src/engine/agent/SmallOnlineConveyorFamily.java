@@ -6,18 +6,20 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import shared.Glass;
+import shared.agents.OnlineWorkstationAgent;
+import shared.enums.MachineType;
 import shared.interfaces.ConveyorFamily;
 import shared.interfaces.LineComponent;
-import shared.interfaces.Workstation;
 import transducer.TChannel;
 import transducer.TEvent;
 
 public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily, etc. upon creation
-	public SmallOnlineConveyorFamily(int cIndex, Workstation w) {
+	public SmallOnlineConveyorFamily(int cIndex, MachineType type, LineComponent before, LineComponent after) {
 		this.conveyorIndex = cIndex;
-		this.workstation = w;
+		this.workstation = new OnlineWorkstationAgent(type.toString() + "wks", type, this.transducer, before, after);
+		// constructor: (String name, MachineType mt, Transducer t, LineComponent b, LineComponent a)
 
 		// Animation delay semaphores
 		animSem = new Semaphore[2]; // index 0 -> WORKSTATION_LOAD_FINISHED, 1 -> WORKSTATION_GUI_ACTION_FINISHED
@@ -28,7 +30,7 @@ public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 
 	// *** DATA ***
 	private int conveyorIndex;
-	private Workstation workstation;
+	private OnlineWorkstationAgent workstation;
 	
 	private boolean posFree = false;
 	private boolean sensorReached = false;
