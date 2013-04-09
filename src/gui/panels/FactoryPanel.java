@@ -1,6 +1,10 @@
 package gui.panels;
 
 import engine.agent.BinRobotAgent;
+import engine.agent.SmallOnlineConveyorFamily;
+import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.evan.ConveyorFamilyImplementation;
+import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 
 import java.util.ArrayList;
@@ -10,6 +14,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import shared.Glass;
+import shared.agents.OfflineWorkstationAgent;
+import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
 import transducer.Transducer;
 
@@ -30,6 +36,53 @@ public class FactoryPanel extends JPanel {
 
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
+
+	/**
+	 * THE AGENTS
+	 */
+	// Initial robot agent
+	private BinRobotAgent binRobot;
+
+	/* ConveyorFamilies & accompanying workstation */
+	// Cutter
+//	private OnlineWorkstationAgent cutterWorkstation;
+//	private BigOnlineConveyorFamily cutterFamily;
+//
+//	// Breakout
+//	private OnlineWorkstationAgent breakoutWorkstation;
+//	private SmallOnlineConveyorFamily breakoutFamily;
+//
+//	// Manual Breakout
+//	private OnlineWorkstationAgent manualBreakoutWorkstation;
+//	private BigOnlineConveyorFamily manualBreakoutFamily;
+//
+//	// Drill - Evan's
+//	private OfflineWorkstationAgent drillWorkstation;
+//	private ConveyorFamilyImplementation drillFamily;
+//
+//	// CrossSeamer - Tim's
+//	private OfflineWorkstationAgent crossSeamerWorkstation;
+//	private ConveyorFamilyImp crossSeamerFamily;
+//
+//	// Grinder - David's
+//	private OfflineWorkstationAgent grinderWorkstation;
+//	private ConveyorFamilyEntity grinderFamily;
+//
+//	// Washer
+//	private OnlineWorkstationAgent washerWorkstation;
+//	private BigOnlineConveyorFamily washerFamily;
+//
+//	// Painter
+//	private OnlineWorkstationAgent painterWorkstation;
+//	private SmallOnlineConveyorFamily painterFamily;
+//
+//	// UV Lamp
+//	private OnlineWorkstationAgent lampWorkstation;
+//	private BigOnlineConveyorFamily lampFamily;
+//
+//	// Oven
+//	private OnlineWorkstationAgent ovenWorkstation;
+//	private BigOnlineConveyorFamily ovenFamily;
 
 	/**
 	 * Constructor links this panel to its frame
@@ -78,36 +131,67 @@ public class FactoryPanel extends JPanel {
 	 */
 	private void initializeBackEnd() {
 		// ===========================================================================
-		// TODO initialize asnd start Agent threads here
+		// TODO initialize and start Agent threads here
 		// ===========================================================================
 
 		// Initial robot that has the glasses
-		BinRobotAgent binRobot = new BinRobotAgent();
-		
-		// Create some glasses to be run through the glassline, and give them to the initial robot
-		List<Glass> glasses = new ArrayList<Glass>();
-		glasses.add(new Glass(new MachineType[]{MachineType.CUTTER, MachineType.BREAKOUT, MachineType.CROSS_SEAMER }));
-		binRobot.seedGlasses(glasses);
-		
-		// TODO: connect with our conveyor families
-		// David's
-		// WorkstationAgent breakoutWorkstation = new WorkstationAgent("Breakout", MachineType.BREAKOUT, 1, transducer);
-		// SmallOnlineConveyorFamily breakoutFamily = new SmallOnlineConveyorFamily(2, breakoutWorkstation);
+		binRobot = new BinRobotAgent();
 
-//		ConveyorFamilyEntity davidConvFamily = new ConveyorFamilyEntity(transducer, 7, 2, Workstation workstation1, Workstation workstation2);
-//		davidConvFamily.setPrevConveyorFamily(f1);
-//		davidConvFamily.setNextConveyorFamily(f);
+		// Cutter
+//		cutterWorkstation = new OnlineWorkstationAgent("Cutter wks", MachineType.CUTTER, transducer);
+//		BigOnlineConveyorFamily cutterFamily;
 
-		System.out.println("Back end initialization finished.");
+//		// Breakout
+//		breakoutWorkstation = new WorkstationAgent("Breakout wks", MachineType.BREAKOUT, 1, transducer);
+//		SmallOnlineConveyorFamily breakoutFamily;
+//
+//		// Manual Breakout
+//		 WorkstationAgent manualBreakoutWorkstation;
+//		 BigOnlineConveyorFamily manualBreakoutFamily;
+//
+//		// Drill - Evan's
+//		WorkstationAgent drillWorkstation;
+//		ConveyorFamilyImplementation drillFamily;
+//
+//		// CrossSeamer - Tim's
+//		WorkstationAgent crossSeamerWorkstation;
+//		ConveyorFamilyImp crossSeamerFamily;
+//
+//		// Grinder - David's
+//		grinderWorkstation;
+//		 grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, Workstation workstation1, Workstation workstation2);
+//		 grinderFamily.setPrevConveyorFamily(f1);
+//		 grinderFamily.setNextConveyorFamily(f);
+//
+//		// Washer
+//		 WorkstationAgent washerWorkstation;
+//		 BigOnlineConveyorFamily washerFamily;
+//
+//		// Painter
+////		WorkstationAgent painterWorkstation;
+////		SmallOnlineConveyorFamily painterFamily;
+//
+//		// UV Lamp
+//		 WorkstationAgent lampWorkstation;
+//		 BigOnlineConveyorFamily lampFamily;
+//
+//		// Oven
+//		 WorkstationAgent ovenWorkstation;
+//		 BigOnlineConveyorFamily ovenFamily;
+
+		System.out.println("Backend initialization finished.");
 	}
 
 	/**
 	 * Create glasses of various types and run
 	 */
 	private void createGlassesAndRun() {
-		
+		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
+		List<Glass> glasses = new ArrayList<Glass>();
+		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, MachineType.CROSS_SEAMER }));
+		binRobot.seedGlasses(glasses);
 	}
-	
+
 	/**
 	 * Returns the parent frame of this panel
 	 * 

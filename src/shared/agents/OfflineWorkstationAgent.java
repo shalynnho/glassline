@@ -1,7 +1,6 @@
 package shared.agents;
 
 import java.util.concurrent.Semaphore;
-
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.PopupWorkstationInterface;
@@ -11,7 +10,7 @@ import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 
-public class WorkstationAgent extends Agent implements Workstation {
+public class OfflineWorkstationAgent extends Agent implements Workstation {
 	// *** DATA ***
 	
 	private MachineType mt;
@@ -23,7 +22,7 @@ public class WorkstationAgent extends Agent implements Workstation {
 	private PopupWorkstationInterface p;
 	private Semaphore waitSem;
 	
-	public WorkstationAgent(String name, MachineType mt, int index, Transducer trans) {
+	public OfflineWorkstationAgent(String name, MachineType mt, int index, Transducer trans) {
 		super(name, trans);
 		
 		this.mt = mt;
