@@ -36,7 +36,7 @@ public class BinRobotAgent extends Agent implements LineComponent {
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		if (posFree && !glasses.isEmpty()) {
-			passOnGlass();
+			actPassOnGlass();
 			return true;
 		}
 		return false;
@@ -48,7 +48,7 @@ public class BinRobotAgent extends Agent implements LineComponent {
 	}
 	
 	// *** ACTIONS ***
-	private void passOnGlass() {
+	private void actPassOnGlass() {
 		print("Doing passOnGlass");
 		doPassOnGlass();
 		next.msgHereIsGlass(glasses.remove(0));
