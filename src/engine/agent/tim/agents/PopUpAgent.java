@@ -76,7 +76,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		stateChanged();
 	}
 
-	public void msgDoneProcessingGlass(Glass g) { // Adds glass back from a machine and then resets the machine channel to be free
+	public void msgGlassDone(Glass g, int index) { // Adds glass back from a machine and then resets the machine channel to be free
 		glassToBeProcessed.add(new MyGlassPopUp(g, processState.doneProcessing));
 		synchronized (machineComs) {
 			for (MachineCom com: machineComs) {
