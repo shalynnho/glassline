@@ -1,39 +1,37 @@
-package engine.agent.shay;
+package shared.agents;
 
 import java.util.concurrent.Semaphore;
-
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.Workstation;
-import transducer.TChannel;
-import transducer.TEvent;
-import transducer.Transducer;
+import shared.interfaces.LineComponent;
+import transducer.*;
 import engine.agent.Agent;
 
-public class OnlineWorkstationAgent extends Agent implements Workstation {
+public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	private MachineType type;
 	private TChannel channel;
 	private Glass glass;
 
-	enum GlassState {
-		pending, arrived, processing, processed, releasing, released, done
-	};
+	enum GlassState {pending, arrived, processing, processed, releasing, released};
 
 	private GlassState state;
-	private ConveyorAgent before, after;
+	private LineComponent before, after;
 	private Semaphore aniSem;
 	private boolean recPosFree;
 
-	public OnlineWorkstationAgent(String name, MachineType mt, Transducer t) {
+	public OnlineWorkstationAgent(String name, MachineType mt, Transducer t, LineComponent b, LineComponent a) {
 		super(name, t);
 		type = mt;
 		recPosFree = false;
 		channel = type.getChannel();
 		aniSem = new Semaphore(0);
 		transducer.register(this, channel);
+		before = b;
+		after = a;
 	}
 
-	// ***** MESSAGES ***** //
+	// *** MESSAGES ***
+	
 	public void msgHereIsGlass(Glass g) {
 		glass = g;
 		state = GlassState.pending;
@@ -57,9 +55,7 @@ public class OnlineWorkstationAgent extends Agent implements Workstation {
 		}
 	}
 
-	// ***** SCHEDULER ***** //
-
-	@Override
+	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction() {
 		if (state == GlassState.arrived) {
 			processGlass();
@@ -69,26 +65,25 @@ public class OnlineWorkstationAgent extends Agent implements Workstation {
 			releaseGlass();
 			return true;
 		}
-		if (state == GlassState.released) {
-			passToNext();
+		if (state == GlassState.released && recPosFree) {
+			reset();
 			return true;
 		}
 		return false;
 	}
 
-	// ***** ACTIONS ***** //
-
+	// *** ACTIONS ***
+	
 	private void processGlass() {
 		doStartProcessing();
 		doWaitProcessing();
-		after.msgHereIsGlass(glass);
 	}
-
+	
 	private void doStartProcessing() {
 		transducer.fireEvent(channel, TEvent.WORKSTATION_DO_ACTION, null);
 		state = GlassState.processing;
 	}
-
+	
 	private void doWaitProcessing() {
 		try {
 			aniSem.acquire();
@@ -97,35 +92,27 @@ public class OnlineWorkstationAgent extends Agent implements Workstation {
 		}
 		state = GlassState.processed;
 	}
-
+	
 	private void releaseGlass() {
 		transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_GLASS, null);
 		state = GlassState.releasing;
+		after.msgHereIsGlass(glass);
 	}
-
-	private void passToNext() {
-		if (recPosFree) {
-			after.msgHereIsGlass(glass);
-			state = GlassState.done;
-			recPosFree = false;
-		}
+	
+	private void reset() {
+		state = null;
+		glass = null;
+		recPosFree = false;
+		before.msgPositionFree();
 	}
-
-	// ***** ACCESSORS & MUTATORS ***** //
-
-	@Override
+	
+	// *** ACCESSORS & MUTATORS ***
+	
 	public MachineType getType() {
 		return type;
 	}
-
-	@Override
+	
 	public TChannel getChannel() {
 		return channel;
 	}
-
-	@Override
-	public int getIndex() {
-		return -1;
-	}
-
 }
