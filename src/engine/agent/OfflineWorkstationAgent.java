@@ -1,14 +1,13 @@
-package shared.agents;
+package engine.agent;
 
 import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.PopupWorkstationInterface;
+import shared.interfaces.PopupWorkstationInteraction;
 import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
-import engine.agent.Agent;
 
 public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation {
 	// *** DATA ***
@@ -19,7 +18,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	private Glass g;
 	enum GlassState {pending, arrived, processing, done};
 	private GlassState gs;
-	private PopupWorkstationInterface p;
+	private PopupWorkstationInteraction p;
 	private Semaphore waitSem;
 	
 	public OfflineWorkstationAgent(String name, MachineType mt, int index, Transducer trans) {

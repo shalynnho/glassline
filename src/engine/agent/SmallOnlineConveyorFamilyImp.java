@@ -1,7 +1,6 @@
 package engine.agent;
 
 import shared.Glass;
-import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
 
