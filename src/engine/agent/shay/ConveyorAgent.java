@@ -1,243 +1,144 @@
 package engine.agent.shay;
 
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
 import shared.Glass;
+import shared.interfaces.LineComponent;
 import transducer.TChannel;
 import transducer.TEvent;
 import engine.agent.Agent;
-import engine.agent.shay.enums.ConveyorState;
-import engine.agent.shay.enums.PopupGlassState;
-import engine.agent.shay.enums.PopupState;
 import engine.agent.shay.interfaces.Conveyor;
-import engine.agent.shay.interfaces.Popup;
 import engine.agent.shay.interfaces.TransducerIfc;
 
 public class ConveyorAgent extends Agent implements Conveyor {
+	
+	private BigOnlineConveyorFamily family;
+	private LineComponent previous, next;
 
-	// Maximum number of glass pieces that can be on a conveyor
-	private static final int MAX_NUM = 7;
-
-	private OfflineConveyorFamily family;
-	private MyPopup popup;
-	private Sensor startSensor;
-	private Sensor endSensor;
-
-	private ConveyorState state;
+	private Semaphore aniSem;
+	private boolean recPosFree;
+	
 	private int myIndex;
-
-	private LinkedList<Glass> glass;
-
-	private Glass glassToReceive;
+	
+	enum GlassState {PENDING, ARRIVED, MOVING, END, WAITING, SENT, DONE, NO_ACTION};
+	
+	private class MyGlass {
+		public Glass g;
+		public GlassState gs;
 		
-	class MyPopup {
-		Popup agent;
-		PopupGlassState state;
-		PopupState pos;
-		
-		MyPopup(Popup p, PopupGlassState s) {
-			agent = p;
-			state = s;
+		public MyGlass(Glass g) {
+			this.g = g;
+			this.gs = GlassState.PENDING;
 		}
 	}
+	
+	private LinkedList<MyGlass> glass;
 
-	public ConveyorAgent(String name, TransducerIfc t, int myIndex, Sensor ss, Sensor se) {
+	/*
+	 * Make sure you setConveyorFamily and setWorkstation immediately after construction.
+	 */
+	public ConveyorAgent(String name, TransducerIfc t, int index) {
 		super(name, t);
-		startSensor = ss;
-		endSensor = se;
-		transducer.register(this, TChannel.CONVEYOR);
-		transducer.register(this, TChannel.SENSOR);
-		glass = new LinkedList<Glass>();
-		state = ConveyorState.ON_POS_FREE;
 		
-		transducerPowerConveyor(true);
+		transducer.register(this, TChannel.SENSOR);
+		myIndex = index;
+		glass = new LinkedList<MyGlass>();
+		recPosFree = true;
+		aniSem = new Semaphore(0);
+		
+		powerConveyor(true);
 	}
 
 	// ***** MESSAGES ***** //
 
 	/**
-	 * From popup to conveyor
-	 */
-	public void msgPassMeGlass(Popup p) {
-		if (state == ConveyorState.OFF) {
-			transducerPowerConveyor(true);
-		}
-		popup.state = PopupGlassState.PASS_ME_GLASS;
-		stateChanged();
-	}
-
-	/**
-	 * From CF to conveyor
+	 * From CoveyorFamily (if BEFORE) / Workstation (if AFTER)
 	 * 
 	 * @param g
 	 *            - the glass that is passed to the conveyor
 	 */
-	public void msgHereIsGlass(Glass g, OfflineConveyorFamily c) {
-		state = ConveyorState.ON_RECEIVING;
-		glassToReceive = g;
+	public void msgHereIsGlass(Glass g) {
+		glass.add(new MyGlass(g));
 		stateChanged();
 	}
 
 	// ***** SCHEDULER ***** //
 	@Override
 	public boolean pickAndExecuteAnAction() {
-
-		if (popup.state == PopupGlassState.PASS_ME_GLASS) {
-			if (state == ConveyorState.OFF) {
-				transducerPowerConveyor(true);
-			}
-			actGiveGlassToPopup();
-			return true;
-		}
-
-		if (state == ConveyorState.ON_RECEIVING) {
-			if (glassToReceive != null) {
-				actReceiveGlass();
+		
+		for (MyGlass g : glass)
+			if (g.gs == GlassState.DONE) {
+				actRemoveFromList(g);
 				return true;
 			}
-		}
-
+		
+		for (MyGlass g : glass)
+			if (g.gs == GlassState.WAITING) {
+				if (recPosFree) {
+					// send to next LineComponent
+					actSendGlassToNext(g);
+					return true;
+				} else {
+					// waiting and full
+					return false;
+				}
+			}
+		
+		for (MyGlass g : glass)
+			if (g.gs == GlassState.ARRIVED) {
+				powerConveyor(true);
+				return true;
+			}
+		
 		return false;
 	}
 
 	// ***** ACTIONS ***** //
-
-	private void actReceiveGlass() {
-		if (!glass.contains(glassToReceive)) {
-			glass.add(glassToReceive);
-			//glassToReceive = null;
-		} else {
-			System.out.println("Glass already added");
-		}
-		
-		if (glass.size() < MAX_NUM) {
-			state = ConveyorState.ON_POS_FREE;
-			sendPositionFree();
-		} else {
-			state = ConveyorState.OFF;
-			transducerPowerConveyor(false);
-		}
-		stateChanged();
-	}
-
-	private void actGiveGlassToPopup() {
-		transducerPowerConveyor(true);		
-		popup.agent.msgHereIsGlass(glass.remove(), this);
-		popup.state = PopupGlassState.NO_ACTION;
-		state = ConveyorState.ON_POS_FREE;
-		sendPositionFree();
-		stateChanged();
+	
+	private void actRemoveFromList(MyGlass g) {
+		glass.remove(g);
 	}
 	
-	// ***** PRIVATE HELPER METHODS ***** //
-
-	private void sendPositionFree() {
-		if (glass.size() < MAX_NUM) {
-			family.conveyorPositionFree();
-		}
+	private void actSendGlassToNext(MyGlass g) {
+		next.msgHereIsGlass(g.g);
+		previous.msgPositionFree();
 	}
+
+	//***** PRIVATE HELPER METHODS *****//
 	
-	private void transducerPowerConveyor(boolean start) {
-		Object[] args = new Object[1];
-		args[0] = myIndex;
+	private void powerConveyor(boolean start) {
+		Integer[] args = {myIndex};
 		if (start) {
 			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
 		} else {
 			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 		}
 	}
-
-	// ***** ACCESSORS & MUTATORS ***** //
-/*
-	public void setSensors(StartSensorAgent ss, EndSensorAgent se) {
-		sensorStart = ss;
-		sensorEnd = se;
-	}*/
 	
-	public void setPopup(Popup p) {
-		popup = new MyPopup(p, PopupGlassState.NO_ACTION);
-	}
-
-	public void setConveyorFamily(OfflineConveyorFamily cf) {
-		family = cf;
-		sendPositionFree();
-	}
-
-	public ConveyorState getState() {
-		return state;
-	}
+	// ***** ACCESSORS & MUTATORS ***** //
 	
 	@Override
 	public int getIndex() {
 		return myIndex;
 	}
 	
-	public Sensor getEndSensor() {
-		return endSensor;
+	public void setPreviousLineComponent(LineComponent p) {
+		previous = p;
+		previous.msgPositionFree();
 	}
 	
-	public Sensor getStartSensor() {
-		return startSensor;
+	public void setNextLineComponent(LineComponent n) {
+		next = n;
 	}
 	
-	public LinkedList<Glass> getGlassList() {
-		return glass;
-	}
-	
-	public OfflineConveyorFamily getFamily() {
-		return family;
-	}
-	
-	public Glass getGlassToReceive() {
-		return glassToReceive;
-	}
-	
-	public PopupGlassState getPopupGlassState() {
-		return popup.state;
-	}
-	
-	public PopupState getPopupPositionState() {
-		return popup.pos;
-	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel.equals(TChannel.CONVEYOR)) {
-			if (event.equals(TEvent.CONVEYOR_DO_START)) {
-				if ((glass.size() < MAX_NUM) || popup.state == PopupGlassState.PASS_ME_GLASS) {
-					state = ConveyorState.ON_POS_FREE;
-					sendPositionFree();
-				} else {
-					state = ConveyorState.OFF;
-				}
-			}
-			if (event.equals(TEvent.CONVEYOR_DO_STOP)) {
-				state = ConveyorState.OFF;
-			}
-		}
+		int sensorID = (Integer)args[0];
 		
 		if (channel.equals(TChannel.SENSOR)) {
-			if (event.equals(TEvent.SENSOR_GUI_PRESSED)) {
-				if (startSensor.getIndex() == (Integer) args[0]) {
-					startSensor.setPressed(true);
-					//System.out.println("start sensor pressed.");
-				} else if (endSensor.getIndex() == (Integer) args[0]) {
-					endSensor.setPressed(true);
-					if ((glass.size() > 0) && (popup.state == PopupGlassState.NO_ACTION)) {
-						popup.agent.msgIHaveGlass(glass.get(0), this);
-						popup.state = PopupGlassState.OFFERED_GLASS;
-					}
-				}
-			}
 			
-			if (event.equals(TEvent.SENSOR_GUI_RELEASED)) {
-				if (startSensor.getIndex() == (Integer) args[0]) {
-					startSensor.setPressed(false);
-				} else if (endSensor.getIndex() == (Integer) args[0]) {
-					endSensor.setPressed(false);
-				}
-			}
 		}
 	}
-
 }
