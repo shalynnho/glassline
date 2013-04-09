@@ -6,7 +6,7 @@ import java.util.List;
 
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.PopupWorkstationInterface;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -118,7 +118,7 @@ public class MockPopUp extends MockAgent implements PopUp, PopupWorkstationInter
 	}
 
 	@Override
-	public void setCF(ConveyorFamily conveyorFamilyImp) {
+	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
 	}
 

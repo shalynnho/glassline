@@ -8,7 +8,7 @@ import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.agents.OnlineWorkstationAgent;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.LineComponent;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -36,7 +36,7 @@ public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 	private boolean sensorReached = false;
 	private boolean started = false;
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
-	private ConveyorFamily prev, next;
+	private OfflineConveyorFamily prev, next;
 
 	private Semaphore animSem[]; // not used yet
 
@@ -128,11 +128,11 @@ public class SmallOnlineConveyorFamily extends Agent implements LineComponent {
 	}
 
 	// *** EXTRA ***
-	public void setNextConveyorFamily(ConveyorFamily f) {
+	public void setNextConveyorFamily(OfflineConveyorFamily f) {
 		next = f;
 	}
 
-	public void setPreviousConveyorFamily(ConveyorFamily f) {
+	public void setPreviousConveyorFamily(OfflineConveyorFamily f) {
 		prev = f;
 	}
 

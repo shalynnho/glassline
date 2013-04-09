@@ -6,13 +6,13 @@ import shared.Glass;
 import shared.enums.MachineType;
 import transducer.Transducer;
 
-public class ConveyorFamilyImplementation implements ConveyorFamily {
+public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	// *** DATA ***
 	
 	private ConveyorAgent c;
 	private PopupAgent p;
 	
-	public ConveyorFamilyImplementation(ConveyorFamily prev, ConveyorFamily next, Transducer t,
+	public ConveyorFamilyImplementation(OfflineConveyorFamily prev, OfflineConveyorFamily next, Transducer t,
 			OfflineWorkstation mach[], MachineType mt, int cid, int pid) {
 		c = new ConveyorAgent("c" + cid, prev, p, t, cid);
 		p = new PopupAgent("p" + pid, next, c, mach, mt, t, pid);

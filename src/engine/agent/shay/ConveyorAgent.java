@@ -18,7 +18,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	// Maximum number of glass pieces that can be on a conveyor
 	private static final int MAX_NUM = 7;
 
-	private ConveyorFamily family;
+	private OfflineConveyorFamily family;
 	private MyPopup popup;
 	private Sensor startSensor;
 	private Sensor endSensor;
@@ -72,7 +72,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	 * @param g
 	 *            - the glass that is passed to the conveyor
 	 */
-	public void msgHereIsGlass(Glass g, ConveyorFamily c) {
+	public void msgHereIsGlass(Glass g, OfflineConveyorFamily c) {
 		state = ConveyorState.ON_RECEIVING;
 		glassToReceive = g;
 		stateChanged();
@@ -158,7 +158,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		popup = new MyPopup(p, PopupGlassState.NO_ACTION);
 	}
 
-	public void setConveyorFamily(ConveyorFamily cf) {
+	public void setConveyorFamily(OfflineConveyorFamily cf) {
 		family = cf;
 		sendPositionFree();
 	}
@@ -184,7 +184,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		return glass;
 	}
 	
-	public ConveyorFamily getFamily() {
+	public OfflineConveyorFamily getFamily() {
 		return family;
 	}
 	

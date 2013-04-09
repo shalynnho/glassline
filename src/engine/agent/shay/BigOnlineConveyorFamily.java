@@ -11,9 +11,9 @@ import shared.interfaces.OfflineWorkstation;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.TransducerIfc;
 
-public class BigOnlineConveyorFamily implements shared.interfaces.ConveyorFamily {
+public class BigOnlineConveyorFamily implements shared.interfaces.OfflineConveyorFamily {
 
-	private shared.interfaces.ConveyorFamily previous, next;
+	private shared.interfaces.OfflineConveyorFamily previous, next;
 	private TransducerIfc transducer;
 	
 	private Conveyor startConveyor;

@@ -12,7 +12,7 @@ import engine.agent.david.test.mock.MockPopup;
 import engine.agent.david.test.mock.MockSensor;
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -24,7 +24,7 @@ import transducer.Transducer;
  * 
  * @author David Zhang
  */
-public class ConveyorFamilyEntity implements ConveyorFamily {
+public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	// *** Constructor(s) ***
 	public ConveyorFamilyEntity(Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
 		this.t = transducer;
@@ -58,8 +58,8 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 	public Conveyor conv;
 	public Popup popup;
 
-	public ConveyorFamily nextFamily;
-	public ConveyorFamily prevFamily;
+	public OfflineConveyorFamily nextFamily;
+	public OfflineConveyorFamily prevFamily;
 
 	public enum GlassState {
 		NEEDS_PROCESSING, DOES_NOT_NEED_PROCESSING
@@ -154,11 +154,11 @@ public class ConveyorFamilyEntity implements ConveyorFamily {
 		return (Integer) args[0] == getConveyorIndex();
 	}
 
-	public void setNextConveyorFamily(ConveyorFamily f) {
+	public void setNextConveyorFamily(OfflineConveyorFamily f) {
 		nextFamily = f;
 	}
 
-	public void setPreviousConveyorFamily(ConveyorFamily f) {
+	public void setPreviousConveyorFamily(OfflineConveyorFamily f) {
 		prevFamily = f;
 	}
 

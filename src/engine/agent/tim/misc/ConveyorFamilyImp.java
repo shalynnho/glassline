@@ -7,14 +7,14 @@ import engine.agent.tim.interfaces.*;
 import shared.Glass;
 import shared.interfaces.*;
 
-public class ConveyorFamilyImp implements ConveyorFamily {
+public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	//Name: ConveyorFamilyImp
 
 	//Description:  Will act as a wrapper class for a set of conveyors, sensors, and pop-ups.  It will also contain a reference to robots and machines through its components
 
 	//Data:
-	private ConveyorFamily nextCF; // reference to the next ConveyorFamily – this could even be the final truck at the end of the line
-	private ConveyorFamily prevCF; // reference to the previous conveyor family, will be NULL if it does not exist
+	private OfflineConveyorFamily nextCF; // reference to the next ConveyorFamily – this could even be the final truck at the end of the line
+	private OfflineConveyorFamily prevCF; // reference to the previous conveyor family, will be NULL if it does not exist
 	private Conveyor conveyor;
 	private List<Sensor> sensors; // Will hold all of the sensors of different types in one place – adds to the modularity of the system
 	private PopUp popUp;
@@ -66,11 +66,11 @@ public class ConveyorFamilyImp implements ConveyorFamily {
 		this.conveyor = conveyor;
 	}
 
-	public ConveyorFamily getPrevCF() {
+	public OfflineConveyorFamily getPrevCF() {
 		return prevCF;
 	}
 
-	public void setPrevCF(ConveyorFamily prevCF) {
+	public void setPrevCF(OfflineConveyorFamily prevCF) {
 		this.prevCF = prevCF;
 	}
 
@@ -82,11 +82,11 @@ public class ConveyorFamilyImp implements ConveyorFamily {
 		this.popUp = popUp;
 	}
 
-	public ConveyorFamily getNextCF() {
+	public OfflineConveyorFamily getNextCF() {
 		return nextCF;
 	}
 
-	public void setNextCF(ConveyorFamily nextCF) {
+	public void setNextCF(OfflineConveyorFamily nextCF) {
 		this.nextCF = nextCF;
 	}
 

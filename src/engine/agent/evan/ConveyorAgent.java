@@ -10,7 +10,7 @@ import engine.agent.evan.interfaces.*;
 public class ConveyorAgent extends Agent implements LineComponent {
 	// *** DATA ***
 	
-	private ConveyorFamily prevCF;
+	private OfflineConveyorFamily prevCF;
 	private Popup p;
 	private int id; // place in GUI
 	
@@ -30,7 +30,7 @@ public class ConveyorAgent extends Agent implements LineComponent {
 	private boolean posFree, moving; // popup ready
 	
 	/* Assigns references from arguments and sets other data appropriately. */
-	public ConveyorAgent(String name, ConveyorFamily cf, Popup pop, Transducer trans, int index) {
+	public ConveyorAgent(String name, OfflineConveyorFamily cf, Popup pop, Transducer trans, int index) {
 		super(name, trans);
 		
 		prevCF = cf;

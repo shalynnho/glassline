@@ -9,7 +9,7 @@ import engine.agent.tim.misc.MyGlassMachine;
 import engine.agent.tim.misc.MyGlassMachine.processState;
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -33,7 +33,7 @@ public class MachineAgent extends Agent implements Machine {
     boolean timerCalled = false; // Makes sure that the timer is not called too many times 
 	
 	//Constructors:
-	public MachineAgent(String name, Transducer transducer, MachineType processType, int machineChannel, ConveyorFamily cf) { // Will exclude the robot unless it is needed
+	public MachineAgent(String name, Transducer transducer, MachineType processType, int machineChannel, OfflineConveyorFamily cf) { // Will exclude the robot unless it is needed
 		// Initialize the variables based upon the constructor parameters first
 		super(name, transducer);
 		this.cf = (ConveyorFamilyImp) cf;
@@ -136,7 +136,7 @@ public class MachineAgent extends Agent implements Machine {
 	}
 
 	@Override
-	public void setCF(ConveyorFamily cf) {
+	public void setCF(OfflineConveyorFamily cf) {
 		this.cf = (ConveyorFamilyImp) cf;	
 	}
 }

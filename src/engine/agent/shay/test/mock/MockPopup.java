@@ -34,7 +34,7 @@ public class MockPopup extends MockAgent implements Popup {
 	}
 
 	@Override
-	public void msgGlassDone(Glass g, int machineIndex, ConveyorFamily c) {
+	public void msgGlassDone(Glass g, int machineIndex, OfflineConveyorFamily c) {
 		log.add(new LoggedEvent(
 				"Received msgGlassDone from ConveyorFamily: " + c.getType()  + ", GlassID: " + g.getID() + ", machineIndex: " + machineIndex));
 	}
@@ -51,7 +51,7 @@ public class MockPopup extends MockAgent implements Popup {
 	}
 
 	@Override
-	public void setConveyorFamily(ConveyorFamily cf) {
+	public void setConveyorFamily(OfflineConveyorFamily cf) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 import engine.agent.tim.misc.MyGlassPopUp;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.PopupWorkstationInterface;
 
 public interface PopUp extends PopupWorkstationInterface {
@@ -16,7 +16,7 @@ public interface PopUp extends PopupWorkstationInterface {
 	// Getters/Setters
 	public abstract boolean isPopUpDown();
 	public abstract List<MyGlassPopUp> getGlassToBeProcessed();
-	public abstract void setCF(ConveyorFamily conveyorFamilyImp);
+	public abstract void setCF(OfflineConveyorFamily conveyorFamilyImp);
 
 	// These methods will specifically be used for testing purposes -- do not have to be always be implemented
 	public abstract void runScheduler();

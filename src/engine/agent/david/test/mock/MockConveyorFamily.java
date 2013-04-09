@@ -1,9 +1,9 @@
 package engine.agent.david.test.mock;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 
-public class MockConveyorFamily extends MockEntity implements ConveyorFamily {
+public class MockConveyorFamily extends MockEntity implements OfflineConveyorFamily {
 	public MockConveyorFamily(String name) {
 		super(name);
 	}

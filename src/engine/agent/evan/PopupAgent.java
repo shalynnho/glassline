@@ -12,7 +12,7 @@ import engine.agent.evan.interfaces.*;
 public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	
-	private ConveyorFamily nextCF;
+	private OfflineConveyorFamily nextCF;
 	private LineComponent c; // the previous conveyor
 	private OfflineWorkstation mach[];
 	private int id; // place in animation
@@ -39,7 +39,7 @@ public class PopupAgent extends Agent implements Popup {
 	private boolean mFree[], up, posFree; // machine free, up or down, nextCF position free
 	
 	/* Assigns references from arguments and sets other data appropriately. */
-	public PopupAgent(String name, ConveyorFamily cf, LineComponent conv, OfflineWorkstation machines[], MachineType mType, Transducer trans, int index) {
+	public PopupAgent(String name, OfflineConveyorFamily cf, LineComponent conv, OfflineWorkstation machines[], MachineType mType, Transducer trans, int index) {
 		super(name, trans);
 		
 		nextCF = cf;

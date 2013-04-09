@@ -7,7 +7,7 @@ import java.util.Timer;
 
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -21,7 +21,7 @@ public class MockMachine extends MockAgent implements Machine {
 	private List<MyGlassMachine> glassToBeProcessed;
 	private MachineType processType; // Designates what process this machine performs
 	
-	private ConveyorFamily cf; // Reference to the conveyor family.  This was not previously needed, because thr robot handled this, but now the robot agent is not being used, so the machine agent needs a reference to the conveyor family
+	private OfflineConveyorFamily cf; // Reference to the conveyor family.  This was not previously needed, because thr robot handled this, but now the robot agent is not being used, so the machine agent needs a reference to the conveyor family
 	
 	private int machineChannel; // The channel number for this machine, which will be 0 or 1
 	
@@ -95,7 +95,7 @@ public class MockMachine extends MockAgent implements Machine {
 	}
 
 	@Override
-	public void setCF(ConveyorFamily cf) {
+	public void setCF(OfflineConveyorFamily cf) {
 		this.cf = cf;		
 	}
 	

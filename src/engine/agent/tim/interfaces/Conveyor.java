@@ -5,7 +5,7 @@ import java.util.List;
 import engine.agent.tim.misc.MyGlassConveyor;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 
 public interface Conveyor {
 	public abstract void msgGiveGlassToConveyor(Glass glass);
@@ -17,7 +17,7 @@ public interface Conveyor {
 	// Getters/Setters
 	public abstract boolean isConveyorOn();
 	public abstract List<MyGlassConveyor> getGlassSheets();
-	public abstract void setCF(ConveyorFamily conveyorFamilyImp);	
+	public abstract void setCF(OfflineConveyorFamily conveyorFamilyImp);	
 	
 	// These methods will specifically be used for testing purposes -- do not have to be always be implemented
 	public abstract void runScheduler();

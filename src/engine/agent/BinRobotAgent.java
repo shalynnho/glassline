@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.LineComponent;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -17,7 +17,7 @@ public class BinRobotAgent extends Agent implements LineComponent {
 	// *** DATA ***
 	private List<Glass> glasses = new ArrayList<Glass>();
 	private boolean posFree = false;
-	private ConveyorFamily next;
+	private OfflineConveyorFamily next;
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() { // from first conveyor family
@@ -57,7 +57,7 @@ public class BinRobotAgent extends Agent implements LineComponent {
 	}
 
 	// *** EXTRA ***
-	public void setNextConveyorFamily(ConveyorFamily f) {
+	public void setNextConveyorFamily(OfflineConveyorFamily f) {
 		next = f;
 	}
 
