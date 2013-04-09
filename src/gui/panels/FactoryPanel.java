@@ -1,6 +1,7 @@
 package gui.panels;
 
 import engine.agent.BinRobotAgent;
+import engine.agent.SmallOnlineConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 
 import java.util.ArrayList;
@@ -40,9 +41,10 @@ public class FactoryPanel extends JPanel {
 	/* ConveyorFamilies & accompanying workstation */
 //	// Cutter
 //	private BigOnlineConveyorFamily cutterFamily;
-//
-//	// Breakout
-//	private SmallConveyorFamily breakoutFamily;
+	private SmallOnlineConveyorFamilyImp cutterFamily; // temp
+
+	// Breakout
+	private SmallOnlineConveyorFamilyImp breakoutFamily;
 //
 //	// Manual Breakout
 //	private BigOnlineConveyorFamily manualBreakoutFamily;
@@ -63,7 +65,7 @@ public class FactoryPanel extends JPanel {
 //	private BigOnlineConveyorFamily washerFamily;
 //
 //	// Painter
-//	private SmallConveyorFamily painterFamily;
+//	private SmallOnlineConveyorFamilyImp painterFamily;
 //
 //	// UV Lamp
 //	private BigOnlineConveyorFamily lampFamily;
@@ -122,10 +124,21 @@ public class FactoryPanel extends JPanel {
 		// ===========================================================================
 
 		// Initial robot that has the glasses
-		binRobot = new BinRobotAgent();
+		binRobot = new BinRobotAgent("Bin Robot", transducer);
 
 		// Cutter
 //		BigOnlineConveyorFamily cutterFamily = new BigOnlineConveyorFamily(..);
+		cutterFamily = new SmallOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0);
+		
+		// Breakout
+		breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 1);
+		
+		// Connect them!
+		binRobot.setNextLineComponent(cutterFamily);
+		cutterFamily.setPreviousLineComponent(binRobot);
+		
+		cutterFamily.setNextLineComponent(breakoutFamily);
+		breakoutFamily.setPreviousLineComponent(cutterFamily);
 		
 		System.out.println("Backend initialization finished.");
 	}
@@ -136,8 +149,16 @@ public class FactoryPanel extends JPanel {
 	private void createGlassesAndRun() {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
-		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, MachineType.CROSS_SEAMER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.GRINDER }));
 		binRobot.seedGlasses(glasses);
+		
+		startAgentThreads();
+	}
+	
+	private void startAgentThreads() {
+		binRobot.startThread();
+		cutterFamily.startThreads();
+		breakoutFamily.startThreads();
 	}
 
 	/**

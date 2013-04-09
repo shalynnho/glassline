@@ -57,9 +57,9 @@ public abstract class Agent implements TReceiver {
 	 */
 	public String getName() {
 		if (name == null) {
-			name = StringUtil.shortName(this);
+//			name = StringUtil.shortName(this); // this caused stackoverflow
+			System.err.println("Name is null for agent: "+getClass());
 		}
-
 		return name;
 	}
 

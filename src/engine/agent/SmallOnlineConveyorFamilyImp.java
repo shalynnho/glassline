@@ -8,13 +8,13 @@ import transducer.Transducer;
 public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	
 	public SmallOnlineConveyorFamilyImp(MachineType type, Transducer trans, int convIndex) {
-		conveyor = new SmallConveyorAgent(type.toString() + "conveyor", trans, this, convIndex);
-		workstation = new OnlineWorkstationAgent(type.toString() + "workstation", type, conveyor.transducer);
+		conveyor = new SmallConveyorAgent(type.toString()+" conveyor", trans, this, convIndex);
+		workstation = new OnlineWorkstationAgent(type.toString()+" workstation", type, conveyor.transducer);
 	}
 	
 	public SmallConveyorAgent conveyor;
 	public OnlineWorkstationAgent workstation;
-	public LineComponent prev, next;
+	public LineComponent prev, next; // the previous and next families
 	
 	@Override
 	public void msgHereIsGlass(Glass glass) {
@@ -32,6 +32,11 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 
 	public void setPreviousLineComponent(LineComponent l) {
 		prev = l;
+	}
+	
+	public void startThreads() {
+		conveyor.startThread();
+		workstation.startThread();
 	}
 
 }

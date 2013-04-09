@@ -16,6 +16,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	enum GlassState {pending, arrived, processing, processed, releasing, released};
 
 	private GlassState state;
+	// ISSUE: How is this set? Does this conflate with SmallOnlineConveyorFamily's prev and next pointers, which are also LineComponents?
 	private LineComponent before, after;
 	private Semaphore aniSem;
 	private boolean recPosFree;
@@ -95,7 +96,12 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	private void releaseGlass() {
 		transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_GLASS, null);
 		state = GlassState.releasing;
-		after.msgHereIsGlass(glass);
+		
+		if (after != null)
+			after.msgHereIsGlass(glass);
+		else {
+			print("There is no 'after' LineComponent set for this workstation.");
+		}
 	}
 	
 	private void reset() {

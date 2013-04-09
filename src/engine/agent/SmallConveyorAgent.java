@@ -39,11 +39,13 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass glass) {
+		print("Received msgHereIsGlass");
 		glasses.add(glass);
 		stateChanged();
 	}
 
 	public void msgPositionFree() {
+		print("Received msgPositionFree");
 		posFree = true;
 		stateChanged();
 	}
@@ -82,8 +84,10 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 		
 		// Listen for workstation events so you know when an animation is done
 		if (channel == family.workstation.getChannel() && event == TEvent.WORKSTATION_LOAD_FINISHED) {
+			print("Workstation load finished");
 			animSem[0].release();
 		} else if (channel == family.workstation.getChannel() && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
+			print("Workstation action finished");
 			animSem[1].release();
 		}
 		
@@ -91,6 +95,7 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 
 	// *** ACTIONS ***
 	public void actLoadGlassOntoWorkstationAndPassOn() {
+		print("Doing actLoadGlassOntoWorkstationAndPassOn");
 		Glass g = glasses.remove(0);
 		doLoadGlassOntoWorkstation();
 		doPassOnGlass(g);
@@ -99,16 +104,18 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 	}
 
 	public void actStartConveyor() {
-		started = true;
+		print("Doing actStartConveyor");
 		doStartConveyor();
 	}
 
 	// *** ANIMATION ACTIONS ***
 	private void doStartConveyor() {
+		started = true;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, new Integer[] { conveyorIndex });
 	}
 
 	private void doStopConveyor() {
+		started = false;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[] { conveyorIndex });
 	}
 

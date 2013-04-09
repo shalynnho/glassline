@@ -4,23 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.LineComponent;
 import transducer.TChannel;
 import transducer.TEvent;
+import transducer.Transducer;
 
 public class BinRobotAgent extends Agent implements LineComponent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily upon creation
-	public BinRobotAgent() {}
+	public BinRobotAgent(String name, Transducer trans) {
+		super(name, trans);
+	}
 
 	// *** DATA ***
 	private List<Glass> glasses = new ArrayList<Glass>();
-	private boolean posFree = false;
-	private OfflineConveyorFamily next;
+	private boolean posFree = true;
+	private LineComponent next;
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() { // from first conveyor family
+		print("Received msgPositionFree");
 		posFree = true;
 		stateChanged();
 	}
@@ -46,6 +49,7 @@ public class BinRobotAgent extends Agent implements LineComponent {
 	
 	// *** ACTIONS ***
 	private void passOnGlass() {
+		print("Doing passOnGlass");
 		doPassOnGlass();
 		next.msgHereIsGlass(glasses.remove(0));
 		posFree = false;
@@ -54,11 +58,12 @@ public class BinRobotAgent extends Agent implements LineComponent {
 	// *** ANIMATION ACTIONS ***
 	private void doPassOnGlass() {
 		transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		// assumes this makes the part go to the next conveyor
 	}
 
 	// *** EXTRA ***
-	public void setNextConveyorFamily(OfflineConveyorFamily f) {
-		next = f;
+	public void setNextLineComponent(LineComponent l) {
+		next = l;
 	}
 
 	// Seeds list of glasses with the given list
