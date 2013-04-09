@@ -1,7 +1,6 @@
 package shared.agents;
 
 import java.util.concurrent.Semaphore;
-
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.PopupWorkstationInterface;
