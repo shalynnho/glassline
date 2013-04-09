@@ -6,7 +6,7 @@ import transducer.TReceiver;
 import transducer.Transducer;
 
 public class GuiTestSM implements TReceiver {
-	Transducer t;
+	protected Transducer t;
 
 	boolean offlineDone = false;
 

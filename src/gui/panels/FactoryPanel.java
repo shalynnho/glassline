@@ -148,7 +148,7 @@ public class FactoryPanel extends JPanel {
 			// Set things in motion!
 			createGlassesAndRun();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
-			prepareDavidsTest();
+			DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
 		}
 		
 		System.out.println("Backend initialization finished.");
@@ -172,25 +172,6 @@ public class FactoryPanel extends JPanel {
 		breakoutFamily.startThreads();
 	}
 
-	private void prepareDavidsTest() {
-		// Prepare agents
-		OfflineWorkstationAgent grinderWks1 = new OfflineWorkstationAgent("Grinder workstation 1", MachineType.GRINDER, 0, transducer);
-		OfflineWorkstationAgent grinderWks2 = new OfflineWorkstationAgent("Grinder workstation 2", MachineType.GRINDER, 1, transducer);
-		
-		ConveyorFamilyEntity grinderFamily = new ConveyorFamilyEntity(transducer, 5, 0, grinderWks1, grinderWks2);
-		
-		// Make sure all conveyors leading up to my first conveyor family are on and just passing the glass along
-		// TODO
-		
-		// Make sure the last one sends msgHereIsGlass
-		// TODO
-		
-		// Start agent threads
-		grinderWks1.startThread();
-		grinderWks2.startThread();
-		grinderFamily.startThreads();
-	}
-	
 	/**
 	 * Returns the parent frame of this panel
 	 * 
