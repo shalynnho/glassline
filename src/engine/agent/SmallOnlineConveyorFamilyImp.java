@@ -16,12 +16,10 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	public OnlineWorkstationAgent workstation;
 	public LineComponent prev, next; // the previous and next families
 	
-	@Override
 	public void msgHereIsGlass(Glass glass) {
 		conveyor.msgHereIsGlass(glass);
 	}
-
-	@Override
+	
 	public void msgPositionFree() {
 		conveyor.msgPositionFree();
 	}
@@ -29,7 +27,7 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	public void setNextLineComponent(LineComponent l) {
 		next = l;
 	}
-
+	
 	public void setPreviousLineComponent(LineComponent l) {
 		prev = l;
 	}
@@ -38,5 +36,4 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 		conveyor.startThread();
 		workstation.startThread();
 	}
-
 }
