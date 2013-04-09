@@ -52,7 +52,7 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	}
 
 	public void msgGlassDone(Glass g, int machineIndex) {
-		getPopUp().msgDoneProcessingGlass(g);
+		getPopUp().msgGlassDone(g, machineIndex);
 		System.out.println(name + ": Messaged pop up with processed glass.");
 	}
 	
