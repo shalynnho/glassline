@@ -4,7 +4,9 @@ import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
-import transducer.*;
+import transducer.TChannel;
+import transducer.TEvent;
+import transducer.Transducer;
 import engine.agent.Agent;
 
 public class OnlineWorkstationAgent extends Agent implements LineComponent {
@@ -19,15 +21,13 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	private Semaphore aniSem;
 	private boolean recPosFree;
 
-	public OnlineWorkstationAgent(String name, MachineType mt, Transducer t, LineComponent b, LineComponent a) {
+	public OnlineWorkstationAgent(String name, MachineType mt, Transducer t) {
 		super(name, t);
 		type = mt;
 		recPosFree = true;
 		channel = type.getChannel();
 		aniSem = new Semaphore(0);
 		transducer.register(this, channel);
-		before = b;
-		after = a;
 	}
 
 	// *** MESSAGES ***

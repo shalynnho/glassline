@@ -24,7 +24,7 @@ public class MockConveyor extends MockAgent implements Conveyor {
 	}
 
 	@Override
-	public void msgHereIsGlass(Glass g, ConveyorFamily cf) {
+	public void msgHereIsGlass(Glass g, OfflineConveyorFamily cf) {
 		log.add(new LoggedEvent(
 				"Received msgHereIsGlass from ConveyorFamily: " + cf.getType() + ", GlassID: " + g.getID()));
 	}
@@ -35,7 +35,7 @@ public class MockConveyor extends MockAgent implements Conveyor {
 	}
 
 	@Override
-	public void setConveyorFamily(ConveyorFamily cf) {
+	public void setConveyorFamily(OfflineConveyorFamily cf) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -8,14 +8,14 @@ import engine.agent.tim.interfaces.PopUp;
 import engine.agent.tim.interfaces.Sensor;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 
-public class MockConveyorFamily implements ConveyorFamily {
+public class MockConveyorFamily implements OfflineConveyorFamily {
 	//Data:
 	public List<Glass> glassSheets = new ArrayList<Glass>(); // Will hold the glass to be received from the previous ConveyorFamily
 	public String name;
-	public ConveyorFamily prevCF;
-	public ConveyorFamily nextCF;
+	public OfflineConveyorFamily prevCF;
+	public OfflineConveyorFamily nextCF;
 	
 	public EventLog log = new EventLog();
 	
@@ -44,19 +44,19 @@ public class MockConveyorFamily implements ConveyorFamily {
 		
 	}
 
-	public ConveyorFamily getPrevCF() {
+	public OfflineConveyorFamily getPrevCF() {
 		return prevCF;
 	}
 
-	public void setPrevCF(ConveyorFamily prevCF) {
+	public void setPrevCF(OfflineConveyorFamily prevCF) {
 		this.prevCF = prevCF;
 	}
 
-	public ConveyorFamily getNextCF() {
+	public OfflineConveyorFamily getNextCF() {
 		return nextCF;
 	}
 
-	public void setNextCF(ConveyorFamily nextCF) {
+	public void setNextCF(OfflineConveyorFamily nextCF) {
 		this.nextCF = nextCF;
 	}
 

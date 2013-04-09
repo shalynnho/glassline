@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -98,7 +98,7 @@ public class MockConveyor extends MockAgent implements Conveyor {
 	}
 
 	@Override
-	public void setCF(ConveyorFamily conveyorFamilyImp) {
+	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
 	}
 

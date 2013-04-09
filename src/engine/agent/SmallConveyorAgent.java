@@ -6,18 +6,17 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
 import shared.interfaces.LineComponent;
-import shared.interfaces.Workstation;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 
 public class SmallConveyorAgent extends Agent implements LineComponent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextLineComponent, etc. upon creation
-	public SmallConveyorAgent(int cIndex, Workstation w) {
+	public SmallConveyorAgent(SmallOnlineConveyorFamilyImp cf, int cIndex) {
+		this.family = cf;
 		this.conveyorIndex = cIndex;
-		this.workstation = w;
 
 		// Animation delay semaphores
 		animSem = new Semaphore[2]; // index 0 -> WORKSTATION_LOAD_FINISHED, 1 -> WORKSTATION_GUI_ACTION_FINISHED
@@ -27,14 +26,14 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 	}
 
 	// *** DATA ***
+	private SmallOnlineConveyorFamilyImp family;
 	private int conveyorIndex;
-	private Workstation workstation;
 	
 	private boolean posFree = false;
 	private boolean sensorReached = false;
 	private boolean started = false;
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
-	private ConveyorFamily prev, next;
+	private OfflineConveyorFamily prev, next;
 
 	private Semaphore animSem[];
 
@@ -82,9 +81,9 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 		}
 		
 		// Listen for workstation events so you know when an animation is done
-		if (channel == workstation.getChannel() && event == TEvent.WORKSTATION_LOAD_FINISHED) {
+		if (channel == family.workstation.getChannel() && event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			animSem[0].release();
-		} else if (channel == workstation.getChannel() && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
+		} else if (channel == family.workstation.getChannel() && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
 			animSem[1].release();
 		}
 		
@@ -114,23 +113,23 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 	}
 
 	private void doLoadGlassOntoWorkstation() {
-		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, null);
+		transducer.fireEvent(family.workstation.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, null);
 		doWaitAnimation(0); // wait until workstation done loading, i.e., WORKSTATION_LOAD_FINISHED
 		
-		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_DO_ACTION, null);
+		transducer.fireEvent(family.workstation.getChannel(), TEvent.WORKSTATION_DO_ACTION, null);
 		doWaitAnimation(1); // wait until workstation done action, i.e., WORKSTATION_GUI_ACTION_FINISHED
 	}
 
 	private void doPassOnGlass(Glass g) {
-		transducer.fireEvent(workstation.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, null);
+		transducer.fireEvent(family.workstation.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, null);
 	}
 
 	// *** EXTRA ***
-	public void setNextLineComponent(ConveyorFamily f) {
+	public void setNextConveyorFamily(OfflineConveyorFamily f) {
 		next = f;
 	}
 
-	public void setPreviousLineComponent(ConveyorFamily f) {
+	public void setPreviousConveyorFamily(OfflineConveyorFamily f) {
 		prev = f;
 	}
 

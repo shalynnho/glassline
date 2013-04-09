@@ -3,7 +3,7 @@ package engine.agent.tim.agents;
 import java.util.*;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -233,7 +233,7 @@ public class SensorAgent extends Agent implements Sensor {
 	}
 
 	@Override
-	public void setCF(ConveyorFamily conveyorFamilyImp) {
+	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
 	}
 

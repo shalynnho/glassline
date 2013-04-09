@@ -5,7 +5,7 @@ import java.util.List;
 import engine.agent.tim.misc.MyGlassSensor;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 
 public interface Sensor {
 	public abstract void msgHereIsGlass(Glass glass); // Sometimes this message will be fired through a transducer event instead of just the conveyor family
@@ -15,7 +15,7 @@ public interface Sensor {
 	// This method will be used to get the type for the sensor in both real sensors and mock sensors
 	public abstract List<String> getType();
 	public abstract List<MyGlassSensor> getGlassSheets();
-	public abstract void setCF(ConveyorFamily conveyorFamilyImp);
+	public abstract void setCF(OfflineConveyorFamily conveyorFamilyImp);
 
 	// These methods will specifically be used for testing purposes -- do not have to be always be implemented
 	public abstract void runScheduler();

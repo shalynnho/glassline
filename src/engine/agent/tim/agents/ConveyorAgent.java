@@ -5,7 +5,7 @@ import java.util.*;
 import javax.swing.Popup;
 
 import shared.Glass;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -176,7 +176,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 
 	@Override
-	public void setCF(ConveyorFamily conveyorFamilyImp) {
+	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
 	}
 

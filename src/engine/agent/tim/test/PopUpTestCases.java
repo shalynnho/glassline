@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.Transducer;
 import engine.agent.tim.agents.ConveyorAgent;
 import engine.agent.tim.agents.PopUpAgent;

@@ -10,7 +10,7 @@ import engine.agent.tim.misc.MyGlassPopUp;
 import engine.agent.tim.misc.MyGlassPopUp.processState;
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.ConveyorFamily;
+import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -218,7 +218,7 @@ public class PopUpAgent extends Agent implements PopUp {
 	}
 
 	@Override
-	public void setCF(ConveyorFamily conveyorFamilyImp) {
+	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
 	}
 
