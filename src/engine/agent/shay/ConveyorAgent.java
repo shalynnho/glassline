@@ -1,7 +1,6 @@
 package engine.agent.shay;
 
 import java.util.LinkedList;
-import java.util.concurrent.Semaphore;
 
 import shared.Glass;
 import shared.interfaces.LineComponent;
@@ -16,7 +15,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private BigOnlineConveyorFamily family;
 	private LineComponent previous, next;
 
-	private Semaphore aniSem;
 	private boolean recPosFree;
 	
 	private int myIndex;
@@ -45,7 +43,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		myIndex = index;
 		glassList = new LinkedList<MyGlass>();
 		recPosFree = true;
-		aniSem = new Semaphore(0);
 		
 		powerConveyor(true);
 	}
