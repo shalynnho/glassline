@@ -6,28 +6,28 @@ import java.util.List;
 
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.OfflineWorkstation;
+import shared.interfaces.LineComponent;
 import engine.agent.OnlineWorkstationAgent;
 import engine.agent.shay.interfaces.Conveyor;
 import engine.agent.shay.interfaces.TransducerIfc;
 
-public class BigOnlineConveyorFamily implements shared.interfaces.OfflineConveyorFamily {
+public class BigOnlineConveyorFamily implements LineComponent {
 
 	private shared.interfaces.OfflineConveyorFamily previous, next;
 	private TransducerIfc transducer;
 	
 	private Conveyor startConveyor;
 	private Conveyor endConveyor;
-	private OfflineWorkstation workstation;
+	private OnlineWorkstationAgent workstation;
 	private MachineType type;
 	private boolean recPosFree;
 	
 	private List<Glass> glass = Collections.synchronizedList(new ArrayList<Glass>());
 	
-	public BigOnlineConveyorFamily(ConveyorAgent start, ConveyorAgent end, OfflineWorkstation o, TransducerIfc t) {
+	public BigOnlineConveyorFamily(ConveyorAgent start, ConveyorAgent end, OnlineWorkstationAgent o, TransducerIfc t) {
 		startConveyor = start;
 		endConveyor = end;
-		workstation = (OnlineWorkstationAgent) o;
+		workstation = o;
 		type = workstation.getType();
 		transducer = t;
 		recPosFree = true;
@@ -44,10 +44,6 @@ public class BigOnlineConveyorFamily implements shared.interfaces.OfflineConveyo
 		recPosFree = true; // from next ConveyorFamily
 	}
 
-	@Override
-	public void msgGlassDone(Glass glass, int machineIndex) {
-	}
-	
 	public boolean getPosFree() {
 		return recPosFree;
 	}
