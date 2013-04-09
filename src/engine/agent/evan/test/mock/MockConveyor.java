@@ -1,9 +1,9 @@
 package engine.agent.evan.test.mock;
 
 import shared.Glass;
-import engine.agent.evan.interfaces.Conveyor;
+import shared.interfaces.LineComponent;
 
-public class MockConveyor extends MockAgent implements Conveyor {
+public class MockConveyor extends MockAgent implements LineComponent {
 
 	public MockConveyor(String name) {
 		super(name);

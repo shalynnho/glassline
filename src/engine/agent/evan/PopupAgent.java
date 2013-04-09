@@ -13,7 +13,7 @@ public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	
 	private ConveyorFamily nextCF;
-	private Conveyor c;
+	private LineComponent c; // the previous conveyor
 	private Workstation mach[];
 	private int id; // place in animation
 	
@@ -39,7 +39,7 @@ public class PopupAgent extends Agent implements Popup {
 	private boolean mFree[], up, posFree; // machine free, up or down, nextCF position free
 	
 	/* Assigns references from arguments and sets other data appropriately. */
-	public PopupAgent(String name, ConveyorFamily cf, Conveyor conv, Workstation machines[], MachineType mType, Transducer trans, int index) {
+	public PopupAgent(String name, ConveyorFamily cf, LineComponent conv, Workstation machines[], MachineType mType, Transducer trans, int index) {
 		super(name, trans);
 		
 		nextCF = cf;
