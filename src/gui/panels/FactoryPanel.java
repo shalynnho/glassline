@@ -1,15 +1,6 @@
 package gui.panels;
 
 import engine.agent.BinRobotAgent;
-<<<<<<< HEAD
-=======
-import engine.agent.OfflineWorkstationAgent;
-import engine.agent.OnlineWorkstationAgent;
-import engine.agent.SmallOnlineConveyorFamily;
-import engine.agent.david.misc.ConveyorFamilyEntity;
-import engine.agent.evan.ConveyorFamilyImplementation;
-import engine.agent.tim.misc.ConveyorFamilyImp;
->>>>>>> 6840a20cb12fb51bf2adbfe10e9dd53cb95422e5
 import gui.drivers.FactoryFrame;
 
 import java.util.ArrayList;
@@ -133,6 +124,9 @@ public class FactoryPanel extends JPanel {
 		// Initial robot that has the glasses
 		binRobot = new BinRobotAgent();
 
+		// Cutter
+//		BigOnlineConveyorFamily cutterFamily = new BigOnlineConveyorFamily(..);
+		
 		System.out.println("Backend initialization finished.");
 	}
 

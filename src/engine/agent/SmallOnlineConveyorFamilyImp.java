@@ -3,16 +3,18 @@ package engine.agent;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
+import transducer.Transducer;
 
 public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	
-	public SmallOnlineConveyorFamilyImp(int index, MachineType type) {
-		conveyor = new SmallConveyorAgent(this, index);
-		workstation = new OnlineWorkstationAgent(type.toString() + "wks", type, conveyor.transducer);
+	public SmallOnlineConveyorFamilyImp(MachineType type, Transducer trans, int convIndex) {
+		conveyor = new SmallConveyorAgent(type.toString() + "conveyor", trans, this, convIndex);
+		workstation = new OnlineWorkstationAgent(type.toString() + "workstation", type, conveyor.transducer);
 	}
 	
-	protected SmallConveyorAgent conveyor;
-	protected OnlineWorkstationAgent workstation;
+	public SmallConveyorAgent conveyor;
+	public OnlineWorkstationAgent workstation;
+	public LineComponent prev, next;
 	
 	@Override
 	public void msgHereIsGlass(Glass glass) {
@@ -22,6 +24,14 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	@Override
 	public void msgPositionFree() {
 		conveyor.msgPositionFree();
+	}
+	
+	public void setNextLineComponent(LineComponent l) {
+		next = l;
+	}
+
+	public void setPreviousLineComponent(LineComponent l) {
+		prev = l;
 	}
 
 }

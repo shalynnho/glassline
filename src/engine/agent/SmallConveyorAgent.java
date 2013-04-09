@@ -7,14 +7,15 @@ import java.util.concurrent.Semaphore;
 
 import shared.Glass;
 import shared.interfaces.LineComponent;
-import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
+import transducer.Transducer;
 
 public class SmallConveyorAgent extends Agent implements LineComponent {
 	// *** Constructor(s) ***
 	// Make sure to do setNextLineComponent, etc. upon creation
-	public SmallConveyorAgent(SmallOnlineConveyorFamilyImp cf, int cIndex) {
+	public SmallConveyorAgent(String name, Transducer trans, SmallOnlineConveyorFamilyImp cf, int cIndex) {
+		super(name, trans);
 		this.family = cf;
 		this.conveyorIndex = cIndex;
 
@@ -33,7 +34,6 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 	private boolean sensorReached = false;
 	private boolean started = false;
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
-	private OfflineConveyorFamily prev, next;
 
 	private Semaphore animSem[];
 
@@ -66,7 +66,7 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
 			// When the glass moves past the 1st sensor
 			if (thisSensor1(args)) {
-				prev.msgPositionFree();
+				family.prev.msgPositionFree();
 			}
 			// When the glass moves past the 2nd sensor
 			else if (thisSensor2(args)) {
@@ -94,7 +94,7 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 		Glass g = glasses.remove(0);
 		doLoadGlassOntoWorkstation();
 		doPassOnGlass(g);
-		next.msgHereIsGlass(g);
+		family.next.msgHereIsGlass(g);
 		posFree = false;
 	}
 
@@ -125,14 +125,6 @@ public class SmallConveyorAgent extends Agent implements LineComponent {
 	}
 
 	// *** EXTRA ***
-	public void setNextConveyorFamily(OfflineConveyorFamily f) {
-		next = f;
-	}
-
-	public void setPreviousConveyorFamily(OfflineConveyorFamily f) {
-		prev = f;
-	}
-
 	public int getSensor1Index() {
 		return conveyorIndex * 2; // returns 1st sensor
 	}
