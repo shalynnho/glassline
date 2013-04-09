@@ -7,7 +7,7 @@ import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class ConveyorAgent extends Agent implements Conveyor {
+public class ConveyorAgent extends Agent implements LineComponent {
 	// *** DATA ***
 	
 	private ConveyorFamily prevCF;
@@ -39,9 +39,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		id = index;
 		
 		glasses = new ArrayList<MyGlass>();
-		posFree = false;
+		posFree = true;
 		moving = false;
-		prevCF.msgPositionFree(); // conveyor starts open
 	}
 	
 	// *** MESSAGES ***

@@ -22,7 +22,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	public OnlineWorkstationAgent(String name, MachineType mt, Transducer t, LineComponent b, LineComponent a) {
 		super(name, t);
 		type = mt;
-		recPosFree = false;
+		recPosFree = true;
 		channel = type.getChannel();
 		aniSem = new Semaphore(0);
 		transducer.register(this, channel);
