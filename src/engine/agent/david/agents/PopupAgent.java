@@ -216,14 +216,19 @@ public class PopupAgent extends Agent implements Popup {
 		// From actReleaseGlassFromWorkstation step 2 (sometimes)
 		else if (state == PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP) {
-				setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
-				doReleaseGlassFromProperWorkstation();
-				print("JUST RELEASED GLASS FROM PROPER WORKSTATION");
+				if (family.thisPopup(args)) {
+					setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
+					doReleaseGlassFromProperWorkstation();
+					print("JUST RELEASED GLASS FROM PROPER WORKSTATION");
+				}
 			}
 		}
 		// From actReleaseGlassFromWorkstation step 3
 		else if (state == PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE) {
 			if (channel == family.workstationChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
+				// Need to check proper workstation? No, because doReleaseGlassFromProperWorkstation() chooses the one that is ready to release.
+				// The scheduler can pick up next time and release the other workstation's glass if it's also done.
+				
 				setState(PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION);
 				family.doMovePopupDown();
 				print("JUST MOVED POPUP DOWN B/C WKS GLASS RELEASE");
@@ -232,17 +237,19 @@ public class PopupAgent extends Agent implements Popup {
 		// From actReleaseGlassFromWorkstation step 4 (final)
 		else if (state == PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
-				setState(PopupState.ACTIVE);
+				if (family.thisPopup(args)) { // JUSTFIXED
+					setState(PopupState.ACTIVE);
 
-				// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
-				Glass glass = finishedGlasses.remove(0); // remove & return first element
-				family.next.msgHereIsGlass(glass);
-				nextPosFree = false;
+					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
+					Glass glass = finishedGlasses.remove(0); // remove & return first element
+					family.next.msgHereIsGlass(glass);
+					nextPosFree = false;
 
-				family.doReleaseGlassFromPopup();
-				print("FINALLY JUST RELEASED GLASS");
+					family.doReleaseGlassFromPopup();
+					print("FINALLY JUST RELEASED GLASS");
 
-				stateChanged();
+					stateChanged();
+				}
 			}
 		}
 
@@ -349,7 +356,7 @@ public class PopupAgent extends Agent implements Popup {
 			updateWorkstationState(workstation2.getIndex(), WorkstationState.FREE); // index 1
 		}
 		
-		// Should move popup down because the conveyor must do that anyway to execute the next action
+		// No need to move popup down here because this happens in eventFired next
 		// transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, new Object[] { family.getPopupIndex() });
 	}
 
