@@ -23,11 +23,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	//Data:
 	private List<MyGlassConveyor> glassSheets; // List to hold all of the glass sheets
-	private boolean positionFreeNextCF; // Will determine if a piece of glass should be passed to the next conveyor family.  This will initially be set to true.
 	private boolean conveyorOn; // Is the Gui conveyor on?
 	private ConveyorFamilyImp cf; // Reference to the current conveyor family
 	
-	List<ConveyorEvent> events; // Used to hold all of the sensor events
+	private List<ConveyorEvent> events; // Used to hold all of the sensor events
 
 	int guiIndex; // Needed to communicate with the transducer conveyor
 	
@@ -38,7 +37,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		
 		// Then set the values that need to be initialized within this class, specifically
 		this.glassSheets = Collections.synchronizedList(new ArrayList<MyGlassConveyor>());
-		this.positionFreeNextCF = true; // Obviously, there will be nothing in the next conveyor set when the system initializes, so I can make the assumption that nothing is there too
 		this.conveyorOn = false; // The conveyor is off when this simulation starts
 		
 		this.events = Collections.synchronizedList(new ArrayList<ConveyorEvent>());
@@ -85,6 +83,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.beforeEntrySensor) {
 						glass = g;
+						break;
 					}
 				}
 			}
@@ -98,6 +97,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.onEntrySensor) {
 						glass = g;
+						break;
 					}
 				}
 			}		
@@ -111,6 +111,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.beforePopUpSensor) {
 						glass = g;
+						break;
 					}
 				}
 			}			
@@ -124,6 +125,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.onPopUpSensor) {
 						glass = g;
+						break;
 					}
 				}
 			}		
@@ -137,6 +139,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.onPopUpSensor) {
 						glass = g;
+						break;
 					}
 				}
 			}		
@@ -145,10 +148,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			actSetGlassOffPopUpSensor(glass); return true;
 		}
 		
-		// This should never happen
+		print("An event did not match a piece of glass's state, that's a problem");
 		
-		return false;
-		
+		return false;		
 	}
 	
 	//Actions:
@@ -162,7 +164,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private void actSetGlassOffEntrySensor(MyGlassConveyor g) {
 		g.conveyorState = conveyorState.beforePopUpSensor;
 		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
-		cf.getPrevCF().msgPositionFree();
+		if (cf.getPrevCF() != null)
+			cf.getPrevCF().msgPositionFree();
 	}
 
 	private void actSetGlassOnPopUpSensor(MyGlassConveyor g) {
@@ -187,7 +190,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		if (!conveyorOn) {
 			Integer[] args = {guiIndex};
 			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
-			print("Turned on conveyor");
+			print("Turned on conveyor " + guiIndex);
 			conveyorOn = true;
 		}
 	}
@@ -196,7 +199,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		if (conveyorOn) {
 			Integer[] args = {guiIndex};
 			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
-			print("Turned off conveyor");
+			print("Turned off conveyor " + guiIndex);
 			conveyorOn = false;
 		}
 	}
@@ -228,7 +231,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
 	}
 
-	public boolean getPositionFreeNextCF() {
-		return positionFreeNextCF;
+	/**
+	 * @return the events
+	 */
+	public List<ConveyorEvent> getEvents() {
+		return events;
 	}
 }

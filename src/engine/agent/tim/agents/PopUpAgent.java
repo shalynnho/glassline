@@ -1,6 +1,7 @@
 package engine.agent.tim.agents;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import engine.agent.Agent;
 import engine.agent.OfflineWorkstationAgent;
@@ -50,6 +51,9 @@ public class PopUpAgent extends Agent implements PopUp {
 
 	int guiIndex; // Needed to communicate with the transducer
 	
+	// Add semaphores to delay the popUp agent accordingly between GUI transitions
+	private List<Semaphore> animationSemaphores;
+	
 	
 	// Constructors:
 	public PopUpAgent(String name, Transducer transducer, List<OfflineWorkstationAgent> machines, int guiIndex) {  
@@ -59,6 +63,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		// Then set the values that need to be initialized within this class, specifically
 		glassToBeProcessed = Collections.synchronizedList(new ArrayList<MyGlassPopUp>());
 		machineComs = Collections.synchronizedList(new ArrayList<MachineCom>());
+		animationSemaphores = Collections.synchronizedList(new ArrayList<Semaphore>());
 		
 		// This loop will go for the number of machines that are in the machines argument
 		int i = 0; // Machine indexes related to the GUI machinea
@@ -67,10 +72,17 @@ public class PopUpAgent extends Agent implements PopUp {
 			i++;
 		}
 		
+		processType = machineComs.get(0).machine.getType(); // Set the correct process type
+		
 		popUpDown = true; // The popUp has to be down when the system starts...
 		passNextCF = true; // The next conveyor will always be available when the system starts
 		
 		this.guiIndex = guiIndex;
+		
+		// Initialize the semaphores as binary semaphores with value 0
+		for (int j = 0; j < 5; j++) {
+			animationSemaphores.add(new Semaphore(0));
+		}
 		
 		initializeTransducerChannels();		
 	}
@@ -159,8 +171,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		}
 		if (glass != null && machCom != null) {
 			actPassGlassToMachine(glass, machCom); return true;
-		}
-		
+		}		
 		
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
@@ -186,9 +197,11 @@ public class PopUpAgent extends Agent implements PopUp {
 	
 	//Actions:
 	private void actSendForGlass(MyGlassPopUp glass) {
-		// Fire transducer event to move the popUp down here index – make sure to stall the agent until the right time to prevent any weird synchronization issues	
-		cf.getConveyor().msgPositionFree();
-		// Fire transducer event to send glass from conveyor to popUp – wait until event is done
+		// Fire transducer event to move the popUp down here index – make sure to stall the agent until the right time to prevent any weird synchronization issues
+		doMovePopUpDown();
+		cf.getConveyor().msgPositionFree(); // Tell conveyor to send down the glass
+		// Wait until the glass is loaded to continue further action
+		doDelayForAnimation(0); 
 		if (glass.glass.getNeedsProcessing(processType))
 			glass.processState = processState.unprocessed;
 		else 
@@ -199,6 +212,7 @@ public class PopUpAgent extends Agent implements PopUp {
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
 		cf.getNextCF().msgHereIsGlass(glass.glass);
 		// Fire transducer event to release glass index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
+		doReleaseGlassPopUp();
 		passNextCF = false;
 		glassToBeProcessed.remove(glass);		
 	}
@@ -206,8 +220,11 @@ public class PopUpAgent extends Agent implements PopUp {
 	private void actRemoveGlassFromMachine(MyGlassPopUp glass) {
 		// Make sure to call Transducer events: 
 		// Move PopUp up, 
-		// Machine Release Glass, 
+		doMovePopUpUp();
+		// Machine Release Glass,
+		doReleaseGlassWorkstation(glass.machineIndex);
 		// Move PopUp Down 
+		doMovePopUpDown();
 		// all with the correct timing so nothing is funky
 		glass.processState = processState.awaitingRemoval;
 
@@ -216,32 +233,90 @@ public class PopUpAgent extends Agent implements PopUp {
 	private void actPassGlassToMachine(MyGlassPopUp glass, MachineCom com) {
 		com.inUse = true;
 		glass.processState = processState.processing;
+		glass.machineIndex = com.machineIndex;
 		// Fire the PopUp up transducer event index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
+		doMovePopUpUp();
 		com.machine.msgHereIsGlass(glass.glass);
-		// Machine Load glass transducer events w/right index (can be attained from the machineCom machineIndex – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues		
+		// Machine Load glass transducer events w/right index (can be attained from the machineCom machineIndex) – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
+		doLoadGlassWorkStation(com.machineIndex);
 	}	
 
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		// Move the PopUp up or down, depending on what the protocol is -- This is an update from the animation, Mock or not
-		if (event == TEvent.POPUP_DO_MOVE_DOWN) { // There will only be one boolean argument as of now, and that tells whether the popUp is UP or DOWN
-			popUpDown = true;
-		}
-		else if (event == TEvent.POPUP_DO_MOVE_UP) { // There will only be one boolean argument as of now, and that tells whether the popUp is UP or DOWN
-			popUpDown = false;
-		}
-		
+		// Catch all of the animation events and open up the correct semaphores to continue the processing of the glass on the PopUp or workstation
+		if (channel == TChannel.POPUP && (Integer) args[0] == guiIndex) {
+			if (event == TEvent.POPUP_GUI_LOAD_FINISHED) {
+				animationSemaphores.get(0).release();
+			}
+			else if (event == TEvent.POPUP_GUI_MOVED_DOWN) {
+				animationSemaphores.get(1).release();			
+			}
+			else if (event == TEvent.POPUP_GUI_MOVED_UP) {
+				animationSemaphores.get(2).release();
+			}
+			else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED) {
+				animationSemaphores.get(3).release();
+			}
+			else if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
+				animationSemaphores.get(4).release();
+			}
+		}		
 	}
 	
-	// Getters and Setters
+	// Special Animation Methods Below ("do" methods):
+	private void doMovePopUpUp() { // Make the GUI PopUp move up
+		if (popUpDown == true) { // Only do this action if the popUp is down
+			Integer args[] = {guiIndex};
+			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
+			doDelayForAnimation(2); // Wait for the popUp to move up
+			popUpDown = false;
+		}
+	}
 	
+	private void doMovePopUpDown() { // Make the GUI PopUp move down
+		if (popUpDown == false) { // Only do this action if the popUp is up
+			Integer args[] = {guiIndex};
+			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
+			doDelayForAnimation(1); // Wait for the popUp to move down
+			popUpDown = true;
+		}		
+	}
+	
+	private void doReleaseGlassPopUp() { // Make the GUI PopUp release it's glass
+		Integer args[] = {guiIndex};
+		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		doDelayForAnimation(3); // Wait for the popUp to move up
+	}
+	
+	private void doLoadGlassWorkStation(int index) { // Make the GUI Workstation (index) next to the popUp load glass
+		Integer args[] = {index};
+		transducer.fireEvent(processType.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+		doDelayForAnimation(4); // wait for popup load to finish
+	}
+	
+	private void doReleaseGlassWorkstation(int index) { // Make the GUI Workstation (index) next to the popUp release its glass
+		Integer args[] = {index};
+		transducer.fireEvent(processType.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, args);
+		doDelayForAnimation(0); // wait for popup load to finish	
+	}
+	
+	private void doDelayForAnimation(int index) { // Depending on what index is passed in, a certain animation semaphore will block until the animation is done
+		try {
+			animationSemaphores.get(index).acquire();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	// Getters and Setters	
 	public int getFreeChannels() {
 		int freeChannels = 0;
 		synchronized(machineComs) {	
 			for (MachineCom com: machineComs) {
-				if (com.inUse == false)
-					
+				if (com.inUse == false)					
 					freeChannels++;
 			}
 		}
