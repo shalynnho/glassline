@@ -41,13 +41,20 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		// Create glasses and kick things off
 		
 		// Glass 1
+//		glasses.add(new Glass(new MachineType[] { })); // yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER })); // yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null); // fires creation of 1 glass!
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
+		
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		wait(2000);
 		
 		// Glass 2
+		glasses.add(new Glass(new MachineType[] { }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		
 		
 	}
@@ -137,6 +144,14 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 			Integer args[] = new Integer[1];
 			args[0] = i;
 			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
+		}
+	}
+	
+	private void wait(int time) {
+		try {
+			Thread.sleep(time);
+		} catch(Exception e) {
+			System.err.println("Error: "+e.getMessage());
 		}
 	}
 	

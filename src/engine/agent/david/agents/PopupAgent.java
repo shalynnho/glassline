@@ -68,7 +68,10 @@ public class PopupAgent extends Agent implements Popup {
 
 	@Override
 	public void msgPositionFree() {
-		print("Received msgPositionFree");
+		print("Received msgPositionFree"); 
+		// TODONOW: NOT RECEIVING THIS FOR SOME REASON
+		// cross seamer popup not sending msg taking glass to conveyor
+		
 		nextPosFree = true;
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -94,6 +97,7 @@ public class PopupAgent extends Agent implements Popup {
 	public boolean pickAndExecuteAnAction() {
 		// ACTIVE is set by transducer and incoming messages. We only take action if we are 'active'.
 		if (state == PopupState.ACTIVE) {
+			System.err.println(name+ "'s in scheduler! ");
 			// Case 1 (easy): Just deal with the workstation's finished glass by passing it on. No complications with sensor.
 			if (!sensorOccupied) {
 				// If next position is free and there exists a glass in glasses list that is finished by a workstation
@@ -108,9 +112,6 @@ public class PopupAgent extends Agent implements Popup {
 			else {
 				MyGlass g = getNextUnhandledGlass(); // the *unhandled* glass - we make the glass at the sensor more important than any glass at a workstation
 				if (g != null) { // should be present since sensorOccupied = true
-					// TODONOW: WORKSTATION NOT SENDING POS FREE / GLASS DONE?
-					// Check glass recipe
-					
 					print("in popup sched 2");
 					print("nextposfree: "+nextPosFree+"; needs proc: "+g.needsProcessing());
 					
@@ -154,11 +155,27 @@ public class PopupAgent extends Agent implements Popup {
 				if (family.thisSensor(args)) {
 					setState(PopupState.ACTIVE);
 					sensorOccupied = true;
-					stateChanged();
+					stateChanged(); // TODONOW: this should be triggering
+					System.err.println(name+ "'s popup state should do scheduler now ");
+				}
+			}
+		} 
+		
+//		// TEMP
+//				if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
+//					if (family.thisSensor(args)) {
+//						System.err.println(name+ "'s popup state: "+state);
+//					}
+//				}
+		
+		if (sensorOccupied) {
+			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
+				if (family.thisSensor(args)) {
+					sensorOccupied = false;
 				}
 			}
 		}
-
+			
 		// From actLoadSensorsGlassOntoWorkstation, step 2 (sometimes)
 		if (state == PopupState.WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
@@ -175,7 +192,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				if (family.thisPopup(args)) {
 					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
-					sensorOccupied = false;
+//					sensorOccupied = false;
 					family.runningState = RunningState.OFF_BC_QUIET;
 					family.doStopConveyor();
 					family.doMovePopupUp();
@@ -236,6 +253,7 @@ public class PopupAgent extends Agent implements Popup {
 					setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING);
 					family.doStartConveyor();
 					family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
+					family.conv.msgTakingGlass();
 				}
 			}
 		}
@@ -244,7 +262,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				if (family.thisPopup(args)) {
 					setState(PopupState.ACTIVE);
-					sensorOccupied = false;
+//					sensorOccupied = false;
 	
 					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 					MyGlass mg = glasses.remove(0); // should be first glass
@@ -274,6 +292,8 @@ public class PopupAgent extends Agent implements Popup {
 			setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING);
 			family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
 			family.doStartConveyor();
+			// TODONOW: need msgTakingGlass() ?
+			family.conv.msgTakingGlass();
 		}
 	}
 
@@ -299,15 +319,21 @@ public class PopupAgent extends Agent implements Popup {
 		// Note: popup must be up -> WORKSTATION_RELEASE_FINISHED -> POPUP_GUI_LOAD_FINISHED (implied) ->
 		// POPUP_GUI_MOVED_DOWN -> automatically moves on
 
+		// TODONOW: Is it possible that you misunderstood what release the glass?
+		// Do I need to do anything on popup after workstation release glass, or does it automatically move on?
+		// Why did the piece move along the wrong side of the conveyor?
+		// How do you deal with glass being released from workstation WHILE next glass comes along?
+		// You didn't anticipate the workstation always being done so quickly.
+		
 		// Make sure gui is up first
-		// if (!isUp) {
-			// setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION);
-			// family.doMovePopupUp();
-			// System.err.println("here xxx"); // TODONOW: Is it possible that you midunderstood what releases the glass?
-		// } else { // popup already up
+		if (!isUp) {
+			setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION);
+			family.doMovePopupUp();
+			// System.err.println("here xxx"); 
+		} else { // popup already up
 			setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
 			doReleaseGlassFromProperWorkstation();
-		// }
+		}
 	}
 
 	// Choose appropriate workstation and fires WORKSTATION_RELEASE_GLASS. Lower index has higher priority.
@@ -324,7 +350,7 @@ public class PopupAgent extends Agent implements Popup {
 		}
 		
 		// Should move popup down because the conveyor must do that anyway to execute the next action
-		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, new Object[] { family.getPopupIndex() });
+		// transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, new Object[] { family.getPopupIndex() });
 	}
 
 	// *** EXTRA ***
@@ -445,7 +471,7 @@ public class PopupAgent extends Agent implements Popup {
 		return state;
 	}
 
-	@Override
+	@Override	
 	public boolean getNextPosFree() {
 		return nextPosFree;
 	}

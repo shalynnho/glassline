@@ -116,17 +116,17 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	// *** TRANSDUCER / ANIMATION CALLS ***
 	public void doStartConveyor() {
-		System.err.println("index of conveyor that is starting: "+conveyorIndex);
+//		System.err.println("index of conveyor that is starting: "+conveyorIndex);
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, new Integer[] { conveyorIndex });
 	}
 
 	public void doStopConveyor() {
-		System.err.println("conveyor STOPPED index "+conveyorIndex);
+//		System.err.println("conveyor STOPPED index "+conveyorIndex);
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[] { conveyorIndex });
 	}
 
 	public void doMovePopupUp() {
-		System.err.println("doing move popup up for popup index "+popupIndex);
+//		System.err.println("doing move popup up for popup index "+popupIndex);
 		t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, new Integer[] { popupIndex });
 		popup.setIsUp(true);
 	}
