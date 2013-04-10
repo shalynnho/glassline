@@ -120,6 +120,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 		return channel;
 	}
 	
+	/* Setters */
 	public void setPrev(LineComponent lc) { prev = lc; }
 	public void setNext(LineComponent lc) { next = lc; }
 }

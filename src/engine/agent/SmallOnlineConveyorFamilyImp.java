@@ -6,30 +6,35 @@ import shared.interfaces.LineComponent;
 import transducer.Transducer;
 
 public class SmallOnlineConveyorFamilyImp implements LineComponent {
+	// components
+	private GeneralConveyorAgent conveyor;
+	private OnlineWorkstationAgent workstation;
 	
+	/* Constructor creates components and sets internal next/prev. */
 	public SmallOnlineConveyorFamilyImp(MachineType type, Transducer trans, int convIndex) {
-		conveyor = new SmallConveyorAgent(type.toString()+" conveyor", trans, this, convIndex);
-		workstation = new OnlineWorkstationAgent(type.toString()+" workstation", type, conveyor.transducer);
+		conveyor = new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex);
+		workstation = new OnlineWorkstationAgent(type.toString() + " workstation", type, trans);
+		
+		conveyor.setNext(workstation);
+		workstation.setPrev(conveyor);
 	}
 	
-	public SmallConveyorAgent conveyor;
-	public OnlineWorkstationAgent workstation;
-	public LineComponent prev, next; // the previous and next families
-	
-	public void msgHereIsGlass(Glass glass) {
-		conveyor.msgHereIsGlass(glass);
+	/* Messages */
+	public void msgHereIsGlass(Glass g) {
+		conveyor.msgHereIsGlass(g);
 	}
 	
 	public void msgPositionFree() {
-		conveyor.msgPositionFree();
+		workstation.msgPositionFree();
 	}
 	
-	public void setNextLineComponent(LineComponent l) {
-		next = l;
+	/* Setters */
+	public void setPreviousLineComponent(LineComponent lc) {
+		conveyor.setPrev(lc);
 	}
 	
-	public void setPreviousLineComponent(LineComponent l) {
-		prev = l;
+	public void setNextLineComponent(LineComponent lc) {
+		workstation.setNext(lc);
 	}
 	
 	public void startThreads() {
