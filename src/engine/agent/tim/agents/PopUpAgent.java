@@ -77,7 +77,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		
 		this.guiIndex = guiIndex;
 		
-		// Inialialze the semaphores as binary semaphores with value 0
+		// Initialize the semaphores as binary semaphores with value 0
 		for (int j = 0; j < 5; j++) {
 			animationSemaphores.add(new Semaphore(0));
 		}
@@ -268,6 +268,7 @@ public class PopUpAgent extends Agent implements PopUp {
 			Integer args[] = {guiIndex};
 			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 			doDelayForAnimation(2); // Wait for the popUp to move up
+			popUpDown = false;
 		}
 	}
 	
@@ -276,6 +277,7 @@ public class PopUpAgent extends Agent implements PopUp {
 			Integer args[] = {guiIndex};
 			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 			doDelayForAnimation(1); // Wait for the popUp to move up
+			popUpDown = true;
 		}		
 	}
 	
