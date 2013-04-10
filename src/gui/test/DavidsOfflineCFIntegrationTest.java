@@ -17,6 +17,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity;
  * Class to reliably test offline cf integrated with the animation
  * Turns conveyors leading up to cf all on, makes some glass move along. All three offline cfs are made as my own version of the cf. 
  * *Must manually make sure glasses enter first family fairly* (the 'before' family does not wait for msgPositionFree
+ * The 'after' family never sends msgPositionFree.
  * @author David Zhang
  */
 public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TReceiver {

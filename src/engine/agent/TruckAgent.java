@@ -20,7 +20,7 @@ public class TruckAgent extends Agent implements LineComponent {
 	// *** DATA ***
 	private List<Glass> glasses = new ArrayList<Glass>();
 	private LineComponent prev;
-	private boolean alreadyTold = false;
+	private boolean alreadyTold = false; // true if already told previous family that position is free (to prevent repeated messaging)
 	private Semaphore animSem[];
 	
 	// *** MESSAGES ***
@@ -35,7 +35,6 @@ public class TruckAgent extends Agent implements LineComponent {
 	}
 	
 	// *** SCHEDULER ***
-	
 	public boolean pickAndExecuteAnAction() {
 		if (!glasses.isEmpty()) {
 			actLoadAndEmptyTruck();
