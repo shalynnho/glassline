@@ -126,7 +126,7 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	}
 
 	public void doMovePopupUp() {
-		System.err.println("doing move popup up");
+		System.err.println("doing move popup up for popup index "+popupIndex);
 		t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, new Integer[] { popupIndex });
 		popup.setIsUp(true);
 	}

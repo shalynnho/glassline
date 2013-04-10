@@ -41,10 +41,10 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		// Create glasses and kick things off
 		
 		// Glass 1
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // WORKS.
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER })); // NO
-		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER })); // yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null); // fires creation of 1 glass!
 		
 		// Glass 2
