@@ -39,6 +39,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	/* Set current piece of glass. */
 	public void msgHereIsGlass(Glass glass) {
+		print("Received msgHereIsGlass");
 		g = glass;
 		gs = GlassState.pending;
 		stateChanged();
@@ -48,10 +49,13 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if ((Integer)args[0] == index) {
 			if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
+				print("WORKSTATION_LOAD_FINISHED");
 				gs = GlassState.arrived;
 				stateChanged();
-			} else if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+			} else if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
+				print("WORKSTATION_GUI_ACTION_FINISHED");
 				waitSem.release(); // don't need stateChanged because sem release wakes agent
+			}
 		}
 	}
 	
@@ -68,6 +72,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	/* Tell animation to process glass, wait for it to finish, then send msgGlassDone. */
 	private void processGlass() {
+		print("processing glass");
 		doStartProcessing();
 		doWaitProcessing();
 		p.msgGlassDone(g, index);
@@ -79,7 +84,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	/* Tell animation to start processing glass. */
 	private void doStartProcessing() {
 		Integer args[] = {index};
-		transducer.fireEvent(mtc, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+		transducer.fireEvent(mtc, TEvent.WORKSTATION_DO_LOAD_GLASS, args); // should be do start processing?
 		gs = GlassState.processing;
 	}
 	

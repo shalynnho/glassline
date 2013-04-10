@@ -74,7 +74,6 @@ public class SensorAgent extends Agent implements Sensor {
 			// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.
 		}
 		family.doStartConveyor();
-		System.err.println("conveyor should have started!");
 		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
 		family.conv.msgHereIsGlass(g); // ERROR: this somehow make conveyor stop
 	}

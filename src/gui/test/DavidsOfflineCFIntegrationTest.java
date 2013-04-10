@@ -38,7 +38,7 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		startOtherConveyors();
 		prepareAgents();
 
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null); // fires creation of 1 glass!
 	}
 

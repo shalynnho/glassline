@@ -116,16 +116,17 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	// *** TRANSDUCER / ANIMATION CALLS ***
 	public void doStartConveyor() {
-		System.err.println("index: "+conveyorIndex);
+		System.err.println("index of conveyor that is starting: "+conveyorIndex);
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, new Integer[] { conveyorIndex });
 	}
 
 	public void doStopConveyor() {
-		System.err.println("conveyor STOPPED");
+		System.err.println("conveyor STOPPED index "+conveyorIndex);
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, new Integer[] { conveyorIndex });
 	}
 
 	public void doMovePopupUp() {
+		System.err.println("doing move popup up");
 		t.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, new Integer[] { popupIndex });
 		popup.setIsUp(true);
 	}
@@ -139,9 +140,10 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 		t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, new Integer[] { popupIndex });
 	}
 
-	public void doLoadGlassOntoWorkstation(int workstationIndex) {
-		t.fireEvent(workstationChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstationIndex });
-	}
+	// no longer used b/c offline workstation agent already does this
+//	public void doLoadGlassOntoWorkstation(int workstationIndex) {
+//		t.fireEvent(workstationChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstationIndex });
+//	}
 
 	// *** EXTRA ***
 

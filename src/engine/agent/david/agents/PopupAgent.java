@@ -37,7 +37,7 @@ public class PopupAgent extends Agent implements Popup {
 	// A glass is removed from glasses when it is messaged to a workstation. Then, workstation eventually sends glass back,
 	// and the glass is added to finishedGlasses.
 	private List<Glass> finishedGlasses = Collections.synchronizedList(new ArrayList<Glass>());
-	private boolean nextPosFree = false;
+	private boolean nextPosFree = true;
 	private boolean sensorOccupied = false; // roughly equivalent to family.runningState.OFF_BC_WAITING_AT_SENSOR, but needed for popup to internally decide to move to ON_BC_SENSOR_TO_POPUP
 	private boolean isUp = false; // up or down; starts out down
 
@@ -105,25 +105,29 @@ public class PopupAgent extends Agent implements Popup {
 			}
 			// Case 2-x deal with when sensor is occupied, which adds complications.
 			else {
-				System.err.println("in popup sched - not reached properly?");
 				MyGlass g = getNextUnhandledGlass(); // the *unhandled* glass - we make the glass at the sensor more important than any glass at a workstation
 				if (g != null) { // should be present since sensorOccupied = true
-					System.err.println("in popup sched 2");
 					// TODONOW: WORKSTATION NOT SENDING POS FREE / GLASS DONE?
 					// Check glass recipe
 					
+					print("in popup sched 2");
+					print("nextposfree: "+nextPosFree+"; needs proc: "+g.needsProcessing());
+					
 					// Case 2: Regardless of workstation, just load sensor's glass and pass it on - no workstation interaction
 					if (nextPosFree && !g.needsProcessing()) {
+						print("case 2");
 						actLoadSensorsGlassOntoPopupAndRelease();
 						return false;
 					}
 					// Case 3: Release workstation's finished glass to next family
 					else if (g.needsProcessing() && bothWorkstationsOccupiedButAtLeastOneIsDone() && nextPosFree) {
+						print("case 3");
 						actReleaseGlassFromWorkstation();
 						return false;
 					}
 					// Case 4: Load sensor's glass onto workstation. Must happen after case 3 if case 3 happens.
 					else if (g.needsProcessing() && aWorkstationIsFree()) {
+						print("case 4");
 						actLoadSensorsGlassOntoWorkstation();
 						return false;
 					}
@@ -144,11 +148,9 @@ public class PopupAgent extends Agent implements Popup {
 
 		// Exception: we must update sensor status regardless of the state.
 		if (!sensorOccupied) { // should only bother to check if sensor is not occupied - here, the popup only cares about listening to see if a glass has arrived at the preceding sensor
-			System.err.println("reached popup sensor check");
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
 				if (family.thisSensor(args)) {
-					System.err.println("reached popup sensor check 2");
 					setState(PopupState.ACTIVE);
 					sensorOccupied = true;
 					stateChanged();
@@ -170,7 +172,7 @@ public class PopupAgent extends Agent implements Popup {
 		// From actLoadSensorsGlassOntoWorkstation, step 3
 		else if (state == PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
-				if (family.thisSensor(args)) {
+				if (family.thisPopup(args)) {
 					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
 					sensorOccupied = false;
 					family.runningState = RunningState.OFF_BC_QUIET;
@@ -190,7 +192,7 @@ public class PopupAgent extends Agent implements Popup {
 					updateWorkstationState(w, WorkstationState.BUSY);
 					w.msgHereIsGlass(g.getGlass());
 	
-					family.doLoadGlassOntoWorkstation(w.getIndex());
+//					family.doLoadGlassOntoWorkstation(w.getIndex()); // offline workstation agent already does this
 					stateChanged();
 				}
 			}
