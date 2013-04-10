@@ -39,24 +39,8 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		prepareAgents();
 
 		// Create glasses and kick things off
-		
-		// Glass 1
-//		glasses.add(new Glass(new MachineType[] { })); // yes
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // yes
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER })); // yes
-//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
-		
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		
-		wait(2000);
-		
-		// Glass 2
-		glasses.add(new Glass(new MachineType[] { }));
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		
-		
+//		testOneGlass();
+		testTwoGlasses();
 	}
 
 	private void prepareAgents() {
@@ -155,6 +139,51 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		}
 	}
 	
+	private void testOneGlass() { // uncomment one, and test. all work.
+//		glasses.add(new Glass(new MachineType[] { })); // yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER })); // yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
+	}
+	
+	private void testTwoGlasses() {
+		// yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2000);
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		// yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2000);
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		// yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2000);
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		// yes
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2000);
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		// no - strange conveyor movement on outside
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2000);
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+	}
+	
 	// Simple class to deal with before and after the cfs to be tested
 	private class SurroundingConveyorAgent extends Agent implements LineComponent {
 		// boolean posFree; // [conveyor before my 1st cf]'s internal boolean for if my 1st cf is ready
@@ -202,4 +231,3 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		}
 	}
 }
-

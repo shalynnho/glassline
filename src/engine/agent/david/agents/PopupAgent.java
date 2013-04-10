@@ -69,9 +69,6 @@ public class PopupAgent extends Agent implements Popup {
 	@Override
 	public void msgPositionFree() {
 		print("Received msgPositionFree"); 
-		// TODONOW: NOT RECEIVING THIS FOR SOME REASON
-		// cross seamer popup not sending msg taking glass to conveyor
-		
 		nextPosFree = true;
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -221,6 +218,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP) {
 				setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
 				doReleaseGlassFromProperWorkstation();
+				print("JUST RELEASED GLASS FROM PROPER WORKSTATION");
 			}
 		}
 		// From actReleaseGlassFromWorkstation step 3
@@ -228,6 +226,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == family.workstationChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
 				setState(PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION);
 				family.doMovePopupDown();
+				print("JUST MOVED POPUP DOWN B/C WKS GLASS RELEASE");
 			}
 		}
 		// From actReleaseGlassFromWorkstation step 4 (final)
@@ -241,6 +240,7 @@ public class PopupAgent extends Agent implements Popup {
 				nextPosFree = false;
 
 				family.doReleaseGlassFromPopup();
+				print("FINALLY JUST RELEASED GLASS");
 
 				stateChanged();
 			}
@@ -267,6 +267,7 @@ public class PopupAgent extends Agent implements Popup {
 					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 					MyGlass mg = glasses.remove(0); // should be first glass
 					family.next.msgHereIsGlass(mg.getGlass());
+					nextPosFree = false;
 	
 					family.runningState = RunningState.OFF_BC_QUIET;
 					family.doStopConveyor();
@@ -292,7 +293,6 @@ public class PopupAgent extends Agent implements Popup {
 			setState(PopupState.WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING);
 			family.runningState = RunningState.ON_BC_SENSOR_TO_POPUP;
 			family.doStartConveyor();
-			// TODONOW: need msgTakingGlass() ?
 			family.conv.msgTakingGlass();
 		}
 	}
