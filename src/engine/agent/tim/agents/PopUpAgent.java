@@ -72,6 +72,8 @@ public class PopUpAgent extends Agent implements PopUp {
 			i++;
 		}
 		
+		processType = machineComs.get(0).machine.getType(); // Set the correct process type
+		
 		popUpDown = true; // The popUp has to be down when the system starts...
 		passNextCF = true; // The next conveyor will always be available when the system starts
 		
@@ -276,7 +278,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		if (popUpDown == false) { // Only do this action if the popUp is up
 			Integer args[] = {guiIndex};
 			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
-			doDelayForAnimation(1); // Wait for the popUp to move up
+			doDelayForAnimation(1); // Wait for the popUp to move down
 			popUpDown = true;
 		}		
 	}

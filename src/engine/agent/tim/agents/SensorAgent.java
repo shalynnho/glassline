@@ -74,7 +74,7 @@ public class SensorAgent extends Agent implements Sensor {
 				}
 				
 				else if ((Integer) args[0] == guiIndexPopUpSensor) {
-					msgUpdateGlassEntrySensorExit(); // Glass just hit popUp sensor
+					msgUpdateGlassPopUpSensorEnter(); // Glass just hit popUp sensor
 				}
 			}		
 			else if (event == TEvent.SENSOR_GUI_RELEASED) { // If a piece of glass just left a sensor

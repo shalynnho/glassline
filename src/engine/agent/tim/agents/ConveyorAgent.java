@@ -26,7 +26,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private boolean conveyorOn; // Is the Gui conveyor on?
 	private ConveyorFamilyImp cf; // Reference to the current conveyor family
 	
-	List<ConveyorEvent> events; // Used to hold all of the sensor events
+	private List<ConveyorEvent> events; // Used to hold all of the sensor events
 
 	int guiIndex; // Needed to communicate with the transducer conveyor
 	
@@ -229,5 +229,12 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	@Override
 	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
+	}
+
+	/**
+	 * @return the events
+	 */
+	public List<ConveyorEvent> getEvents() {
+		return events;
 	}
 }
