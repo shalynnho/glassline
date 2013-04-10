@@ -40,8 +40,9 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 
 		// Create glasses and kick things off
 //		test1Glass();
-		test2Glasses();
+//		test2Glasses();
 //		test3Glasses();
+		testBigSequence();
 	}
 
 	private void prepareAgents() {
@@ -244,13 +245,57 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 //		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		
 		// yes
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2000);
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2000);
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		// yes - but needs a little extra time do 3rd piece enters on time
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2500);
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+//		wait(2500);
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
+//		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
+		// yes
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		wait(2000);
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		wait(2000);
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+	}
+	
+	@SuppressWarnings("unused")
+	public void testBigSequence() {
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 	}
 	
