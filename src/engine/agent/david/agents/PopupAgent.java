@@ -99,6 +99,7 @@ public class PopupAgent extends Agent implements Popup {
 				// If next position is free and there exists a glass in glasses list that is finished by a workstation
 				if (nextPosFree && atLeastOneWorkstationIsDoneButStillHasGlass()) {
 					// Keep state as ACTIVE. This is implied.
+					print("case 0");
 					actReleaseGlassFromWorkstation();
 					return false;
 				}
@@ -299,24 +300,31 @@ public class PopupAgent extends Agent implements Popup {
 		// POPUP_GUI_MOVED_DOWN -> automatically moves on
 
 		// Make sure gui is up first
-		if (!isUp) {
-			setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION);
-			family.doMovePopupUp();
-		} else { // popup already up
+		// if (!isUp) {
+			// setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION);
+			// family.doMovePopupUp();
+			// System.err.println("here xxx"); // TODONOW: Is it possible that you midunderstood what releases the glass?
+		// } else { // popup already up
 			setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
 			doReleaseGlassFromProperWorkstation();
-		}
+		// }
 	}
 
 	// Choose appropriate workstation and fires WORKSTATION_RELEASE_GLASS. Lower index has higher priority.
 	public void doReleaseGlassFromProperWorkstation() {
+		print("doReleaseGlassFromProperWorkstation");
 		if (wsState1 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
-			// WORKSTATION_RELEASE_GLASS
 			transducer.fireEvent(workstation1.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation1.getIndex() });
+			// Important: update workstation to be free again
+			updateWorkstationState(workstation1.getIndex(), WorkstationState.FREE); // index 0
 		} else if (wsState2 == WorkstationState.DONE_BUT_STILL_HAS_GLASS) {
-			// WORKSTATION_RELEASE_GLASS
 			transducer.fireEvent(workstation2.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, new Object[] { workstation2.getIndex() });
+			// Important: update workstation to be free again
+			updateWorkstationState(workstation2.getIndex(), WorkstationState.FREE); // index 1
 		}
+		
+		// Should move popup down because the conveyor must do that anyway to execute the next action
+		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, new Object[] { family.getPopupIndex() });
 	}
 
 	// *** EXTRA ***
