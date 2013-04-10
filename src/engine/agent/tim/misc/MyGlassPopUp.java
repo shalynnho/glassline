@@ -3,7 +3,7 @@ package engine.agent.tim.misc;
 import shared.Glass;
 
 public class MyGlassPopUp {
-	public enum processState {unprocessed, doneProcessing};
+	public enum processState {awaitingArrival, unprocessed, processing, doneProcessing, awaitingRemoval};
 	public Glass glass;
 	public processState processState;
 	

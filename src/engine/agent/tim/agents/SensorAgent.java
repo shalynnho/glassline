@@ -43,19 +43,23 @@ public class SensorAgent extends Agent implements Sensor {
 		transducer.register(this, TChannel.SENSOR); // Set this agent to listen to the SENSOR channel of the transducer
 	}
 
+	@Override
 	// Messages -- will forward sensor states to the conveyor
 	public void msgUpdateGlassEntrySensorEnter() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.onEntrySensor);
 	}
 
+	@Override
 	public void msgUpdateGlassEntrySensorExit() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.offEntrySensor);
 	}
 
+	@Override
 	public void msgUpdateGlassPopUpSensorEnter() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.onPopUpSensor);
 	}
 	
+	@Override
 	public void msgUpdateGlassPopUpSensorExit() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.offPopUpSensor);
 	}
@@ -88,37 +92,6 @@ public class SensorAgent extends Agent implements Sensor {
 	@Override
 	public void setCF(OfflineConveyorFamily conveyorFamilyImp) {
 		cf = (ConveyorFamilyImp) conveyorFamilyImp;		
-	}
-
-	@Override
-	public void runScheduler() {
-		pickAndExecuteAnAction();
-	}
-
-	
-	// Delete these messages
-	@Override
-	public void msgHereIsGlass(Glass glass) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void msgGlassOffSensor(Glass glass) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<String> getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<MyGlassSensor> getGlassSheets() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
