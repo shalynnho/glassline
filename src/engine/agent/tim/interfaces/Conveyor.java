@@ -2,6 +2,7 @@ package engine.agent.tim.interfaces;
 
 import java.util.List;
 
+import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.MyGlassConveyor;
 
 import shared.Glass;
@@ -13,6 +14,8 @@ public interface Conveyor {
 	public abstract void msgPassOffGlass(Glass glass);
 	public abstract void msgUpdateGlass(Glass glass);
 	public abstract void msgPositionFree();
+	
+	public abstract void msgUpdateGlass(ConveyorEvent e);
 	
 	// Getters/Setters
 	public abstract boolean isConveyorOn();

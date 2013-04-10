@@ -2,6 +2,7 @@ package engine.agent.tim.interfaces;
 
 import java.util.List;
 
+import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.MyGlassSensor;
 
 import shared.Glass;

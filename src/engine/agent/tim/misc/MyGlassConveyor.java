@@ -3,7 +3,7 @@ package engine.agent.tim.misc;
 import shared.Glass;
 
 public class MyGlassConveyor {
-	public enum conveyorState {onConveyor, passPopUp, passCF};
+	public enum conveyorState {beforeEntrySensor, onEntrySensor, beforePopUpSensor, onPopUpSensor};
 	public Glass glass;
 	public conveyorState conveyorState;
 	public MyGlassConveyor(Glass glass, conveyorState conveyorState) {

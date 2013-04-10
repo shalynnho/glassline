@@ -11,6 +11,7 @@ import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import engine.agent.tim.interfaces.Conveyor;
+import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import engine.agent.tim.misc.MyGlassConveyor;
 import engine.agent.tim.misc.MyGlassConveyor.conveyorState;
@@ -26,17 +27,25 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private boolean conveyorOn; // Is the Gui conveyor on?
 	private ConveyorFamilyImp cf; // Reference to the current conveyor family
 	
+	List<ConveyorEvent> events; // Used to hold all of the sensor events
+
+	int guiIndex; // Needed to communicate with the transducer conveyor
+	
 	// Constructors:
-	public ConveyorAgent(String name, Transducer transducer) {
+	public ConveyorAgent(String name, Transducer transducer, int guiIndex) {
 		// Set the passed in values first
 		super(name, transducer);
 		
 		// Then set the values that need to be initialized within this class, specifically
-		glassSheets = Collections.synchronizedList(new ArrayList<MyGlassConveyor>());
-		positionFreeNextCF = true; // Obviously, there will be nothing in the next conveyor set when the system initializes, so I can make the assumption that nothing is there too
-		conveyorOn = false; // The conveyor is off when this simulation starts
+		this.glassSheets = Collections.synchronizedList(new ArrayList<MyGlassConveyor>());
+		this.positionFreeNextCF = true; // Obviously, there will be nothing in the next conveyor set when the system initializes, so I can make the assumption that nothing is there too
+		this.conveyorOn = false; // The conveyor is off when this simulation starts
 		
-		initializeTransducerChannels();		
+		this.events = Collections.synchronizedList(new ArrayList<ConveyorEvent>());
+		
+		this.guiIndex = guiIndex;
+		
+		initializeTransducerChannels();
 	}
 	
 	private void initializeTransducerChannels() { // Initialize the transducer channels and everything else related to it
@@ -46,50 +55,84 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	//Messages:
 	public void msgGiveGlassToConveyor(Glass g) { // Add glass to the conveyor
-		glassSheets.add(new MyGlassConveyor(g, conveyorState.onConveyor)); // conveyorState will always initializes to onConveyor
+		glassSheets.add(new MyGlassConveyor(g, conveyorState.beforeEntrySensor)); // conveyorState will always initializes to onConveyor
 		print("Glass with ID (" + g.getID() + ") added to conveyor");
 		stateChanged();
 	}
 	
-	public void msgGiveGlassToPopUp(Glass g) { // Update the state of a piece of glass to be passed to the popUp
-		synchronized(glassSheets) {
-			for (MyGlassConveyor glass: glassSheets) {
-				if (glass.glass.getID() == g.getID()) {
-					glass.conveyorState = conveyorState.passPopUp;
-					print("Glass with ID (" + glass.glass.getID() + ") soon going to PopUp");
-					stateChanged();
-					break;
-				}
-			}
-		}
-	}
-
-	public void msgPassOffGlass(Glass g) { // Update glass to state where it will be passed off to the next conveyor family
-		synchronized(glassSheets) {
-			for (MyGlassConveyor glass: glassSheets) {
-				if (glass.glass.getID() == g.getID()) {
-					glass.conveyorState = conveyorState.passCF;
-					print("Glass with ID (" + glass.glass.getID() + ") soon going to next ConveyorFamily");
-					stateChanged();
-					break;
-				}
-			}
-		}
-	}
-
 	public void msgPositionFree() { // Allow this conveyor to pass a piece of glass to the next conveyor family
-		positionFreeNextCF = true;
-		print("Next conveyor is available for a piece of glass.");
+		events.add(ConveyorEvent.popUpFree);
 		stateChanged();
 	}
 
-	public void msgUpdateGlass(Glass g) { // This message is akin to a stub, but I wanted to match up to my current interaction diagram – I could just call msgGiveGlassToConveyor directly, but the semantics do not look as good that way
-		msgGiveGlassToConveyor(g); 
+	public void msgUpdateGlass(ConveyorEvent e) { // This message is akin to a stub, but I wanted to match up to my current interaction diagram – I could just call msgGiveGlassToConveyor directly, but the semantics do not look as good that way
+		events.add(e);
 		stateChanged();
 	}
 
 	//Scheduler:
 	public boolean pickAndExecuteAnAction() {
+		if (events.isEmpty()) { return false; }
+		
+		ConveyorEvent e = events.remove(0);
+		
+		MyGlassConveyor glass = null; // Use null variable for determining is value is found from synchronized loop
+		
+		if (e == ConveyorEvent.onEntrySensor) {
+			synchronized(glassSheets) {
+				for (MyGlassConveyor g: glassSheets) {
+					if (g.conveyorState == conveyorState.beforeEntrySensor) {
+						actSetGlassOnEntrySensor(g); return true;
+					}
+				}
+			}
+		}
+		
+		if (e == ConveyorEvent.offEntrySensor) {
+			synchronized(glassSheets) {
+				for (MyGlassConveyor g: glassSheets) {
+					if (g.conveyorState == conveyorState.onEntrySensor) {
+						actSetGlassOffEntrySensor(g); return true;
+					}
+				}
+			}		
+		}
+		
+		if (e == ConveyorEvent.onPopUpSensor) {
+			synchronized(glassSheets) {
+				for (MyGlassConveyor g: glassSheets) {
+					if (g.conveyorState == conveyorState.beforePopUpSensor) {
+						actSetGlassOnPopUpSensor(g); return true;
+					}
+				}
+			}			
+		}
+		
+		if (e == ConveyorEvent.popUpFree) {
+			synchronized(glassSheets) {
+				for (MyGlassConveyor g: glassSheets) {
+					if (g.conveyorState == conveyorState.onPopUpSensor) {
+						actTurnOnConveyorAndSendGlass(); return true;
+					}
+				}
+			}		
+		}
+		
+		if (e == ConveyorEvent.offPopUpSensor) {
+			synchronized(glassSheets) {
+				for (MyGlassConveyor g: glassSheets) {
+					if (g.conveyorState == conveyorState.onPopUpSensor) {
+						actSetGlassOffPopUpSensor(g); return true;
+					}
+				}
+			}		
+		}
+		
+		// This should never happen
+		
+		return false;
+		
+		/*
 		MyGlassConveyor glass = null; // Use null variable for determining is value is found from synchronized loop
 		
 		synchronized(glassSheets) {
@@ -129,11 +172,47 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		if (glass != null) {
 			actPassGlassToNextCF(glass); return true;
 		}
-		
-		return false;
+		*/
 	}
 	
 	//Actions:
+	
+	private void actSetGlassOnEntrySensor(MyGlassConveyor g) {
+		g.conveyorState = conveyorState.onEntrySensor;
+		turnOnConveyorGUI();
+	}
+
+	private void actSetGlassOffEntrySensor(MyGlassConveyor g) {
+		g.conveyorState = conveyorState.beforePopUpSensor;
+		cf.getPrevCF().msgPositionFree();
+	}
+
+	private void actSetGlassOnPopUpSensor(MyGlassConveyor g) {
+		g.conveyorState = conveyorState.onPopUpSensor;
+		turnOffConveyorGUI(); // Hack method, will actually be a transducer call in code
+		cf.getPopUp().msgGiveGlassToPopUp(g.glass);
+	}
+
+	private void actTurnOnConveyorAndSendGlass() {
+		turnOnConveyorGUI(); // Hack method, will actually be a transducer call in code
+	}
+
+	private void actSetGlassOffPopUpSensor(MyGlassConveyor g) {
+		glassSheets.remove(g);
+		if (glassSheets.size() == 0)
+			turnOffConveyorGUI();
+	}
+	
+	private void turnOnConveyorGUI() {
+		
+	}
+	
+	private void turnOffConveyorGUI() {
+		
+	}
+
+	
+	/*
 	private void actPassGlassToPopUp(MyGlassConveyor g) { // Will pass the glass from the conveyor to the popUp
 		cf.getPopUp().msgGiveGlassToPopUp(g.glass);
 		print("Glass with ID (" + g.glass.getID() + ") passed to PopUp");
@@ -146,6 +225,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		glassSheets.remove(g);
 		positionFreeNextCF = false;
 	}
+	*/
 
 	//Other Methods:
 	@Override
@@ -186,5 +266,24 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	public boolean getPositionFreeNextCF() {
 		return positionFreeNextCF;
+	}
+
+	// Delete this stuff from interface
+	@Override
+	public void msgGiveGlassToPopUp(Glass glass) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgPassOffGlass(Glass glass) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgUpdateGlass(Glass glass) {
+		// TODO Auto-generated method stub
+		
 	}
 }
