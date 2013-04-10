@@ -18,7 +18,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 public class ConveyorAgent extends Agent implements Conveyor {
 	// *** Constructor(s) ***
 	public ConveyorAgent(ConveyorFamilyEntity f, Transducer transducer) {
-		super("Conveyor", transducer);
+		super(f.type+" conveyor", transducer);
 		family = f;
 		transducer.register(this, TChannel.SENSOR);
 	}

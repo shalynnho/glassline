@@ -19,7 +19,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
 	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
-		super("Popup", transducer);
+		super(f.type+" popup", transducer);
 		family = f;
 		this.workstation1 = workstation1;
 		this.workstation2 = workstation2;

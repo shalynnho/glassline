@@ -17,7 +17,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 public class SensorAgent extends Agent implements Sensor {
 	// *** Constructor(s) ***
 	public SensorAgent(ConveyorFamilyEntity f, Transducer transducer) {
-		super("Sensor", transducer);
+		super(f.type+" sensor", transducer);
 		family = f;
 	}
 
@@ -68,7 +68,6 @@ public class SensorAgent extends Agent implements Sensor {
 	// *** ACTIONS ***
 	public void actPassOnGlass(Glass g) {
 		print("Doing actPassOnGlass");
-		System.err.println("RUNNING STATE: "+family.runningState);
 		while (family.runningState != RunningState.OFF_BC_QUIET) { // only supports one glass at a time
 			// Wait until conveyor is officially in the proper off state.
 			// This should be very quick and is only here in the event that *right after* conveyor tells this sensor msgPositionFree and this sensor tells the previous family, that family sends the next glass.

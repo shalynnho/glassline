@@ -38,8 +38,18 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		startOtherConveyors();
 		prepareAgents();
 
-		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
+		// Create glasses and kick things off
+		
+		// Glass 1
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // WORKS.
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER })); // NO
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null); // fires creation of 1 glass!
+		
+		// Glass 2
+		
+		
 	}
 
 	private void prepareAgents() {
@@ -61,7 +71,6 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		grinderFamily = new ConveyorFamilyEntity(t, 7, 2, grinderWks1, grinderWks2);
 		grinderWks1.setPopupWorkstationInteraction(grinderFamily.popup);
 		grinderWks2.setPopupWorkstationInteraction(grinderFamily.popup);
-		
 
 		// Connect line components
 		before.setNextLineComponent(drillFamily);

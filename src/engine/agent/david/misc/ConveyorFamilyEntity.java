@@ -52,7 +52,7 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	// *** DATA - mostly accessible by contained agents ***
 	private Transducer t;
-	private MachineType type;
+	public MachineType type;
 	private int conveyorIndex, popupIndex;
 	public TChannel workstationChannel; // should be same for both workstations
 
