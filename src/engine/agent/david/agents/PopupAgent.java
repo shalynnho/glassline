@@ -152,18 +152,18 @@ public class PopupAgent extends Agent implements Popup {
 				if (family.thisSensor(args)) {
 					setState(PopupState.ACTIVE);
 					sensorOccupied = true;
-					stateChanged(); // TODONOW: this should be triggering
-					System.err.println(name+ "'s popup state should do scheduler now ");
+					stateChanged();
+//					System.err.println(name+ "'s popup state should do scheduler now ");
 				}
 			}
 		} 
 		
-//		// TEMP
-//				if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
-//					if (family.thisSensor(args)) {
-//						System.err.println(name+ "'s popup state: "+state);
-//					}
-//				}
+		// TEMP
+//		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
+//			if (family.thisSensor(args)) {
+//				System.err.println(name+ "'s popup state: "+state);
+//			}
+//		}
 		
 		if (sensorOccupied) {
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
@@ -326,12 +326,6 @@ public class PopupAgent extends Agent implements Popup {
 		// Note: popup must be up -> WORKSTATION_RELEASE_FINISHED -> POPUP_GUI_LOAD_FINISHED (implied) ->
 		// POPUP_GUI_MOVED_DOWN -> automatically moves on
 
-		// TODONOW: Is it possible that you misunderstood what release the glass?
-		// Do I need to do anything on popup after workstation release glass, or does it automatically move on?
-		// Why did the piece move along the wrong side of the conveyor?
-		// How do you deal with glass being released from workstation WHILE next glass comes along?
-		// You didn't anticipate the workstation always being done so quickly.
-		
 		// Make sure gui is up first
 		if (!isUp) {
 			setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION);

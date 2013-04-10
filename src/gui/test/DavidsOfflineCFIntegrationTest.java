@@ -16,7 +16,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity;
 /** 
  * Class to reliably test offline cf integrated with the animation
  * Turns conveyors leading up to cf all on, makes some glass move along. All three offline cfs are made as my own version of the cf. 
- * Must manually make sure glasses enter first family fairly
+ * *Must manually make sure glasses enter first family fairly* (the 'before' family does not wait for msgPositionFree
  * @author David Zhang
  */
 public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TReceiver {
@@ -140,6 +140,9 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		}
 	}
 	
+	/* Testing: wait(2000) between creating new glasses b/c the 'before conveyor family' does not wait for msgPositionFree */ 
+	
+	@SuppressWarnings("unused")
 	private void test1Glass() { // uncomment one, and test. all work.
 //		glasses.add(new Glass(new MachineType[] { })); // yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER })); // yes
@@ -148,6 +151,7 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER })); // yes
 	}
 	
+	@SuppressWarnings("unused")
 	private void test2Glasses() { // uncomment a section and try it out
 		// yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
@@ -184,6 +188,13 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
 //		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		
+		// 
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2000);
+		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		
 		// yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
 //		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
@@ -218,17 +229,9 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 //		wait(2000);
 //		glasses.add(new Glass(new MachineType[] { }));
 //		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		
-		/* test with less wait time between glasses */
-		
-		// no - 2nd glass stops suddenly in first fam!
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		wait(1000);
-		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 	}
 	
+	@SuppressWarnings("unused")
 	private void test3Glasses() {
 		// yes
 //		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER }));
