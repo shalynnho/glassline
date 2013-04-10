@@ -192,7 +192,7 @@ public class PopupAgent extends Agent implements Popup {
 					updateWorkstationState(w, WorkstationState.BUSY);
 					w.msgHereIsGlass(g.getGlass());
 	
-//					family.doLoadGlassOntoWorkstation(w.getIndex()); // offline workstation agent already does this
+					family.doLoadGlassOntoWorkstation(w.getIndex());
 					stateChanged();
 				}
 			}

@@ -84,7 +84,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	/* Tell animation to start processing glass. */
 	private void doStartProcessing() {
 		Integer args[] = {index};
-		transducer.fireEvent(mtc, TEvent.WORKSTATION_DO_LOAD_GLASS, args); // should be do start processing?
+		transducer.fireEvent(mtc, TEvent.WORKSTATION_DO_ACTION, args); // originally WORKSTATION_DO_LOAD_GLASS, but this is incorrect?
 		gs = GlassState.processing;
 	}
 	
@@ -100,7 +100,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	// *** EXTRA ***
 	
-	/* Getters */
+	/* Getters/Setters */
 	public MachineType getType() {
 		return mt;
 	}
@@ -111,5 +111,9 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	public int getIndex() {
 		return index;
+	}
+	
+	public void setPopupWorkstationInteraction(PopupWorkstationInteraction p) {
+		this.p = p;
 	}
 }

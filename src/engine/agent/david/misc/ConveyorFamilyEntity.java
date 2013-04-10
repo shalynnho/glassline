@@ -140,10 +140,9 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 		t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, new Integer[] { popupIndex });
 	}
 
-	// no longer used b/c offline workstation agent already does this
-//	public void doLoadGlassOntoWorkstation(int workstationIndex) {
-//		t.fireEvent(workstationChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstationIndex });
-//	}
+	public void doLoadGlassOntoWorkstation(int workstationIndex) {
+		t.fireEvent(workstationChannel, TEvent.WORKSTATION_DO_LOAD_GLASS, new Integer[] { workstationIndex });
+	}
 
 	// *** EXTRA ***
 

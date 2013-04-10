@@ -22,7 +22,7 @@ import transducer.Transducer;
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
 	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
-	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION;//OFFLINE_CF_TEST;
+	private static final RunMode RUN_MODE = RunMode.OFFLINE_CF_TEST; // FINAL_SUBMISSION;
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;

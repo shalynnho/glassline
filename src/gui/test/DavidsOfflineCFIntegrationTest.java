@@ -43,19 +43,27 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 	}
 
 	private void prepareAgents() {
+		// 3 step process for each family: create the workstations, create the family with workstations passed in, set popup of workstations to family's popup 
 		drillWks1 = new OfflineWorkstationAgent("Drill workstation 1", MachineType.DRILL, 0, t);
 		drillWks2 = new OfflineWorkstationAgent("Drill workstation 2", MachineType.DRILL, 1, t);
 		drillFamily = new ConveyorFamilyEntity(t, 5, 0, drillWks1, drillWks2);
-
+		drillWks1.setPopupWorkstationInteraction(drillFamily.popup);
+		drillWks2.setPopupWorkstationInteraction(drillFamily.popup);
+		
 		crossSeamerWks1 = new OfflineWorkstationAgent("Cross Seamer workstation 1", MachineType.CROSS_SEAMER, 0, t);
 		crossSeamerWks2 = new OfflineWorkstationAgent("Cross Seamer workstation 2", MachineType.CROSS_SEAMER, 1, t);
 		crossSeamerFamily = new ConveyorFamilyEntity(t, 6, 1, crossSeamerWks1, crossSeamerWks2);
+		crossSeamerWks1.setPopupWorkstationInteraction(crossSeamerFamily.popup);
+		crossSeamerWks2.setPopupWorkstationInteraction(crossSeamerFamily.popup);
 
 		grinderWks1 = new OfflineWorkstationAgent("Grinder workstation 1", MachineType.GRINDER, 0, t);
 		grinderWks2 = new OfflineWorkstationAgent("Grinder workstation 2", MachineType.GRINDER, 1, t);
 		grinderFamily = new ConveyorFamilyEntity(t, 7, 2, grinderWks1, grinderWks2);
+		grinderWks1.setPopupWorkstationInteraction(grinderFamily.popup);
+		grinderWks2.setPopupWorkstationInteraction(grinderFamily.popup);
 		
-		// Connect
+
+		// Connect line components
 		before.setNextLineComponent(drillFamily);
 		drillFamily.setPreviousLineComponent(before);
 
@@ -121,7 +129,6 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 			args[0] = i;
 			t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
 		}
-		
 	}
 	
 	// Simple class to deal with before and after the cfs to be tested
