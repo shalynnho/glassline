@@ -16,12 +16,12 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	private OfflineConveyorFamily nextCF; // reference to the next ConveyorFamily – this could even be the final truck at the end of the line
 	private OfflineConveyorFamily prevCF; // reference to the previous conveyor family, will be NULL if it does not exist
 	private Conveyor conveyor;
-	private List<Sensor> sensors; // Will hold all of the sensors of different types in one place – adds to the modularity of the system
+	private Sensor sensors; // Will hold all of the sensors of different types in one place – adds to the modularity of the system
 	private PopUp popUp;
 	private String name;
 	
 	//Constructors:
-	public ConveyorFamilyImp(String name, Conveyor conveyor, List<Sensor> sensors, PopUp popUp) {
+	public ConveyorFamilyImp(String name, Conveyor conveyor, Sensor sensors, PopUp popUp) {
 		this.name = name;
 		this.conveyor = conveyor;
 		this.sensors = sensors;
@@ -29,21 +29,14 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		
 		// Set the CF references for these components
 		this.conveyor.setCF(this);
-		for (Sensor s: this.sensors) {
-			s.setCF(this);
-		}
 		this.popUp.setCF(this);
+		this.sensors.setCF(this);
 	}
 
 	//Messages:
 	public void msgHereIsGlass(Glass g) {
-		for (Sensor s: sensors) {
-			if (s.getType().contains("entry")) {
-				s.msgHereIsGlass(g);
-				System.out.println(name + ": Found the entry sensor and sent the message with the glass!");
-				break;
-			}
-		}
+		conveyor.msgGiveGlassToConveyor(g);
+		System.out.println(name + ": Messaged conveyor with glass: " + g.getID());
 	}
 
 	public void msgPositionFree() {
@@ -94,12 +87,7 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		return name;
 	}
 	
-	public Sensor getSensor(String arg) {
-		for (Sensor s: sensors) {
-			if (s.getType().contains(arg)) {
-				return s;
-			}
-		}
-		return null;
+	public Sensor getSensor() {
+		return sensors;
 	}
 }

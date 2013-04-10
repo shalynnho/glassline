@@ -67,23 +67,24 @@ public class SensorAgent extends Agent implements Sensor {
 	
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (event == TEvent.SENSOR_GUI_RELEASED) { // If a piece of glass just left a sensor
-			if ((Integer) args[0] == guiIndexEnterSensor) {
-				msgUpdateGlassEntrySensorExit(); // Glass just left entry sensor
-			}
-			
-			if ((Integer) args[0] == guiIndexPopUpSensor) {
-				msgUpdateGlassPopUpSensorExit(); // Glass just left popUp sensor
-			}
-		}
-		
-		if (event == TEvent.SENSOR_GUI_PRESSED) { // If a piece of glass just landed on a sensor
-			if ((Integer) args[0] == guiIndexEnterSensor) {
-				msgUpdateGlassEntrySensorEnter(); // Glass just hit entry sensor
-			}
-			
-			if ((Integer) args[0] == guiIndexPopUpSensor) {
-				msgUpdateGlassEntrySensorExit(); // Glass just hit popUp sensor
+		if (channel == TChannel.SENSOR) {
+			if (event == TEvent.SENSOR_GUI_PRESSED) { // If a piece of glass just landed on a sensor
+				if ((Integer) args[0] == guiIndexEnterSensor) {
+					msgUpdateGlassEntrySensorEnter(); // Glass just hit entry sensor
+				}
+				
+				else if ((Integer) args[0] == guiIndexPopUpSensor) {
+					msgUpdateGlassEntrySensorExit(); // Glass just hit popUp sensor
+				}
+			}		
+			else if (event == TEvent.SENSOR_GUI_RELEASED) { // If a piece of glass just left a sensor
+				if ((Integer) args[0] == guiIndexEnterSensor) {
+					msgUpdateGlassEntrySensorExit(); // Glass just left entry sensor
+				}
+				
+				else if ((Integer) args[0] == guiIndexPopUpSensor) {
+					msgUpdateGlassPopUpSensorExit(); // Glass just left popUp sensor
+				}
 			}
 		}
 	}
