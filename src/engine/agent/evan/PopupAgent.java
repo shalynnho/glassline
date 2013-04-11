@@ -12,8 +12,7 @@ import engine.agent.evan.interfaces.*;
 public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	
-	private OfflineConveyorFamily nextCF;
-	private LineComponent c; // the previous conveyor
+	private LineComponent next, c; // the next LineComponent and the previous conveyor
 	private OfflineWorkstation mach[];
 	private int id; // place in animation
 	
@@ -39,10 +38,9 @@ public class PopupAgent extends Agent implements Popup {
 	private boolean mFree[], up, posFree; // machine free, up or down, nextCF position free
 	
 	/* Assigns references from arguments and sets other data appropriately. */
-	public PopupAgent(String name, OfflineConveyorFamily cf, LineComponent conv, OfflineWorkstation machines[], MachineType mType, Transducer trans, int index) {
+	public PopupAgent(String name, LineComponent conv, OfflineWorkstation machines[], MachineType mType, Transducer trans, int index) {
 		super(name, trans);
 		
-		nextCF = cf;
 		c = conv;
 		mach = machines;
 		mt = mType;
@@ -156,7 +154,7 @@ public class PopupAgent extends Agent implements Popup {
 	
 	/* Send glass to next CF and release glass in animation as well. Then remove glass from list and reset posFree. */
 	private void sendGlass(MyGlass mg) {
-		nextCF.msgHereIsGlass(mg.g);
+		next.msgHereIsGlass(mg.g);
 		doReleaseGlass(mg);
 		glasses.remove(mg);
 		posFree = false; // next conveyor now occupied
@@ -230,5 +228,10 @@ public class PopupAgent extends Agent implements Popup {
 	/* Queries whether threads are waiting on an animation action. Strictly for unit testing. */
 	public boolean isWaiting(int i) {
 		return animSem[i].hasQueuedThreads();
+	}
+	
+	/* Setters */
+	public void setNext(LineComponent lc) {
+		next = lc;
 	}
 }

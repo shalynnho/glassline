@@ -1,6 +1,5 @@
 package engine.agent.evan;
 
-import engine.agent.evan.interfaces.*;
 import shared.interfaces.*;
 import shared.Glass;
 import shared.enums.MachineType;
@@ -12,10 +11,9 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	private ConveyorAgent c;
 	private PopupAgent p;
 	
-	public ConveyorFamilyImplementation(OfflineConveyorFamily prev, OfflineConveyorFamily next, Transducer t,
-			OfflineWorkstation mach[], MachineType mt, int cid, int pid) {
-		c = new ConveyorAgent("c" + cid, prev, p, t, cid);
-		p = new PopupAgent("p" + pid, next, c, mach, mt, t, pid);
+	public ConveyorFamilyImplementation(Transducer t, OfflineWorkstation mach[], MachineType mt, int cid, int pid) {
+		c = new ConveyorAgent("c" + cid, p, t, cid);
+		p = new PopupAgent("p" + pid, c, mach, mt, t, pid);
 		c.setPopup(p);
 	}
 	
@@ -37,5 +35,14 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	public void startThreads() {
 		c.startThread();
 		p.startThread();
+	}
+	
+	/* Setters */
+	public void setPrev(LineComponent lc) {
+		c.setPrev(lc);
+	}
+	
+	public void setNext(LineComponent lc) {
+		p.setNext(lc);
 	}
 }
