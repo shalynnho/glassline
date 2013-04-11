@@ -73,21 +73,11 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 
 	// *** ACTIONS ***
 	
+	/* Process the glass if it needs to be processed. */
 	private void processGlass() {
-		doStartProcessing();
-		doWaitProcessing();
-	}
-	
-	private void doStartProcessing() {
-		transducer.fireEvent(channel, TEvent.WORKSTATION_DO_ACTION, null);
-		state = GlassState.processing;
-	}
-	
-	private void doWaitProcessing() {
-		try {
-			aniSem.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (glass.getNeedsProcessing(type)) {
+			doStartProcessing();
+			doWaitProcessing();
 		}
 		state = GlassState.processed;
 	}
@@ -108,6 +98,21 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 		glass = null;
 		recPosFree = false;
 		prev.msgPositionFree();
+	}
+	
+	// *** ANIMATION ACTIONS ***
+	
+	private void doStartProcessing() {
+		transducer.fireEvent(channel, TEvent.WORKSTATION_DO_ACTION, null);
+		state = GlassState.processing;
+	}
+	
+	private void doWaitProcessing() {
+		try {
+			aniSem.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// *** ACCESSORS & MUTATORS ***
