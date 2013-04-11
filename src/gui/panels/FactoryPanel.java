@@ -152,27 +152,13 @@ public class FactoryPanel extends JPanel {
 				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
 			}
 			
-			// Cross Seamer -- Tim
-			// Make the list of machines to send to the popUp
+			// Cross Seamer
 			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
-			for (int i = 0; i < 2; ++i) {
+			for (int i = 0; i < 2; ++i)
 				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
-			}
-			
-			// Create the main CF
 			crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
-			
-			// Link the machines to the popUp
-			for (int i = 0; i < 2; ++i) {
+			for (int i = 0; i < 2; ++i)
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
-			}
-			/*
-			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
-			crossSeamerFamily = new ConveyorFamilyImplementation(transducer, drillWorkstation, MachineType.CROSS_SEAMER, 6, 1);
-			for (int i = 0; i < 2; ++i) {
-				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
-				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily);
-			}*/			
 			
 			// Grinder
 			grinderWorkstation = new OfflineWorkstationAgent[2];
@@ -180,7 +166,7 @@ public class FactoryPanel extends JPanel {
 				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + i, MachineType.GRINDER, i, transducer);
 			grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, grinderWorkstation[0], grinderWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
-				grinderWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+				grinderWorkstation[i].setPopupWorkstationInteraction(grinderFamily);
 			
 			// Washer
 			washerFamily = new BigOnlineConveyorFamilyImp(MachineType.WASHER, transducer, 8);
@@ -249,7 +235,7 @@ public class FactoryPanel extends JPanel {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
 		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-				/*MachineType.GRINDER,*/ MachineType.OVEN})); // a couple of errors we can fix tomorrow
+				MachineType.GRINDER, MachineType.OVEN}));
 		
 		binRobot.seedGlasses(glasses);
 		
