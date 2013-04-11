@@ -221,8 +221,11 @@ public class FactoryPanel extends JPanel {
 			createGlassesAndRun();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
+			
+			// Uncomment only one
 			TimsOfflineCFIntegrationTest tTest = new TimsOfflineCFIntegrationTest(transducer);
-			//DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
+//			DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
+//			TruckIntegrationTest truckTest = new TruckIntegrationTest(transducer);
 		}
 		
 		System.out.println("Backend initialization finished.");
