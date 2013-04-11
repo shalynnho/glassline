@@ -31,8 +31,8 @@ public class MockConveyorFamily implements OfflineConveyorFamily {
 	}
 	
 	public void msgPositionFree() {
-		System.out.println(name + ": Messaged conveyor that glass can to passed to next conveyor system.");
-		log.add(new LoggedEvent(name + ": Messaged conveyor that glass can to passed to next conveyor system."));
+		System.out.println(name + ": Messaged popUp that glass can to passed to next conveyor system.");
+		log.add(new LoggedEvent(name + ": Messaged popUp that glass can to passed to next conveyor system."));
 	}
 	
 	public void sendGlassToNextCF() { // Hack method for testing, I will make sure to add in the glass through msgHereIsGlass before calling this method in testing

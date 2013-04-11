@@ -95,7 +95,6 @@ public class PopUpAgent extends Agent implements PopUp {
 			for (MyGlassPopUp glass: glassToBeProcessed) {
 				if (glass.glass.getID() == g.getID()) {
 					glass.processState = processState.doneProcessing;
-					machineComs.get(index).inUse = false;
 					stateChanged();
 					break;
 				}
@@ -134,20 +133,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
-				if (g.processState == processState.doneProcessing) { // If glass needs to be sent out to next conveyor and a position is available
-					glass = g;
-					break;
-				}				
-			}
-		}
-		if (glass != null) {
-			actRemoveGlassFromMachine(glass); return true;
-		}
-		
-		
-		synchronized(glassToBeProcessed) {
-			for (MyGlassPopUp g: glassToBeProcessed) {
-				if (g.processState == processState.unprocessed) { // If glass needs to be sent out to next conveyor and a position is available
+				if (g.processState == processState.unprocessed) { // If glass needs to be sent out to a machine and a position is available
 					synchronized(machineComs) {
 						for (MachineCom com: machineComs) {
 							if ((com.inUse == false && popUpDown == true)) { // If there is an available machine and the popUp is down
@@ -162,7 +148,19 @@ public class PopUpAgent extends Agent implements PopUp {
 		}
 		if (glass != null && machCom != null) {
 			actPassGlassToMachine(glass, machCom); return true;
-		}		
+		}
+		
+		synchronized(glassToBeProcessed) {
+			for (MyGlassPopUp g: glassToBeProcessed) {
+				if (g.processState == processState.doneProcessing) { // If glass needs to be sent out to next conveyor and a position is available
+					glass = g;
+					break;
+				}				
+			}
+		}
+		if (glass != null) {
+			actRemoveGlassFromMachine(glass); return true;
+		}
 		
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
@@ -230,7 +228,6 @@ public class PopUpAgent extends Agent implements PopUp {
 	}
 	
 	private void actPassGlassToMachine(MyGlassPopUp glass, MachineCom com) {
-		com.inUse = true;
 		glass.processState = processState.processing;
 		glass.machineIndex = com.machineIndex;
 		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
@@ -303,12 +300,14 @@ public class PopUpAgent extends Agent implements PopUp {
 		Integer args[] = {index};
 		transducer.fireEvent(processType.getChannel(), TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 		doDelayForAnimation(4); // wait for popup load to finish
+		machineComs.get(index).inUse = true; // Make sure to set the machineCom to isUse, or else other glasses will be able to access machine
 	}
 	
 	private void doReleaseGlassWorkstation(int index) { // Make the GUI Workstation (index) next to the popUp release its glass
 		Integer args[] = {index};
 		transducer.fireEvent(processType.getChannel(), TEvent.WORKSTATION_RELEASE_GLASS, args);
-		doDelayForAnimation(0); // wait for popup load to finish	
+		doDelayForAnimation(0); // wait for popup load to finish
+		machineComs.get(index).inUse = false; // Make sure to make the machineCom available again
 	}
 	
 	private void doDelayForAnimation(int index) { // Depending on what index is passed in, a certain animation semaphore will block until the animation is done

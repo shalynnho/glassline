@@ -40,8 +40,8 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	}
 
 	public void msgPositionFree() {
-		conveyor.msgPositionFree();
-		System.out.println(name + ": Messaged conveyor that glass can to passed to next conveyor system.");
+		popUp.msgPositionFree();
+		System.out.println(name + ": Messaged popUp that glass can to passed to next conveyor system.");
 	}
 
 	public void msgGlassDone(Glass g, int machineIndex) {
