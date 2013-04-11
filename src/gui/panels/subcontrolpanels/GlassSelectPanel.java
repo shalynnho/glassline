@@ -4,10 +4,7 @@ import gui.panels.ControlPanel;
 
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import shared.enums.MachineType;
 
@@ -22,6 +19,7 @@ public class GlassSelectPanel extends JPanel {
 	private JScrollPane scrollPane;
 	private JPanel mainPanel;
 	private ArrayList<JCheckBox> checkBoxes;
+	private JButton goButton = new JButton("GO!");
 	
 	/**
 	 * Creates a new GlassSelect and links it to the control panel
@@ -47,9 +45,13 @@ public class GlassSelectPanel extends JPanel {
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
 		for (int i=0; i<checkBoxes.size(); i++) {
+			//checkBoxes.get(i).setAlignmentX(CENTER_ALIGNMENT);
 			mainPanel.add(checkBoxes.get(i));
 		}
+		//goButton.setAlignmentX(CENTER_ALIGNMENT);
+		mainPanel.add(goButton);
 		
+		mainPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);		
 		scrollPane = new JScrollPane(mainPanel);
 		this.add(scrollPane);
 		
