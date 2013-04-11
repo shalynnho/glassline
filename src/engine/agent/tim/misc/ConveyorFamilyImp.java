@@ -17,8 +17,8 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	//Description:  Will act as a wrapper class for a set of conveyors, sensors, and pop-ups.  It will also contain a reference to robots and machines through its components
 
 	//Data:
-	private OfflineConveyorFamily nextCF; // reference to the next ConveyorFamily – this could even be the final truck at the end of the line
-	private OfflineConveyorFamily prevCF; // reference to the previous conveyor family, will be NULL if it does not exist
+	private LineComponent nextCF; // reference to the next ConveyorFamily – this could even be the final truck at the end of the line
+	private LineComponent prevCF; // reference to the previous conveyor family, will be NULL if it does not exist
 	private Conveyor conveyor;
 	private Sensor sensors; // Will hold all of the sensors of different types in one place – adds to the modularity of the system
 	private PopUp popUp;
@@ -47,9 +47,9 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		this.name = name;
 		
 		// Now set up all of the agents
-		this.sensors = new SensorAgent(sensorName, transducer, entrySensorIndex, popUpSensorIndex); 
-		this.conveyor = new ConveyorAgent(conveyorName, transducer, conveyorIndex);
-		this.popUp = new PopUpAgent(popUpName, transducer, machines, popUpIndex);
+		this.sensors = new SensorAgent(name + " " + sensorName, transducer, entrySensorIndex, popUpSensorIndex); 
+		this.conveyor = new ConveyorAgent(name + " " + conveyorName, transducer, conveyorIndex);
+		this.popUp = new PopUpAgent(name + " " + popUpName, transducer, machines, popUpIndex);
 		
 		// Set the CF references for these components
 		this.conveyor.setCF(this);
@@ -90,11 +90,11 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		this.conveyor = conveyor;
 	}
 
-	public OfflineConveyorFamily getPrevCF() {
+	public LineComponent getPrevCF() {
 		return prevCF;
 	}
 
-	public void setPrevCF(OfflineConveyorFamily prevCF) {
+	public void setPrevCF(LineComponent prevCF) {
 		this.prevCF = prevCF;
 	}
 
@@ -106,11 +106,11 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		this.popUp = popUp;
 	}
 
-	public OfflineConveyorFamily getNextCF() {
+	public LineComponent getNextCF() {
 		return nextCF;
 	}
 
-	public void setNextCF(OfflineConveyorFamily nextCF) {
+	public void setNextCF(LineComponent nextCF) {
 		this.nextCF = nextCF;
 	}
 

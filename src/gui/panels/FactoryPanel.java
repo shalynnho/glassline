@@ -3,6 +3,7 @@ package gui.panels;
 import engine.agent.*;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
+import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.*;
 import gui.test.*;
 import java.util.*;
@@ -20,7 +21,7 @@ import transducer.*;
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
 	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
-	private static final RunMode RUN_MODE = RunMode.OFFLINE_CF_TEST; // FINAL_SUBMISSION or OFFLINE_CF_TEST;
+	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION; // FINAL_SUBMISSION or OFFLINE_CF_TEST;
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
@@ -51,12 +52,14 @@ public class FactoryPanel extends JPanel {
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
 	
 	// DRILL
-	private OfflineWorkstationAgent drillWorkstation[], crossSeamerWorkstation[]; // just for now extra families
-	private ConveyorFamilyImplementation drillFamily, crossSeamerFamily;
+	private OfflineWorkstationAgent drillWorkstation[];//, crossSeamerWorkstation[]; // just for now extra families
+	private ConveyorFamilyImplementation drillFamily;
+
+	//ConveyorFamilyImp crossSeamerFamily;
 
 	// CrossSeamer - Tim's
-//	private OfflineWorkstationAgent crossSeamerWorkstation[];
-//	private ConveyorFamilyImp crossSeamerFamily;
+	private OfflineWorkstationAgent crossSeamerWorkstation[];
+	private ConveyorFamilyImp crossSeamerFamily;
 
 	// Grinder - David's
 	private OfflineWorkstationAgent grinderWorkstation[];
@@ -149,13 +152,27 @@ public class FactoryPanel extends JPanel {
 				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
 			}
 			
-			// Cross Seamer
+			// Cross Seamer -- Tim
+			// Make the list of machines to send to the popUp
+			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
+			for (int i = 0; i < 2; ++i) {
+				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
+			}
+			
+			// Create the main CF
+			crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
+			
+			// Link the machines to the popUp
+			for (int i = 0; i < 2; ++i) {
+				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
+			}
+			/*
 			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
 			crossSeamerFamily = new ConveyorFamilyImplementation(transducer, drillWorkstation, MachineType.CROSS_SEAMER, 6, 1);
 			for (int i = 0; i < 2; ++i) {
 				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily);
-			}
+			}*/			
 			
 			// Grinder
 			grinderWorkstation = new OfflineWorkstationAgent[2];
@@ -194,9 +211,9 @@ public class FactoryPanel extends JPanel {
 			drillFamily.setPreviousLineComponent(manualBreakoutFamily);
 			
 			drillFamily.setNextLineComponent(crossSeamerFamily);
-			crossSeamerFamily.setPreviousLineComponent(drillFamily);
+			crossSeamerFamily.setPrevCF(drillFamily);
 			
-			crossSeamerFamily.setNextLineComponent(grinderFamily);
+			crossSeamerFamily.setNextCF(grinderFamily);
 			grinderFamily.setPreviousLineComponent(crossSeamerFamily);
 			
 			grinderFamily.setNextLineComponent(washerFamily);
@@ -231,8 +248,9 @@ public class FactoryPanel extends JPanel {
 	private void createGlassesAndRun() {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, /*MachineType.CROSS_SEAMER,*/
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
 				/*MachineType.GRINDER,*/ MachineType.OVEN})); // a couple of errors we can fix tomorrow
+		
 		binRobot.seedGlasses(glasses);
 		
 		startAgentThreads();

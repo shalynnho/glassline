@@ -164,8 +164,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private void actSetGlassOffEntrySensor(MyGlassConveyor g) {
 		g.conveyorState = conveyorState.beforePopUpSensor;
 		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
-		if (cf.getPrevCF() != null)
+		if (cf.getPrevCF() != null) {
 			cf.getPrevCF().msgPositionFree();
+			print("msgPositionFree() sent to previous LineComponent");
+		}
 	}
 
 	private void actSetGlassOnPopUpSensor(MyGlassConveyor g) {
@@ -207,7 +209,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel == TChannel.CONVEYOR) {
+		if (channel == TChannel.CONVEYOR && ((Integer) args[0] == guiIndex)) {
 			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {
 				turnOnConveyorGUI();
 			}
