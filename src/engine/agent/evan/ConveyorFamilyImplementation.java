@@ -38,11 +38,11 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	}
 	
 	/* Setters */
-	public void setPrev(LineComponent lc) {
+	public void setPreviousLineComponent(LineComponent lc) {
 		c.setPrev(lc);
 	}
 	
-	public void setNext(LineComponent lc) {
+	public void setNextLineComponent(LineComponent lc) {
 		p.setNext(lc);
 	}
 }
