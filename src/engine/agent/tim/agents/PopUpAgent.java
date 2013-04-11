@@ -8,6 +8,7 @@ import engine.agent.OfflineWorkstationAgent;
 import engine.agent.tim.interfaces.Machine;
 import engine.agent.tim.interfaces.PopUp;
 import engine.agent.tim.misc.ConveyorFamilyImp;
+import engine.agent.tim.misc.MachineCom;
 import engine.agent.tim.misc.MyGlassPopUp;
 import engine.agent.tim.misc.MyGlassPopUp.processState;
 import shared.Glass;
@@ -25,18 +26,6 @@ public class PopUpAgent extends Agent implements PopUp {
 	// Of course, this agent may not be needed because there is NO ROBOT in the animation. but I will leave it in for now.
 
 	// Data:	
-	private class MachineCom { // Will hold a communication channel to a robot, allowing for the possibility to communicate to multiple robots at once
-		OfflineWorkstationAgent machine; // Robot reference
-		boolean inUse; // Is this channel currently occupied by a piece of glass
-		int machineIndex; // Where the machine is located within the animation
-		
-		public MachineCom(OfflineWorkstationAgent machine, int machineIndex) {
-			this.machine = machine;
-			this.inUse = false; // At start, this channel is obviously not being used, so it has to be false
-			this.machineIndex = machineIndex; 
-		}
-	}
-
 	private List<MyGlassPopUp> glassToBeProcessed; // This name will be abbreviated as glassToBeProcessed in many functions to save on space and complexity
 	private List<MachineCom> machineComs; // Channels for communicating with the machines, since there will most likely be two per offline process
 
@@ -45,9 +34,9 @@ public class PopUpAgent extends Agent implements PopUp {
 	
 	private ConveyorFamilyImp cf; // Reference to the current conveyor family
 	
-	MachineType processType; // Will hold what the concurrent workstation agents can process for any given popUp – it is safe to assume that the workstations process the same thing
+	private MachineType processType; // Will hold what the concurrent workstation agents can process for any given popUp – it is safe to assume that the workstations process the same thing
 	
-	boolean passNextCF; // Is it possible to pass to the next conveyor family yet?
+	private boolean passNextCF; // Is it possible to pass to the next conveyor family yet?
 
 	int guiIndex; // Needed to communicate with the transducer
 	
@@ -131,6 +120,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.processState == processState.awaitingRemoval) { // If glass needs to be sent out to next conveyor and a position is available
 					if (passNextCF == true) {
 						glass = g;
+						break;
 					}
 					else {
 						return false; // Do not want another piece of glass to collide, so shut the agent down until positionFree() is called
@@ -146,6 +136,7 @@ public class PopUpAgent extends Agent implements PopUp {
 			for (MyGlassPopUp g: glassToBeProcessed) {
 				if (g.processState == processState.doneProcessing) { // If glass needs to be sent out to next conveyor and a position is available
 					glass = g;
+					break;
 				}				
 			}
 		}
@@ -206,7 +197,7 @@ public class PopUpAgent extends Agent implements PopUp {
 			glass.processState = processState.unprocessed;
 		else 
 			glass.processState = processState.awaitingRemoval;
-
+		print("Glass " + glass.glass.getID() + " added to queue for processing");
 	}
 	
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
@@ -214,7 +205,9 @@ public class PopUpAgent extends Agent implements PopUp {
 		// Fire transducer event to release glass index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
 		doReleaseGlassPopUp();
 		passNextCF = false;
-		glassToBeProcessed.remove(glass);		
+		glassToBeProcessed.remove(glass);	
+		print("Glass " + glass.glass.getID() + " passed to nextCF");
+
 	}
 	
 	private void actRemoveGlassFromMachine(MyGlassPopUp glass) {
@@ -227,6 +220,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		doMovePopUpDown();
 		// all with the correct timing so nothing is funky
 		glass.processState = processState.awaitingRemoval;
+		print("Glass " + glass.glass.getID() + " removed from machine");
 
 	}
 	
@@ -239,6 +233,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		com.machine.msgHereIsGlass(glass.glass);
 		// Machine Load glass transducer events w/right index (can be attained from the machineCom machineIndex) – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
 		doLoadGlassWorkStation(com.machineIndex);
+		print("Glass " + glass.glass.getID() + " passed to machine " + com.machine.getName());
 	}	
 
 	//Other Methods:
@@ -248,18 +243,23 @@ public class PopUpAgent extends Agent implements PopUp {
 		if (channel == TChannel.POPUP && (Integer) args[0] == guiIndex) {
 			if (event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				animationSemaphores.get(0).release();
+				print("Animation semaphore 0 released");
 			}
 			else if (event == TEvent.POPUP_GUI_MOVED_DOWN) {
-				animationSemaphores.get(1).release();			
+				animationSemaphores.get(1).release();		
+				print("Animation semaphore 1 released");
 			}
 			else if (event == TEvent.POPUP_GUI_MOVED_UP) {
 				animationSemaphores.get(2).release();
+				print("Animation semaphore 2 released");
 			}
 			else if (event == TEvent.POPUP_GUI_RELEASE_FINISHED) {
 				animationSemaphores.get(3).release();
+				print("Animation semaphore 3 released");
 			}
 			else if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
 				animationSemaphores.get(4).release();
+				print("Animation semaphore 4 released");
 			}
 		}		
 	}
@@ -360,5 +360,23 @@ public class PopUpAgent extends Agent implements PopUp {
 		else {
 			return false;
 		}
+	}
+
+	/**
+	 * @return the passNextCF
+	 */
+	public boolean isPassNextCF() {
+		return passNextCF;
+	}
+	
+	public List<Semaphore> getAnimationSemaphores() {
+		return animationSemaphores;
+	}
+
+	/**
+	 * @return the machineComs
+	 */
+	public List<MachineCom> getMachineComs() {
+		return machineComs;
 	}
 }
