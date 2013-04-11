@@ -27,22 +27,23 @@ import engine.agent.david.test.mock.MockSensor;
  */
 public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	// *** Constructor(s) ***
-	public ConveyorFamilyEntity(Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
+	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
 		this.t = transducer;
 		this.type = workstation1.getType(); // workstations should have same type
-		this.conveyorIndex = 0; // default
+		this.conveyorIndex = convIndex;
+		this.popupIndex = popupIndex;
 		this.workstationChannel = workstation1.getChannel();
 
 		sensor = new SensorAgent(this, transducer);
 		conv = new ConveyorAgent(this, transducer);
 		popup = new PopupAgent(this, transducer, workstation1, workstation2);
 	}
-
-	public ConveyorFamilyEntity(Transducer transducer, int convIndex, int popupIndex, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
+	
+	// secondary, not really used
+	public ConveyorFamilyEntity(Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
 		this.t = transducer;
 		this.type = workstation1.getType(); // workstations should have same type
-		this.conveyorIndex = convIndex;
-		this.popupIndex = popupIndex;
+		this.conveyorIndex = 0; // default
 		this.workstationChannel = workstation1.getChannel();
 
 		sensor = new SensorAgent(this, transducer);
