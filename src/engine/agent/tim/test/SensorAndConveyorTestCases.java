@@ -30,7 +30,7 @@ import engine.agent.tim.test.Mock.MockConveyor;
 import engine.agent.tim.test.Mock.MockConveyorFamily;
 import engine.agent.tim.test.Mock.MockPopUp;
 
-public class SensorTestCases {
+public class SensorAndConveyorTestCases {
 
 	@Test
 	public void sensorAndConveyorOneGlassTest() {
