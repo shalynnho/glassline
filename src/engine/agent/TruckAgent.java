@@ -15,6 +15,10 @@ public class TruckAgent extends Agent implements LineComponent {
 	public TruckAgent(String name, Transducer trans) {
 		super(name, trans);
 		animSem = new Semaphore[2]; // [0] -> load, [1] -> empty
+		for (int i = 0; i < 2; ++i)
+			animSem[i] = new Semaphore(0);
+		
+		transducer.register(this, TChannel.TRUCK);
 	}
 	
 	// *** DATA ***
@@ -46,13 +50,12 @@ public class TruckAgent extends Agent implements LineComponent {
 		return false;
 	}
 	
+	/* React to events on TRUCK channel. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel == TChannel.TRUCK) {
-			if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
-				animSem[0].release();
-			} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
-				animSem[1].release();
-			}
+		if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
+			animSem[0].release();
+		} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
+			animSem[1].release();
 		}
 	}
 	
@@ -92,6 +95,5 @@ public class TruckAgent extends Agent implements LineComponent {
 	public void setPrevLineComponent(LineComponent l) {
 		prev = l;
 	}
-
 
 }
