@@ -50,8 +50,8 @@ public class GlassSelectPanel extends JPanel {
 			mainPanel.add(checkBoxes.get(i));
 		}
 		
-		scrollPane = new JScrollPane(this);
-		scrollPane.add(mainPanel);
+		scrollPane = new JScrollPane(mainPanel);
+		this.add(scrollPane);
 		
 		mainPanel.validate();
 		scrollPane.validate();
