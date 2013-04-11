@@ -2,10 +2,14 @@ package engine.agent.tim.misc;
 
 import java.util.*;
 
+import engine.agent.Agent;
+import engine.agent.OfflineWorkstationAgent;
 import engine.agent.tim.agents.*;
 import engine.agent.tim.interfaces.*;
 import shared.Glass;
+import shared.enums.MachineType;
 import shared.interfaces.*;
+import transducer.Transducer;
 
 public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	//Name: ConveyorFamilyImp
@@ -32,6 +36,26 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		this.popUp.setCF(this);
 		this.sensors.setCF(this);
 	}
+	
+	// Alternate Constructor that creates the agents inside of the conveyorFamily with names and indexes given in the constructor, along with two machines
+	public ConveyorFamilyImp(String name, Transducer transducer,
+			String sensorName, int entrySensorIndex, int popUpSensorIndex, 
+			String conveyorName, int conveyorIndex, 
+			String popUpName, int popUpIndex,
+			OfflineWorkstationAgent[] machines, MachineType processType) 
+	{
+		this.name = name;
+		
+		// Now set up all of the agents
+		this.sensors = new SensorAgent(sensorName, transducer, entrySensorIndex, popUpSensorIndex); 
+		this.conveyor = new ConveyorAgent(conveyorName, transducer, conveyorIndex);
+		this.popUp = new PopUpAgent(popUpName, transducer, machines, popUpIndex);
+		
+		// Set the CF references for these components
+		this.conveyor.setCF(this);
+		this.popUp.setCF(this);
+		this.sensors.setCF(this);
+	}
 
 	//Messages:
 	public void msgHereIsGlass(Glass g) {
@@ -50,6 +74,13 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	}
 	
 	//Other Methods:
+	
+	public void startThreads() {
+		// Start all of the agent threads
+		((Agent) this.sensors).startThread();
+		((Agent) this.conveyor).startThread();
+		((Agent) this.popUp).startThread();
+	}
 
 	public Conveyor getConveyor() {
 		return conveyor;

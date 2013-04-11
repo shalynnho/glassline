@@ -76,6 +76,38 @@ public class PopUpAgent extends Agent implements PopUp {
 		initializeTransducerChannels();		
 	}
 	
+	// alternate constructor that accepts a machine array versus an arrayList:
+	public PopUpAgent(String name, Transducer transducer, OfflineWorkstationAgent[] machines, int guiIndex) {  
+		// Set the passed in values first
+		super(name, transducer);
+		
+		// Then set the values that need to be initialized within this class, specifically
+		glassToBeProcessed = Collections.synchronizedList(new ArrayList<MyGlassPopUp>());
+		machineComs = Collections.synchronizedList(new ArrayList<MachineCom>());
+		animationSemaphores = Collections.synchronizedList(new ArrayList<Semaphore>());
+		
+		// This loop will go for the number of machines that are in the machines argument
+		int i = 0; // Machine indexes related to the GUI machinea
+		for (OfflineWorkstationAgent m: machines) {			
+			machineComs.add(new MachineCom(m, i));
+			i++;
+		}
+		
+		processType = machineComs.get(0).machine.getType(); // Set the correct process type
+		
+		popUpDown = true; // The popUp has to be down when the system starts...
+		passNextCF = true; // The next conveyor will always be available when the system starts
+		
+		this.guiIndex = guiIndex;
+		
+		// Initialize the semaphores as binary semaphores with value 0
+		for (int j = 0; j < 5; j++) {
+			animationSemaphores.add(new Semaphore(0));
+		}
+		
+		initializeTransducerChannels();		
+	}
+	
 	private void initializeTransducerChannels() { // Initialize the transducer channels and everything else related to it
 		// Register any appropriate channels
 		transducer.register(this, TChannel.POPUP); // Set this agent to listen to the POPUP channel of the transducer

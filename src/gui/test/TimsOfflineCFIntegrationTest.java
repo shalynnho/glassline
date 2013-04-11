@@ -12,6 +12,7 @@ import transducer.Transducer;
 import engine.agent.Agent;
 import engine.agent.OfflineWorkstationAgent;
 import engine.agent.david.misc.ConveyorFamilyEntity;
+import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.agents.ConveyorAgent;
 import engine.agent.tim.agents.PopUpAgent;
 import engine.agent.tim.agents.SensorAgent;
@@ -57,13 +58,17 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 	MockConveyorFamily mockNextCF;
 	ConveyorFamilyImp realCF;
 	
+	// Secordary test values
+	OfflineWorkstationAgent[] crossSeamerWorkstation = new OfflineWorkstationAgent[2];
+	ConveyorFamilyImp crossSeamerFamily;
+	
 	public TimsOfflineCFIntegrationTest(Transducer trans) {
 		super(trans, false);
 		
 		transducer = trans;
 		
 		startOtherConveyors();
-		prepareAgents();
+		prepareAgentsB();
 
 		// Create glasses and kick things off
 //		test1Glass();
@@ -113,6 +118,37 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		workstation_0.startThread();
 		workstation_1.startThread();
 	}
+	
+	private void prepareAgentsB() { // Alternate setup to test		
+		// Make the list of machines to send to the popUp
+		crossSeamerWorkstation = new OfflineWorkstationAgent[2];
+		for (int i = 0; i < 2; ++i) {
+			crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
+		}
+		
+		// Create the main CF
+		crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
+		
+		// Link the machines to the popUp
+		for (int i = 0; i < 2; ++i) {
+			crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
+		}
+		
+		// Instantiate the Mocks
+		mockPrevCF = new MockConveyorFamily("mockPrevCF");
+		mockNextCF = new MockConveyorFamily("mockNextCF");
+		
+		// Link up the conveyor families
+		crossSeamerFamily.setPrevCF(mockPrevCF);
+		crossSeamerFamily.setNextCF(mockNextCF);
+		mockNextCF.setPrevCF(crossSeamerFamily);
+		
+		// Start the agent threads
+		crossSeamerFamily.startThreads();
+		for (int i = 0; i < 2; ++i) {
+			crossSeamerWorkstation[i].startThread();
+		}
+	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
@@ -122,10 +158,16 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		// Hack: When glass reaches last sensor right before my 1st cf to test, send msg immediately 
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
 			if ((Integer) args[0] == 11) {
-				realCF.msgHereIsGlass(glasses.remove(0));
+				if (realCF != null)
+					realCF.msgHereIsGlass(glasses.remove(0));
+				else
+					crossSeamerFamily.msgHereIsGlass(glasses.remove(0));
 			}
 			if ((Integer) args[0] == 14) { // Hack: Then send msgPositionFree() to realCF
-				realCF.msgPositionFree();
+				if (realCF != null)
+					realCF.msgPositionFree();
+				else
+					crossSeamerFamily.msgPositionFree();
 			}
 		}
 		
@@ -272,7 +314,7 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 	@SuppressWarnings("unused")
 	private void test3Glasses() {
 	
-		/*
+		///*
 		// All three glasses need processing -- Works
 		glasses.add(new Glass(new MachineType[] {MachineType.CROSS_SEAMER}));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
@@ -282,7 +324,7 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		wait(700);
 		glasses.add(new Glass(new MachineType[] {MachineType.CROSS_SEAMER}));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		*/
+		//*/
 		
 		/*
 		// Two pieces of glass need processing, last one does not -- Works
@@ -307,7 +349,7 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		glasses.add(new Glass(new MachineType[] {MachineType.CROSS_SEAMER}));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		*/
-		
+		/*
 		// Similar as above test, but with different scheme -- works
 		glasses.add(new Glass(new MachineType[] {}));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
@@ -316,7 +358,8 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		wait(700);
 		glasses.add(new Glass(new MachineType[] {}));
-		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);		
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		*/		
 	}
 	
 	@SuppressWarnings("unused")
