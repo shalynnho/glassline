@@ -57,7 +57,7 @@ public class PopupAgent extends Agent implements Popup {
 		mFree = new boolean[2];
 		mFree[0] = true; mFree[1] = true;
 		up = false;
-		posFree = false;
+		posFree = true;
 	}
 	
 	// *** MESSAGES ***
