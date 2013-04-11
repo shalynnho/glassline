@@ -27,6 +27,7 @@ public class MockConveyorFamily implements OfflineConveyorFamily {
 	//Messages:
 	public void msgHereIsGlass(Glass g) {
 		glassSheets.add(g);
+		System.out.println(name + ": Glass added to here.");
 	}
 	
 	public void msgPositionFree() {

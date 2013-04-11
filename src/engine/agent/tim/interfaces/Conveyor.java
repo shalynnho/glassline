@@ -16,6 +16,7 @@ public interface Conveyor {
 	// Getters/Setters
 	public abstract boolean isConveyorOn();
 	public abstract List<MyGlassConveyor> getGlassSheets();
-	public abstract void setCF(OfflineConveyorFamily conveyorFamilyImp);	
+	public abstract void setCF(OfflineConveyorFamily conveyorFamilyImp);
+	public abstract Integer getGUIIndex();	
 	
 }

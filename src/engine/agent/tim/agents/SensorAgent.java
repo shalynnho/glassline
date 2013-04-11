@@ -47,21 +47,25 @@ public class SensorAgent extends Agent implements Sensor {
 	// Messages -- will forward sensor states to the conveyor
 	public void msgUpdateGlassEntrySensorEnter() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.onEntrySensor);
+		print("Sent msgUpdateGlassEntrySensorEnter to conveyor");
 	}
 
 	@Override
 	public void msgUpdateGlassEntrySensorExit() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.offEntrySensor);
+		print("Sent msgUpdateGlassEntrySensorExit to conveyor");
 	}
 
 	@Override
 	public void msgUpdateGlassPopUpSensorEnter() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.onPopUpSensor);
+		print("Sent msgUpdateGlassPopUpSensorEnter to conveyor");
 	}
 	
 	@Override
 	public void msgUpdateGlassPopUpSensorExit() {
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.offPopUpSensor);
+		print("Sent msgUpdateGlassPopUpSensorExit to conveyor");
 	}
 
 	

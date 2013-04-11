@@ -197,11 +197,16 @@ public class PopUpAgent extends Agent implements PopUp {
 			glass.processState = processState.unprocessed;
 		else 
 			glass.processState = processState.awaitingRemoval;
-		print("Glass " + glass.glass.getID() + " added to queue for processing");
+		print("Glass " + glass.glass.getID() + " added to queue for processing.  Glass state: " + glass.processState);
 	}
 	
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
 		cf.getNextCF().msgHereIsGlass(glass.glass);
+		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
+		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
+			Integer[] args = {cf.getConveyor().getGUIIndex()};
+			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+		}				
 		// Fire transducer event to release glass index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
 		doReleaseGlassPopUp();
 		passNextCF = false;
@@ -228,6 +233,11 @@ public class PopUpAgent extends Agent implements PopUp {
 		com.inUse = true;
 		glass.processState = processState.processing;
 		glass.machineIndex = com.machineIndex;
+		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
+		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
+			Integer[] args = {cf.getConveyor().getGUIIndex()};
+			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+		}				
 		// Fire the PopUp up transducer event index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
 		doMovePopUpUp();
 		com.machine.msgHereIsGlass(glass.glass);
@@ -286,7 +296,7 @@ public class PopUpAgent extends Agent implements PopUp {
 	private void doReleaseGlassPopUp() { // Make the GUI PopUp release it's glass
 		Integer args[] = {guiIndex};
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-		doDelayForAnimation(3); // Wait for the popUp to move up
+		doDelayForAnimation(3); // Wait for the popUp to release the glass
 	}
 	
 	private void doLoadGlassWorkStation(int index) { // Make the GUI Workstation (index) next to the popUp load glass
@@ -308,8 +318,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-	
+	}	
 	
 	// Getters and Setters	
 	public int getFreeChannels() {

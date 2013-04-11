@@ -182,8 +182,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private void actSetGlassOffPopUpSensor(MyGlassConveyor g) {
 		glassSheets.remove(g);
 		print("MyGlass " + g.glass.getID() + " removed from conveyor");
-		if (glassSheets.size() == 0)
-			turnOffConveyorGUI();
+		//if (glassSheets.size() == 0)
+			//turnOffConveyorGUI();
 	}
 	
 	private void turnOnConveyorGUI() {
@@ -207,7 +207,14 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		// Not needed here
+		if (channel == TChannel.CONVEYOR) {
+			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {
+				turnOnConveyorGUI();
+			}
+			else if (event == TEvent.CONVEYOR_DO_STOP && conveyorOn) {
+				turnOffConveyorGUI();
+			}
+		}
 	}
 
 	// Getters and setters
@@ -236,5 +243,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	 */
 	public List<ConveyorEvent> getEvents() {
 		return events;
+	}
+
+	@Override
+	public Integer getGUIIndex() {
+		return guiIndex;
 	}
 }

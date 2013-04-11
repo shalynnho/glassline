@@ -4,6 +4,7 @@ import engine.agent.BinRobotAgent;
 import engine.agent.SmallOnlineConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
+import gui.test.TimsOfflineCFIntegrationTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +149,8 @@ public class FactoryPanel extends JPanel {
 			createGlassesAndRun();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
-			DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
+			TimsOfflineCFIntegrationTest tTest = new TimsOfflineCFIntegrationTest(transducer);
+			//DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
 		}
 		
 		System.out.println("Backend initialization finished.");
