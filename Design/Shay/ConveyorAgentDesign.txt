@@ -1,0 +1,72 @@
+ConveyorAgent v0 DESIGN
+
+DATA
+
+	LineComponent previous, next;
+	boolean recPosFree;
+	int myIndex;
+	
+	enum GlassState {PENDING, ARRIVED, MOVING, WAITING_AT_END, PASSED, DONE};
+	
+	class MyGlass {
+		public Glass glass;
+		public GlassState state;
+	}
+	
+	LinkedList<MyGlass> glassList;
+
+
+MESSAGES
+
+	/**
+	 * glass is passed to conveyor
+	 */
+	public void msgHereIsGlass(Glass g) {
+		glasses.add(g);
+		stateChanged();
+	}
+	
+
+SCHEDULER
+
+		for (MyGlass g : glassList)
+			if (g.state == GlassState.DONE) {
+				actRemoveFromList(g);
+				return true;
+			}
+		
+		for (MyGlass g : glassList)
+			if (g.state == GlassState.WAITING_AT_END) {
+				if (recPosFree) {
+					// send to next LineComponent
+					actSendGlassToNext(g);
+					return true;
+				} else {
+					// waiting and full
+					return false;
+				}
+			}
+		
+		for (MyGlass g : glassList)
+			if (g.state == GlassState.ARRIVED) {
+				powerConveyor(true);
+				return true;
+			}
+
+		return false;
+	}
+	
+	// set state of each glass piece in eventFired
+
+ACTIONS
+	
+	private void actRemoveFromList(MyGlass g) {
+		glassList.remove(g);
+	}
+	
+	private void actSendGlassToNext(MyGlass g) {
+		powerConveyor(true);
+		g.state = GlassState.PASSED;
+		next.msgHereIsGlass(g.glass);
+		previous.msgPositionFree();
+	}

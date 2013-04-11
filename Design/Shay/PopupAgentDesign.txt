@@ -1,0 +1,166 @@
+PopupAgent v0 DESIGN
+
+DATA
+
+	private ConveyorFamily family;
+	private int myIndex;
+	
+	private List<Glass> glass;
+	private Glass pendingAdd;
+	private Glass received;
+	private Glass pendingDone;
+	
+	private boolean down = true;
+	private PopupGlassState glassState;
+	private MachineType type;
+	private MyConveyor conveyor;
+	
+	private MoveState moveState;
+	private WSActive wsActive;
+	
+	public enum MoveState { LOADING, RELEASING, MOVING, NO_ACTION };
+	public enum WSActive { WS0, WS1, WS01, NONE };
+	
+	class MyConveyor {
+		Conveyor agent;
+		ConveyorState state;
+		}
+
+
+MESSAGES
+
+	/**
+	 * From conveyor to popup
+	 * @param g - unprocessed glass
+	 */
+	public void msgIHaveGlass(Glass g, Conveyor c) {
+		// determine if glass needs processing & whether to take glass
+		glassState = PopupGlassState.OFFERED_GLASS;
+		save the glass to check if it needs processing, pendingAdd
+		stateChanged();
+	}
+	
+	/**
+	 * From conveyor to popup
+	 * @param g - unprocessed glass
+	 */
+	public void msgHereIsGlass(Glass g, Conveyor c) {
+		MoveState.LOADING;
+		reset pendingAdd
+		received = g; // save the glass you just received to determine where it goes
+		stateChanged();
+	}
+	
+	/**
+	 * Sent from the CF after receiving msgGlassDone from workstation
+	 * @param g - the processed glass
+	 * @param machineIndex - index of the machine which holds the glass
+	 */
+	public void msgGlassDone(Glass g, int machineIndex, ConveyorFamily c) {
+		MoveState.RELEASING;
+		PopupGlassState.PASS_ME_GLASS;
+		pendingDone = g;
+		
+		if (machineIndex == 0) {
+			// check wsActive state to see which machines are/were active
+			if (just machine 0 active) {
+				wsActive = no machines active;
+			} else if (both machines active) {
+				wsActive = machine 1 active;
+			} else if (NO machines active) {
+				print("PopupAgent Error: no workstations active or WS0 not active");
+			}
+		} else if (machineIndex == 1) {
+			if (just machine 1 active) {
+				wsActive = no machines active;
+			} else if (both machines active) {
+				wsActive = machine 0 active;
+			} else if (wsActive == WSActive.NONE || wsActive == WSActive.WS0) {
+				System.out.println("PopupAgent Error: no workstations active or WS1 not active");
+			}
+		}
+		
+		stateChanged();
+	}
+
+
+SCHEDULER
+
+if (moveState == MoveState.RELEASING) {
+			if (glassState == PopupGlassState.PASS_ME_GLASS) {
+				actReleaseGlass();
+				return true;
+			}
+		}
+		
+		if (moveState == MoveState.LOADING) {
+			if (glassState == PopupGlassState.PASS_ME_GLASS) {
+				actTakeGlass();
+				return true;
+			}
+		}
+		
+		if (moveState == MoveState.NO_ACTION) {
+			if (glassState == PopupGlassState.OFFERED_GLASS) {
+				if (((wsActive != WSActive.WS01 && 
+						glassPendingAdd.getNeedsProcessing(type)) || (!glassPendingAdd.getNeedsProcessing(type)))) {
+					actPassMeGlass();
+					return true;
+				}
+			}
+		}
+		return false
+
+ACTIONS
+
+	// tells conveyor agent that popup is waiting to receive the glass piece that
+	// conveyor said it had
+	private void actPassMeGlass() {
+		glassState = PopupGlassState.PASS_ME_GLASS;
+		conveyor.agent.msgPassMeGlass();
+		stateChanged();
+	}
+	
+	// taking glass piece from the conveyor, last action of multi-step exchange
+	// msgIHaveGlass -> msgPassMeGlass -> msgHereIsGlass
+	private void actTakeGlass() {
+		glassState = PopupGlassState.NO_ACTION;
+		if (glass not already in list) {
+			if (glass needs processing) {
+				add glass to list of glass pieces the popup is tracking;
+				
+				if (no machines active) {
+				wsActive = WSActive.WS0; // give glass to machine 0
+				} else if (just one machine active) {
+					wsActive = WSActive.WS01; // no both are
+				} else {
+					System.out.println("PopupAgent Error: Can't process this glass, no space.");
+				}
+				
+			} else {
+				// just passing through, doesn't need processing
+				temporarily add glass to list
+				moveState = MoveState.RELEASING;
+				actReleaseGlass();
+			}
+			pendingAdd = null;
+			
+		} else { // error checking
+			System.out.println("PopupAgent Error: No piece of glass was set to add.");
+		}
+		stateChanged();
+	}
+	
+	private void actReleaseGlass() {
+		remove the glass piece we added temporarily (didn't need processing)
+		
+		glassState = PopupGlassState.NO_ACTION;
+		
+		// firing transducer event to release glass, not used in v0
+		Object[] args = new Object[1];
+		args[0] = myIndex;
+		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		moveState = MoveState.NO_ACTION;
+		
+		stateChanged();
+	}	
