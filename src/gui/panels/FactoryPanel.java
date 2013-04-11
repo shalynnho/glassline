@@ -1,25 +1,17 @@
 package gui.panels;
 
-import engine.agent.BigOnlineConveyorFamilyImp;
-import engine.agent.BinRobotAgent;
-import engine.agent.OfflineWorkstationAgent;
-import engine.agent.SmallOnlineConveyorFamilyImp;
+import engine.agent.*;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
-import engine.agent.tim.misc.ConveyorFamilyImp;
-import gui.drivers.FactoryFrame;
-import gui.test.TimsOfflineCFIntegrationTest;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import gui.drivers.*;
+import gui.test.*;
+import java.util.*;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.OfflineWorkstation;
-import transducer.Transducer;
+import transducer.*;
 
 /**
  * The FactoryPanel is highest level panel in the actual kitting cell. The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. It is responsible for
@@ -28,7 +20,7 @@ import transducer.Transducer;
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
 	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
-	private static final RunMode RUN_MODE = RunMode.OFFLINE_CF_TEST; // FINAL_SUBMISSION;
+	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION; // FINAL_SUBMISSION or OFFLINE_CF_TEST;
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
@@ -57,20 +49,17 @@ public class FactoryPanel extends JPanel {
 
 	// Manual Breakout
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
-
-	// Drill - Evan's
-	private OfflineWorkstationAgent drillWorkstation1;
-	private OfflineWorkstationAgent drillWorkstation2;
-	private ConveyorFamilyImplementation drillFamily;
+	
+	// DRILL
+	private OfflineWorkstationAgent drillWorkstation[], crossSeamerWorkstation[]; // just for now extra families
+	private ConveyorFamilyImplementation drillFamily, crossSeamerFamily;
 
 	// CrossSeamer - Tim's
-	private OfflineWorkstationAgent crossSeamerWorkstation1;
-	private OfflineWorkstationAgent crossSeamerWorkstation2;
-	private ConveyorFamilyImp crossSeamerFamily;
+//	private OfflineWorkstationAgent crossSeamerWorkstation[];
+//	private ConveyorFamilyImp crossSeamerFamily;
 
 	// Grinder - David's
-	private OfflineWorkstationAgent grinderWorkstation1;
-	private OfflineWorkstationAgent grinderWorkstation2;
+	private OfflineWorkstationAgent grinderWorkstation[];
 	private ConveyorFamilyEntity grinderFamily;
 
 	// Washer
@@ -84,6 +73,9 @@ public class FactoryPanel extends JPanel {
 
 	// Oven
 	private BigOnlineConveyorFamilyImp ovenFamily;
+	
+	// TRUCK
+	private TruckAgent truck;
 
 	/**
 	 * Constructor links this panel to its frame
@@ -145,29 +137,34 @@ public class FactoryPanel extends JPanel {
 
 			// Breakout
 			breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 2);
-
+			
 			// Manual Breakout
 			manualBreakoutFamily = new BigOnlineConveyorFamilyImp(MachineType.MANUAL_BREAKOUT, transducer, 3);
-
-			// Drill - Evan's
-			drillWorkstation1 = new OfflineWorkstationAgent("Drill workstation", MachineType.DRILL, 0, transducer);
-			drillWorkstation2 = new OfflineWorkstationAgent("Drill workstation", MachineType.DRILL, 1, transducer);
-			drillFamily = new ConveyorFamilyImplementation(transducer, new OfflineWorkstation[]{ drillWorkstation1, drillWorkstation2 }, MachineType.DRILL, 5, 0);
-			// Evan, please check this / wrap up your family setup
-
-			// CrossSeamer - Tim's
-			crossSeamerWorkstation1 = new OfflineWorkstationAgent("CrossSeamer workstation", MachineType.CROSS_SEAMER, 0, transducer);
-			crossSeamerWorkstation2 = new OfflineWorkstationAgent("CrossSeamer workstation", MachineType.CROSS_SEAMER, 1, transducer);
-			// crossSeamerFamily = new ConveyorFamilyImp(...) 
-			// Tim, please finish this part with however you like to setup your family
-
-			// Grinder - David's
-			grinderWorkstation1 = new OfflineWorkstationAgent("Grinder workstation", MachineType.GRINDER, 0, transducer);
-			grinderWorkstation2 = new OfflineWorkstationAgent("Grinder workstation", MachineType.GRINDER, 1, transducer);
-			grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, grinderWorkstation1, grinderWorkstation2);
-			grinderWorkstation1.setPopupWorkstationInteraction(grinderFamily.popup);
-			grinderWorkstation2.setPopupWorkstationInteraction(grinderFamily.popup);
-
+			
+			// Drill
+			drillWorkstation = new OfflineWorkstationAgent[2];
+			drillFamily = new ConveyorFamilyImplementation(transducer, drillWorkstation, MachineType.DRILL, 5, 0);
+			for (int i = 0; i < 2; ++i) {
+				drillWorkstation[i] = new OfflineWorkstationAgent(MachineType.DRILL.toString() + i, MachineType.DRILL, i, transducer);
+				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+			}
+			
+			// Cross Seamer
+			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
+			crossSeamerFamily = new ConveyorFamilyImplementation(transducer, drillWorkstation, MachineType.CROSS_SEAMER, 6, 1);
+			for (int i = 0; i < 2; ++i) {
+				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
+				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily);
+			}
+			
+			// Grinder
+			grinderWorkstation = new OfflineWorkstationAgent[2];
+			for (int i = 0; i < 2; ++i)
+				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + i, MachineType.GRINDER, i, transducer);
+			grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, grinderWorkstation[0], grinderWorkstation[1]);
+			for (int i = 0; i < 2; ++i)
+				grinderWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+			
 			// Washer
 			washerFamily = new BigOnlineConveyorFamilyImp(MachineType.WASHER, transducer, 8);
 
@@ -180,11 +177,43 @@ public class FactoryPanel extends JPanel {
 			// Oven
 			ovenFamily = new BigOnlineConveyorFamilyImp(MachineType.OVEN, transducer, 13);
 			
-			/* Connect Agents */
-
-			// TODO
-
-
+			// TRUCK
+			truck = new TruckAgent("Truck", transducer);
+			
+			// Connect them!
+			binRobot.setNextLineComponent(cutterFamily);
+			cutterFamily.setPreviousLineComponent(binRobot);
+			
+			cutterFamily.setNextLineComponent(breakoutFamily);
+			breakoutFamily.setPreviousLineComponent(cutterFamily);
+			
+			breakoutFamily.setNextLineComponent(manualBreakoutFamily);
+			manualBreakoutFamily.setPreviousLineComponent(breakoutFamily);
+			
+			manualBreakoutFamily.setNextLineComponent(drillFamily);
+			drillFamily.setPreviousLineComponent(manualBreakoutFamily);
+			
+			drillFamily.setNextLineComponent(crossSeamerFamily);
+			crossSeamerFamily.setPreviousLineComponent(drillFamily);
+			
+			crossSeamerFamily.setNextLineComponent(grinderFamily);
+			grinderFamily.setPreviousLineComponent(crossSeamerFamily);
+			
+			grinderFamily.setNextLineComponent(washerFamily);
+			washerFamily.setPreviousLineComponent(grinderFamily);
+			
+			washerFamily.setNextLineComponent(painterFamily);
+			painterFamily.setPreviousLineComponent(washerFamily);
+			
+			painterFamily.setNextLineComponent(lampFamily);
+			lampFamily.setPreviousLineComponent(painterFamily);
+			
+			lampFamily.setNextLineComponent(ovenFamily);
+			ovenFamily.setPreviousLineComponent(lampFamily);
+			
+			ovenFamily.setNextLineComponent(truck);
+			truck.setPrevLineComponent(ovenFamily);
+			
 			// Set things in motion!
 			createGlassesAndRun();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
@@ -202,7 +231,8 @@ public class FactoryPanel extends JPanel {
 	private void createGlassesAndRun() {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, /*MachineType.CROSS_SEAMER,*/
+				/*MachineType.GRINDER,*/ MachineType.OVEN})); // a couple of errors we can fix tomorrow
 		binRobot.seedGlasses(glasses);
 		
 		startAgentThreads();
@@ -212,8 +242,21 @@ public class FactoryPanel extends JPanel {
 		binRobot.startThread();
 		cutterFamily.startThreads();
 		breakoutFamily.startThreads();
-
-		// TODO
+		manualBreakoutFamily.startThreads();
+		drillFamily.startThreads();
+		for (int i = 0; i < 2; ++i)
+			drillWorkstation[i].startThread();
+		crossSeamerFamily.startThreads();
+		for (int i = 0; i < 2; ++i)
+			crossSeamerWorkstation[i].startThread();
+		grinderFamily.startThreads();
+		for (int i = 0; i < 2; ++i)
+			grinderWorkstation[i].startThread();
+		washerFamily.startThreads();
+		painterFamily.startThreads();
+		lampFamily.startThreads();
+		ovenFamily.startThreads();
+		truck.startThread();
 	}
 
 	/**
