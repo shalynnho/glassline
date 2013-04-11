@@ -250,8 +250,8 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 	
 	@SuppressWarnings("unused")
 	private void test1Glass() { // uncomment one, and test. all work.
-		glasses.add(new Glass(new MachineType[] { }));
-		//glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER })); // yes
+		//glasses.add(new Glass(new MachineType[] { }));
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER })); // yes
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 	}
 	

@@ -250,7 +250,7 @@ public class PopUpAgent extends Agent implements PopUp {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// Catch all of the animation events and open up the correct semaphores to continue the processing of the glass on the PopUp or workstation
-		if (channel == TChannel.POPUP && (Integer) args[0] == guiIndex) {
+		if ((channel == TChannel.POPUP && (Integer) args[0] == guiIndex ) || channel == processType.getChannel()) {
 			if (event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				animationSemaphores.get(0).release();
 				print("Animation semaphore 0 released");
