@@ -21,8 +21,7 @@ import transducer.*;
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
 	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
-	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION;
-//	private static final RunMode RUN_MODE = OFFLINE_CF_TEST;
+	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION; // FINAL_SUBMISSION or OFFLINE_CF_TEST;
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
@@ -52,9 +51,11 @@ public class FactoryPanel extends JPanel {
 	// Manual Breakout
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
 	
-	// Drill
-	private OfflineWorkstationAgent drillWorkstation[];
+	// DRILL
+	private OfflineWorkstationAgent drillWorkstation[];//, crossSeamerWorkstation[]; // just for now extra families
 	private ConveyorFamilyImplementation drillFamily;
+
+	//ConveyorFamilyImp crossSeamerFamily;
 
 	// CrossSeamer - Tim's
 	private OfflineWorkstationAgent crossSeamerWorkstation[];
@@ -76,7 +77,7 @@ public class FactoryPanel extends JPanel {
 	// Oven
 	private BigOnlineConveyorFamilyImp ovenFamily;
 	
-	// Truck
+	// TRUCK
 	private TruckAgent truck;
 
 	/**
@@ -130,19 +131,19 @@ public class FactoryPanel extends JPanel {
 
 		if (RUN_MODE == RunMode.FINAL_SUBMISSION) {
 			/* Instantiate Agents */
-
+			javax.swing.Timer timer = parent.getTimer(); // needed for GeneralConveyorAgent
+			
 			// Initial robot that has the glasses
 			binRobot = new BinRobotAgent("Bin Robot", transducer);
-			cPanel.setBinRobot(binRobot);
-
+			
 			// Cutter
-			cutterFamily = new BigOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0);
+			cutterFamily = new BigOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0, timer);
 
 			// Breakout
-			breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 2);
+			breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 2, timer);
 			
 			// Manual Breakout
-			manualBreakoutFamily = new BigOnlineConveyorFamilyImp(MachineType.MANUAL_BREAKOUT, transducer, 3);
+			manualBreakoutFamily = new BigOnlineConveyorFamilyImp(MachineType.MANUAL_BREAKOUT, transducer, 3, timer);
 			
 			// Drill
 			drillWorkstation = new OfflineWorkstationAgent[2];
@@ -169,18 +170,18 @@ public class FactoryPanel extends JPanel {
 				grinderWorkstation[i].setPopupWorkstationInteraction(grinderFamily);
 			
 			// Washer
-			washerFamily = new BigOnlineConveyorFamilyImp(MachineType.WASHER, transducer, 8);
+			washerFamily = new BigOnlineConveyorFamilyImp(MachineType.WASHER, transducer, 8, timer);
 
 			// Painter
-			painterFamily = new SmallOnlineConveyorFamilyImp(MachineType.PAINT, transducer, 10);
+			painterFamily = new SmallOnlineConveyorFamilyImp(MachineType.PAINT, transducer, 10, timer);
 
 			// UV Lamp
-			lampFamily = new BigOnlineConveyorFamilyImp(MachineType.UV_LAMP, transducer, 11);
+			lampFamily = new BigOnlineConveyorFamilyImp(MachineType.UV_LAMP, transducer, 11, timer);
 
 			// Oven
-			ovenFamily = new BigOnlineConveyorFamilyImp(MachineType.OVEN, transducer, 13);
+			ovenFamily = new BigOnlineConveyorFamilyImp(MachineType.OVEN, transducer, 13, timer);
 			
-			// Truck
+			// TRUCK
 			truck = new TruckAgent("Truck", transducer);
 			
 			// Connect them!
@@ -218,7 +219,7 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent(ovenFamily);
 			
 			// Set things in motion!
-			createInitialGlasses();
+			createGlasses();
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
@@ -232,7 +233,7 @@ public class FactoryPanel extends JPanel {
 	/**
 	 * Create glasses of various types.
 	 */
-	private void createInitialGlasses() {
+	private void createGlasses() {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
 		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
@@ -247,15 +248,15 @@ public class FactoryPanel extends JPanel {
 		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
 				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
 				MachineType.UV_LAMP, MachineType.OVEN}));
-//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-//				MachineType.GRINDER, MachineType.OVEN}));
-//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-//				MachineType.GRINDER, MachineType.OVEN}));
-//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
-//				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
-//				MachineType.UV_LAMP, MachineType.OVEN}));
-//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-//				MachineType.GRINDER, MachineType.OVEN}));
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+				MachineType.GRINDER, MachineType.OVEN}));
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+				MachineType.GRINDER, MachineType.OVEN}));
+		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+				MachineType.UV_LAMP, MachineType.OVEN}));
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+				MachineType.GRINDER, MachineType.OVEN}));
 		
 		binRobot.seedGlasses(glasses);
 	}

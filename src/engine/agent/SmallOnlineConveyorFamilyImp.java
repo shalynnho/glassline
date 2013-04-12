@@ -1,5 +1,7 @@
 package engine.agent;
 
+import javax.swing.Timer;
+
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
@@ -11,8 +13,8 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	private OnlineWorkstationAgent workstation;
 	
 	/* Constructor creates components and sets internal next/prev. */
-	public SmallOnlineConveyorFamilyImp(MachineType type, Transducer trans, int convIndex) {
-		conveyor = new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex);
+	public SmallOnlineConveyorFamilyImp(MachineType type, Transducer trans, int convIndex, Timer guiTimer) {
+		conveyor = new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex, guiTimer);
 		workstation = new OnlineWorkstationAgent(type.toString() + " workstation", type, trans);
 		
 		conveyor.setNext(workstation);
