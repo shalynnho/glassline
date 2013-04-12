@@ -134,7 +134,8 @@ public class FactoryPanel extends JPanel {
 
 			// Initial robot that has the glasses
 			binRobot = new BinRobotAgent("Bin Robot", transducer);
-			
+			cPanel.setBinRobot(binRobot);
+
 			// Cutter
 			cutterFamily = new BigOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0);
 

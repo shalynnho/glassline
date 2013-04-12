@@ -28,8 +28,9 @@ public class BinRobotAgent extends Agent implements LineComponent {
 		stateChanged();
 	}
 
-	public void msgHereIsGlass(Glass g) {
-		// dummy method, not used: just need this so we can implement LineComponent
+	public void msgHereIsGlass(Glass g) { // from panel
+		glasses.add(g);
+		stateChanged();
 	}
 	
 	// *** SCHEDULER ***

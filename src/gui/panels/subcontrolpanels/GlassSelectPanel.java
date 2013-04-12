@@ -1,18 +1,27 @@
 package gui.panels.subcontrolpanels;
 
+import engine.agent.BinRobotAgent;
 import gui.panels.ControlPanel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
+import shared.Glass;
 import shared.enums.MachineType;
 
 /**
  * The GlassSelectPanel class contains buttons allowing the user to select what type of glass to produce.
  */
 @SuppressWarnings("serial")
-public class GlassSelectPanel extends JPanel {
+public class GlassSelectPanel extends JPanel implements ActionListener {
 	/** The ControlPanel this is linked to */
 	private ControlPanel parent;
 
@@ -20,6 +29,8 @@ public class GlassSelectPanel extends JPanel {
 	private JPanel mainPanel;
 	private ArrayList<JCheckBox> checkBoxes;
 	private JButton goButton = new JButton("GO!");
+	
+	private BinRobotAgent binRobot;
 	
 	/**
 	 * Creates a new GlassSelect and links it to the control panel
@@ -60,6 +71,24 @@ public class GlassSelectPanel extends JPanel {
 		
 	}
 
+	public void actionPerformed(ActionEvent ae) {
+		// Tell the bin robot to queue another piece of glass
+		if (ae.getSource() == goButton) {
+			binRobot.msgHereIsGlass(getGlassFromMenuAndReset());
+		}
+	}
+
+	private Glass getGlassFromMenuAndReset() {
+		ArrayList<MachineType> mTypes = new ArrayList<MachineType>();
+		
+		for (JCheckBox c : checkBoxes) {
+			if (c.isSelected()) {
+//				c.get
+			}
+		}
+		return new Glass(mTypes);
+	}
+
 	/**
 	 * Returns the parent panel
 	 * 
@@ -68,4 +97,11 @@ public class GlassSelectPanel extends JPanel {
 	public ControlPanel getGuiParent() {
 		return parent;
 	}
+
+	/**
+	 * Sets bin robot of glass select panel, which needs it for creating new glasses from the gui
+	 */
+	public void setBinRobot(BinRobotAgent b) {
+		binRobot = b;
+	}	
 }

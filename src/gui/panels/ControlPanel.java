@@ -162,6 +162,10 @@ public class ControlPanel extends JPanel implements TReceiver {
 
 		transducer = fTransducer;
 
+		// Ensure 
+		glassSelectPanel
+
+
 		parent = fPanel;
 	}
 
@@ -258,5 +262,12 @@ public class ControlPanel extends JPanel implements TReceiver {
 	 */
 	public String toString() {
 		return "Control Panel";
+	}
+
+	/**
+	 * Sets bin robot of glass select panel, which needs it for creating new glasses from the gui
+	 */
+	public void setBinRobot(BinRobotAgent b) {
+		glassSelectPanel.setBinRobot(b);
 	}
 }
