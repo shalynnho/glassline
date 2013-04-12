@@ -75,17 +75,17 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		// Tell the bin robot to queue another piece of glass
 		if (ae.getSource() == goButton) {
-			binRobot.msgHereIsGlass(getGlassFromMenuAndReset());
+			binRobot.msgHereIsGlass(getGlassFromMenu());
 		}
 	}
 
-	private Glass getGlassFromMenuAndReset() {
+	private Glass getGlassFromMenu() {
 		ArrayList<MachineType> mTypes = new ArrayList<MachineType>();
 		
 		for (JCheckBox c : checkBoxes) {
 			if (c.isSelected()) {
 				mTypes.add(MachineType.getTypeFromString(c.getText()));
-				c.setSelected(false);
+//				c.setSelected(false); // optionally reset
 			}
 		}
 		return new Glass(mTypes);
