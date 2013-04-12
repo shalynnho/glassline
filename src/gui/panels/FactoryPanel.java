@@ -1,25 +1,18 @@
 package gui.panels;
 
-import engine.agent.BigOnlineConveyorFamilyImp;
-import engine.agent.BinRobotAgent;
-import engine.agent.OfflineWorkstationAgent;
-import engine.agent.SmallOnlineConveyorFamilyImp;
-import engine.agent.TruckAgent;
+import engine.agent.*;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-
 import shared.Glass;
 import shared.enums.MachineType;
-import transducer.Transducer;
+import transducer.*;
 
 /**
  * The FactoryPanel is highest level panel in the actual kitting cell. The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. It is responsible for
@@ -33,76 +26,74 @@ public class FactoryPanel extends JPanel {
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
-
+	
 	/** The control system for the factory, displayed on right */
 	private ControlPanel cPanel;
-
+	
 	/** The graphical representation for the factory, displayed on left */
 	private DisplayPanel dPanel;
-
+	
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
-
+	
 	/**
 	 * THE AGENTS
 	 */
 	// Initial robot agent
 	private BinRobotAgent binRobot;
-
+	
 	/* ConveyorFamilies & accompanying workstation */
 	// Cutter
 	private BigOnlineConveyorFamilyImp cutterFamily;
-
+	
 	// Breakout
 	private SmallOnlineConveyorFamilyImp breakoutFamily;
-
+	
 	// Manual Breakout
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
 	
-	// DRILL
+	// Drill - Evan's
 	private OfflineWorkstationAgent drillWorkstation[];//, crossSeamerWorkstation[]; // just for now extra families
 	private ConveyorFamilyImplementation drillFamily;
-
-	//ConveyorFamilyImp crossSeamerFamily;
-
+	
 	// CrossSeamer - Tim's
 	private OfflineWorkstationAgent crossSeamerWorkstation[];
 	private ConveyorFamilyImp crossSeamerFamily;
-
+	
 	// Grinder - David's
 	private OfflineWorkstationAgent grinderWorkstation[];
 	private ConveyorFamilyEntity grinderFamily;
-
+	
 	// Washer
 	private BigOnlineConveyorFamilyImp washerFamily;
-
+	
 	// Painter
 	private SmallOnlineConveyorFamilyImp painterFamily;
-
+	
 	// UV Lamp
 	private BigOnlineConveyorFamilyImp lampFamily;
-
+	
 	// Oven
 	private BigOnlineConveyorFamilyImp ovenFamily;
 	
 	// TRUCK
 	private TruckAgent truck;
-
+	
 	/**
 	 * Constructor links this panel to its frame
 	 */
 	public FactoryPanel(FactoryFrame fFrame) {
 		parent = fFrame;
-
+		
 		// initialize transducer
 		transducer = new Transducer();
 		transducer.startTransducer();
-
+		
 		// use default layout
 		// dPanel = new DisplayPanel(this);
 		// dPanel.setDefaultLayout();
 		// dPanel.setTimerListeners();
-
+		
 		// initialize and run
 		this.initialize();
 		this.initializeBackEnd();
@@ -113,18 +104,18 @@ public class FactoryPanel extends JPanel {
 	 */
 	private void initialize() {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
+		
 		// initialize control panel
 		cPanel = new ControlPanel(this, transducer);
-
+		
 		// initialize display panel
 		dPanel = new DisplayPanel(this, transducer); // gui popups and such in here
-
+		
 		// add panels in
 		// JPanel tempPanel = new JPanel();
 		// tempPanel.setPreferredSize(new Dimension(830, 880));
 		// this.add(tempPanel);
-
+		
 		this.add(dPanel);
 		this.add(cPanel);
 	}
