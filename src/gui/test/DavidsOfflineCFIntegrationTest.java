@@ -298,6 +298,18 @@ public class DavidsOfflineCFIntegrationTest extends GuiTestSM {// implements TRe
 		wait(2500);
 		glasses.add(new Glass(new MachineType[] { }));
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		wait(2500);
+		glasses.add(new Glass(new MachineType[] { }));
+		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 	}
 	
 	// Simple class to deal with before and after the cfs to be tested
