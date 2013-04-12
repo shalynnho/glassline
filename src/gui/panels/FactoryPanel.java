@@ -21,7 +21,8 @@ import transducer.*;
 @SuppressWarnings("serial")
 public class FactoryPanel extends JPanel {
 	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
-	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION; // FINAL_SUBMISSION or OFFLINE_CF_TEST;
+	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION;
+//	private static final RunMode RUN_MODE = OFFLINE_CF_TEST;
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
@@ -181,7 +182,7 @@ public class FactoryPanel extends JPanel {
 			// Oven
 			ovenFamily = new BigOnlineConveyorFamilyImp(MachineType.OVEN, transducer, 13);
 			
-			// TRUCK
+			// Truck
 			truck = new TruckAgent("Truck", transducer);
 			
 			// Connect them!

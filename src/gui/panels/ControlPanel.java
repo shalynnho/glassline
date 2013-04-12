@@ -1,5 +1,6 @@
 package gui.panels;
 
+import engine.agent.BinRobotAgent;
 import gui.panels.subcontrolpanels.GlassInfoPanel;
 import gui.panels.subcontrolpanels.GlassSelectPanel;
 import gui.panels.subcontrolpanels.LogoPanel;
@@ -19,15 +20,17 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import transducer.TEvent;
-import transducer.Transducer;
 import transducer.TChannel;
+import transducer.TEvent;
 import transducer.TReceiver;
+import transducer.Transducer;
 
 /**
  * The ControlPanel class contains the buttons and panels that are responsible for controlling the factory, printing agent traces, and running non-normatives
  * 
  * It is the GUI implementation of the Factory Control System (FCS)
+ * 
+ * Make sure to set bin robot after instantiation.
  */
 @SuppressWarnings("serial")
 public class ControlPanel extends JPanel implements TReceiver {
@@ -153,6 +156,7 @@ public class ControlPanel extends JPanel implements TReceiver {
 
 	/**
 	 * Creates a ControlPanel with corresponding subpanels.
+	 * Make sure to set bin robot after instantiation.
 	 * 
 	 * @param fPanel the parent FactoryPanel
 	 * @param cCell the ControlCell to link to this ControlPanel
@@ -161,10 +165,6 @@ public class ControlPanel extends JPanel implements TReceiver {
 		this();
 
 		transducer = fTransducer;
-
-		// Ensure 
-		glassSelectPanel
-
 
 		parent = fPanel;
 	}

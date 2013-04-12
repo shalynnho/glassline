@@ -61,6 +61,31 @@ public enum MachineType {
 		}
 	};
 
+	public static MachineType getTypeFromString(String s) {
+		if (s.equals("Cross Seamer")) {
+			return MachineType.CROSS_SEAMER;
+		} else if (s.equals("Drill")) {
+			return MachineType.DRILL;
+		} else if (s.equals("Grinder")) {
+			return MachineType.GRINDER;
+		} else if (s.equals("Manual Breakout")) {
+			return MachineType.MANUAL_BREAKOUT;
+		} else if (s.equals("Cutter")) {
+			return MachineType.CUTTER;
+		} else if (s.equals("Washer")) {
+			return MachineType.WASHER;
+		} else if (s.equals("UV Lamp")) {
+			return MachineType.UV_LAMP;
+		} else if (s.equals("Oven")) {
+			return MachineType.OVEN;
+		} else if (s.equals("Paint")) {
+			return MachineType.PAINT;
+		} else if (s.equals("Breakout")) {
+			return MachineType.BREAKOUT;
+		} else
+			return null;
+	}
+	
 	public TChannel getChannel() {
 		switch (this) {
 		// Offline Machines

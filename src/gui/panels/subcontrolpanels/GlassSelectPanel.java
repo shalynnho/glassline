@@ -83,7 +83,8 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 		
 		for (JCheckBox c : checkBoxes) {
 			if (c.isSelected()) {
-//				c.get
+				mTypes.add(MachineType.getTypeFromString(c.getText()));
+				c.setSelected(false);
 			}
 		}
 		return new Glass(mTypes);
