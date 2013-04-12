@@ -22,7 +22,7 @@ import transducer.*;
 public class FactoryPanel extends JPanel {
 	private enum RunMode{ OFFLINE_CF_TEST, FINAL_SUBMISSION }
 	private static final RunMode RUN_MODE = RunMode.FINAL_SUBMISSION;
-//	private static final RunMode RUN_MODE = OFFLINE_CF_TEST;
+//	private static final RunMode RUN_MODE = RunMode.OFFLINE_CF_TEST;
 	
 	/** The frame connected to the FactoryPanel */
 	private FactoryFrame parent;
@@ -222,8 +222,8 @@ public class FactoryPanel extends JPanel {
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
-			TimsOfflineCFIntegrationTest tTest = new TimsOfflineCFIntegrationTest(transducer);
-			//DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
+//			TimsOfflineCFIntegrationTest tTest = new TimsOfflineCFIntegrationTest(transducer);
+			DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
 		}
 		
 		System.out.println("Backend initialization finished.");
@@ -242,11 +242,11 @@ public class FactoryPanel extends JPanel {
 				MachineType.UV_LAMP, MachineType.OVEN}));
 		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
 				MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-				MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
-				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
-				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+//				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
 //		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
 //				MachineType.GRINDER, MachineType.OVEN}));
 //		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,

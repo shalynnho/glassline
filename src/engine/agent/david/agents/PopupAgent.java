@@ -168,6 +168,7 @@ public class PopupAgent extends Agent implements Popup {
 		if (sensorOccupied) {
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
 				if (family.thisSensor(args)) {
+					// no state changed because not needed here 
 					sensorOccupied = false;
 				}
 			}
@@ -191,6 +192,8 @@ public class PopupAgent extends Agent implements Popup {
 					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
 //					sensorOccupied = false;
 					family.runningState = RunningState.OFF_BC_QUIET;
+//					family.stopSem.release(); // release so conveyor can be caused to move sensor again
+//					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doMovePopupUp();
 				}
@@ -231,7 +234,6 @@ public class PopupAgent extends Agent implements Popup {
 				
 				setState(PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION);
 				family.doMovePopupDown();
-				print("JUST MOVED POPUP DOWN B/C WKS GLASS RELEASE");
 			}
 		}
 		// From actReleaseGlassFromWorkstation step 4 (final)
@@ -246,7 +248,6 @@ public class PopupAgent extends Agent implements Popup {
 					nextPosFree = false;
 
 					family.doReleaseGlassFromPopup();
-					print("FINALLY JUST RELEASED GLASS");
 
 					stateChanged();
 				}
@@ -277,6 +278,8 @@ public class PopupAgent extends Agent implements Popup {
 					nextPosFree = false;
 	
 					family.runningState = RunningState.OFF_BC_QUIET;
+//					family.stopSem.release(); // release so conveyor can be caused to move sensor again
+//					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doReleaseGlassFromPopup();
 	
