@@ -32,6 +32,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	// *** MESSAGES ***
 	
 	public void msgHereIsGlass(Glass g) {
+		print("received: " + g);
 		glass = g;
 		state = GlassState.pending;
 		stateChanged();
@@ -41,7 +42,8 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 		recPosFree = true;
 		stateChanged();
 	}
-
+	
+	/* Transducer event. Always on the <type> TChannel. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			state = GlassState.arrived;
@@ -60,11 +62,11 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 			processGlass();
 			return true;
 		}
-		if (state == GlassState.processed) {
+		if (state == GlassState.processed && recPosFree) {
 			releaseGlass();
 			return true;
 		}
-		if (state == GlassState.released && recPosFree) {
+		if (state == GlassState.released) {
 			reset();
 			return true;
 		}
@@ -86,11 +88,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 		transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_GLASS, null);
 		state = GlassState.releasing;
 		
-		if (next != null)
-			next.msgHereIsGlass(glass);
-		else {
-			print("There is no 'after' LineComponent set for this workstation.");
-		}
+		next.msgHereIsGlass(glass);
 	}
 	
 	private void reset() {
