@@ -43,6 +43,8 @@ public class PopUpAgent extends Agent implements PopUp {
 	// Add semaphores to delay the popUp agent accordingly between GUI transitions
 	private List<Semaphore> animationSemaphores;
 	
+	// Add list for tickets that allow the glass to move on to the next conveyor family
+	private List<Boolean> tickets;
 	
 	// Constructors:
 	public PopUpAgent(String name, Transducer transducer, List<OfflineWorkstationAgent> machines, int guiIndex) {  
@@ -53,6 +55,8 @@ public class PopUpAgent extends Agent implements PopUp {
 		glassToBeProcessed = Collections.synchronizedList(new ArrayList<MyGlassPopUp>());
 		machineComs = Collections.synchronizedList(new ArrayList<MachineCom>());
 		animationSemaphores = Collections.synchronizedList(new ArrayList<Semaphore>());
+		tickets = Collections.synchronizedList(new ArrayList<Boolean>());
+		tickets.add(new Boolean(true)); // Make sure to have an initial ticket, or else the glass will never go through
 		
 		// This loop will go for the number of machines that are in the machines argument
 		int i = 0; // Machine indexes related to the GUI machinea
@@ -85,6 +89,8 @@ public class PopUpAgent extends Agent implements PopUp {
 		glassToBeProcessed = Collections.synchronizedList(new ArrayList<MyGlassPopUp>());
 		machineComs = Collections.synchronizedList(new ArrayList<MachineCom>());
 		animationSemaphores = Collections.synchronizedList(new ArrayList<Semaphore>());
+		tickets = Collections.synchronizedList(new ArrayList<Boolean>());
+		tickets.add(new Boolean(true)); // Make sure to have an initial ticket, or else the glass will never go through
 		
 		// This loop will go for the number of machines that are in the machines argument
 		int i = 0; // Machine indexes related to the GUI machinea
@@ -137,6 +143,8 @@ public class PopUpAgent extends Agent implements PopUp {
 	
 	public void msgPositionFree() {
 		passNextCF = true;
+		tickets.add(new Boolean(true));
+		print("Got msgPositionFree() " + tickets.size());
 		stateChanged();
 	}
 
@@ -149,12 +157,12 @@ public class PopUpAgent extends Agent implements PopUp {
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
 				if (g.processState == processState.awaitingRemoval) { // If glass needs to be sent out to next conveyor and a position is available
-					if (passNextCF == true) {
+					if (passNextCF == true /*|| !tickets.isEmpty()*/) { // If there is a ticket for the glass to go to the next conveyor family
 						glass = g;
 						break;
 					}
 					else {
-						print("here");
+						print("Glass needs to be removed, but no position free");
 						return false; // Do not want another piece of glass to collide, so shut the agent down until positionFree() is called
 					}
 				}				
@@ -233,6 +241,7 @@ public class PopUpAgent extends Agent implements PopUp {
 	
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
 		cf.getNextCF().msgHereIsGlass(glass.glass);
+		tickets.remove(0); // Make sure to remove the ticket, as it has already been used 
 		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
 		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
 			Integer[] args = {cf.getConveyor().getGUIIndex()};

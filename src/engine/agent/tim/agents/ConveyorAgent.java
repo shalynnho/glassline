@@ -23,7 +23,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	//Data:
 	private List<MyGlassConveyor> glassSheets; // List to hold all of the glass sheets
-	private boolean conveyorOn; // Is the Gui conveyor on?
+	private volatile boolean conveyorOn; // Is the Gui conveyor on?
 	private ConveyorFamilyImp cf; // Reference to the current conveyor family
 	
 	private List<ConveyorEvent> events; // Used to hold all of the sensor events
