@@ -220,31 +220,46 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent(ovenFamily);
 			
 			// Set things in motion!
-			createGlassesAndRun();
+			createGlasses();
+			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
-			
-			// Uncomment only one
 			TimsOfflineCFIntegrationTest tTest = new TimsOfflineCFIntegrationTest(transducer);
-//			DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
-//			TruckIntegrationTest truckTest = new TruckIntegrationTest(transducer);
+			//DavidsOfflineCFIntegrationTest dTest = new DavidsOfflineCFIntegrationTest(transducer);
 		}
 		
 		System.out.println("Backend initialization finished.");
 	}
 
 	/**
-	 * Create glasses of various types and run
+	 * Create glasses of various types.
 	 */
-	private void createGlassesAndRun() {
+	private void createGlasses() {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
 		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
 				MachineType.GRINDER, MachineType.OVEN}));
+		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+				MachineType.UV_LAMP, MachineType.OVEN}));
+		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+//				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+//				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
 		
 		binRobot.seedGlasses(glasses);
-		
-		startAgentThreads();
 	}
 	
 	private void startAgentThreads() {

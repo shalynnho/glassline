@@ -42,7 +42,7 @@ public class ControlPanel extends JPanel implements TReceiver {
 	/**
 	 * Allows the control panel to communicate with the back end and give commands
 	 */
-	Transducer transducer;
+	public Transducer transducer;
 
 	/**
 	 * The panel containing the title

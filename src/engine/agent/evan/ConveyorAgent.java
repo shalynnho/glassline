@@ -144,6 +144,7 @@ public class ConveyorAgent extends Agent implements LineComponent {
 	/* Remove mg from glasses. */
 	private void removeGlass(MyGlass mg) {
 		glasses.remove(mg);
+		posFree = false;
 	}
 	
 	// *** ANIMATION ACTIONS ***

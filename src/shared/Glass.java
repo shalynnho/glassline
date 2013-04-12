@@ -101,4 +101,8 @@ public class Glass {
 	public Map<MachineType, Boolean> getRecipe() {
 		return recipe;
 	}
+	
+	public String toString() {
+		return "Glass " + id;
+	}
 }

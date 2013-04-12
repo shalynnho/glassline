@@ -29,7 +29,6 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 	private JPanel mainPanel;
 	private ArrayList<JCheckBox> checkBoxes;
 	private JButton goButton = new JButton("GO!");
-	
 	private BinRobotAgent binRobot;
 	
 	/**
@@ -69,6 +68,8 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 		mainPanel.validate();
 		scrollPane.validate();
 		
+		// Add action listeners
+		goButton.addActionListener(this);		
 	}
 
 	public void actionPerformed(ActionEvent ae) {
