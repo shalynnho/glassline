@@ -15,4 +15,4 @@ USC Spring 2013 - GlassLine Factory project for CS 201
 ## Running code
 - Simply start the program via the standard FactoryDriver class. 
 	- The animation should show 3 pieces of glass going through the conveyor (beyond the requirement of just showing 1 glass going through)
-
+- Feel free to look in FactoryPanel's createGlasses method to see the specific workstations that we arbitrarily chose
