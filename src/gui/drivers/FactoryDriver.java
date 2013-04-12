@@ -6,12 +6,9 @@ import transducer.TransducerDebugMode;
 /**
  * The FactoryDriver class is the main class for running the factory program.
  * 
- * It creates a Frame, adds the factory components and agents in, and shows the window.
+ * It creates a Frame, adds the factory components, and shows the window.
  */
 public class FactoryDriver {
-	/** Agents */
-	// TODO
-
 	/**
 	 * Main method to run the program.
 	 */
@@ -28,7 +25,7 @@ public class FactoryDriver {
 		}
 		Transducer.setDebugMode(mode);
 
-		FactoryFrame myFactory = new FactoryFrame();
+		FactoryFrame myFactory = new FactoryFrame(); // agents in this frame's factory panel
 		myFactory.setLocation(50, 50);
 		myFactory.showFrame();
 

@@ -41,7 +41,7 @@ public class FactoryFrame extends JFrame {
 	/**
 	 * The panel that actually runs the factory
 	 */
-	private FactoryPanel fPanel;
+	private FactoryPanel fPanel; // agents actually in here 
 
 	/**
 	 * Creates a new FactoryFrame, initializes the parts, and displays both panels
