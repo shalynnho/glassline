@@ -52,11 +52,9 @@ public class FactoryPanel extends JPanel {
 	// Manual Breakout
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
 	
-	// DRILL
-	private OfflineWorkstationAgent drillWorkstation[];//, crossSeamerWorkstation[]; // just for now extra families
+	// Drill
+	private OfflineWorkstationAgent drillWorkstation[];
 	private ConveyorFamilyImplementation drillFamily;
-
-	//ConveyorFamilyImp crossSeamerFamily;
 
 	// CrossSeamer - Tim's
 	private OfflineWorkstationAgent crossSeamerWorkstation[];
@@ -78,7 +76,7 @@ public class FactoryPanel extends JPanel {
 	// Oven
 	private BigOnlineConveyorFamilyImp ovenFamily;
 	
-	// TRUCK
+	// Truck
 	private TruckAgent truck;
 
 	/**
