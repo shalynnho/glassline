@@ -30,6 +30,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	int guiIndex; // Needed to communicate with the transducer conveyor
 	
+	boolean positionFreePopUp;
+	
 	// Constructors:
 	public ConveyorAgent(String name, Transducer transducer, int guiIndex) {
 		// Set the passed in values first
@@ -42,6 +44,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		this.events = Collections.synchronizedList(new ArrayList<ConveyorEvent>());
 		
 		this.guiIndex = guiIndex;
+		
+		this.positionFreePopUp = true;
 		
 		initializeTransducerChannels();
 	}
@@ -60,6 +64,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	
 	public void msgPositionFree() { // Allow this conveyor to pass a piece of glass to the next conveyor family
 		events.add(ConveyorEvent.popUpFree);
+		positionFreePopUp = true;
 		print("Event added: PopUpFree.");
 		stateChanged();
 	}
@@ -158,7 +163,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private void actSetGlassOnEntrySensor(MyGlassConveyor g) {
 		g.conveyorState = conveyorState.onEntrySensor;
 		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
-		turnOnConveyorGUI();
+		if (positionFreePopUp) {
+			turnOnConveyorGUI();
+		}
 	}
 
 	private void actSetGlassOffEntrySensor(MyGlassConveyor g) {
@@ -175,6 +182,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
 		turnOffConveyorGUI(); 
 		cf.getPopUp().msgGiveGlassToPopUp(g.glass);
+		positionFreePopUp = false; // Wait for the popUp to send the msgPositionFree message to allow the conveyor to turn back on
 	}
 
 	private void actTurnOnConveyorAndSendGlass() {
