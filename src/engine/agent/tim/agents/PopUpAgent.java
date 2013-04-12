@@ -154,6 +154,7 @@ public class PopUpAgent extends Agent implements PopUp {
 						break;
 					}
 					else {
+						print("here");
 						return false; // Do not want another piece of glass to collide, so shut the agent down until positionFree() is called
 					}
 				}				
