@@ -219,7 +219,7 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent(ovenFamily);
 			
 			// Set things in motion!
-			createGlasses();
+			createInitialGlasses();
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
@@ -233,16 +233,22 @@ public class FactoryPanel extends JPanel {
 	/**
 	 * Create glasses of various types.
 	 */
-	private void createGlasses() {
+	private void createInitialGlasses() {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-				MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
-				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
-				MachineType.UV_LAMP, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-				MachineType.GRINDER, MachineType.OVEN}));
+		
+		// This sequence would replicate the error of a stopping Grinder family, but should now be fixed
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+//				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
 //		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
 //				MachineType.GRINDER, MachineType.OVEN}));
 //		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/

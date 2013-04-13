@@ -3,6 +3,8 @@ package engine.agent.david.agents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import shared.Glass;
 import transducer.TChannel;
@@ -27,8 +29,11 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private ConveyorFamilyEntity family;
 	public enum ConveyorState { GLASS_JUST_ARRIVED, WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR, SHOULD_NOTIFY_POSITION_FREE, NOTHING_TO_DO }
 	private ConveyorState state = ConveyorState.NOTHING_TO_DO;
-
 	private List<Glass> glasses = Collections.synchronizedList(new ArrayList<Glass>());
+	
+	// Testing variables
+//	private Timer timer = new Timer();
+//	private final int REST_INTERVAL = 1000*4;
 
 	// *** MESSAGES ***
 	@Override
@@ -59,14 +64,25 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		} else if (state == ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR) { // technically could be merged into NOTHING_TO_DO
 			// Do nothing. Next thing that happens is conveyor auto-stops via eventFired, popup agent realizes sensorOccupied = true, 
 			// does actLoadGlassOntoPopup which *then tells this conveyor agent msgTakingGlass()*
-			return false;
+//			return false;
 		} else if (state == ConveyorState.SHOULD_NOTIFY_POSITION_FREE) {
 			state = ConveyorState.NOTHING_TO_DO;
 			actTellSensorPositionFree();
-			return false;
+//			return false;
 		} else { // NOTHING_TO_DO
-			return false;
+//			return false;
 		}
+		
+		// Testing purposes
+//		// Schedule to wake us up every now and then
+//		timer.schedule(new TimerTask() { // "anonymous inner class"
+//			public void run() {
+//				System.err.println(family.runningState);
+//				stateChanged();
+//			}
+//		}, (int) (REST_INTERVAL));
+		
+		return false;
 	}
 	
 	@Override

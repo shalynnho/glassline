@@ -40,16 +40,17 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 		parent = cp;
 
 		checkBoxes = new ArrayList<JCheckBox>();
-		checkBoxes.add(new JCheckBox(MachineType.CROSS_SEAMER.toString()));
-		checkBoxes.add(new JCheckBox(MachineType.DRILL.toString()));
-		checkBoxes.add(new JCheckBox(MachineType.GRINDER.toString()));
-		checkBoxes.add(new JCheckBox(MachineType.MANUAL_BREAKOUT.toString()));
 		checkBoxes.add(new JCheckBox(MachineType.CUTTER.toString()));
+		checkBoxes.add(new JCheckBox(MachineType.BREAKOUT.toString()));
+		checkBoxes.add(new JCheckBox(MachineType.MANUAL_BREAKOUT.toString()));
+		checkBoxes.add(new JCheckBox(MachineType.DRILL.toString()));
+		checkBoxes.add(new JCheckBox(MachineType.CROSS_SEAMER.toString()));
+		checkBoxes.add(new JCheckBox(MachineType.GRINDER.toString()));
 		checkBoxes.add(new JCheckBox(MachineType.WASHER.toString()));
+		checkBoxes.add(new JCheckBox(MachineType.PAINT.toString()));
 		checkBoxes.add(new JCheckBox(MachineType.UV_LAMP.toString()));
 		checkBoxes.add(new JCheckBox(MachineType.OVEN.toString()));
-		checkBoxes.add(new JCheckBox(MachineType.PAINT.toString()));
-		checkBoxes.add(new JCheckBox(MachineType.BREAKOUT.toString()));
+		
 
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));

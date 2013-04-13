@@ -94,7 +94,7 @@ public class PopupAgent extends Agent implements Popup {
 	public boolean pickAndExecuteAnAction() {
 		// ACTIVE is set by transducer and incoming messages. We only take action if we are 'active'.
 		if (state == PopupState.ACTIVE) {
-			System.err.println(name+ "'s in scheduler! ");
+//			System.err.println(name+ "'s in scheduler! ");
 			// Case 1 (easy): Just deal with the workstation's finished glass by passing it on. No complications with sensor.
 			if (!sensorOccupied) {
 				// If next position is free and there exists a glass in glasses list that is finished by a workstation
@@ -190,9 +190,9 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				if (family.thisPopup(args)) {
 					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
-//					sensorOccupied = false;
+//					sensorOccupied = false; // done above now
 					family.runningState = RunningState.OFF_BC_QUIET;
-//					family.stopSem.release(); // release so conveyor can be caused to move sensor again
+					family.stopSem.release(); // release so conveyor can be caused to move sensor again
 //					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doMovePopupUp();
@@ -270,7 +270,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				if (family.thisPopup(args)) {
 					setState(PopupState.ACTIVE);
-//					sensorOccupied = false;
+//					sensorOccupied = false; // done above now
 	
 					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 					MyGlass mg = glasses.remove(0); // should be first glass
@@ -278,7 +278,7 @@ public class PopupAgent extends Agent implements Popup {
 					nextPosFree = false;
 	
 					family.runningState = RunningState.OFF_BC_QUIET;
-//					family.stopSem.release(); // release so conveyor can be caused to move sensor again
+					family.stopSem.release(); // release so conveyor can be caused to move sensor again
 //					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doReleaseGlassFromPopup();

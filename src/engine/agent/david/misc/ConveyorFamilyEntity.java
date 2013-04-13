@@ -56,7 +56,7 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	// *** DATA - mostly accessible by contained agents ***
 	
 	// when acquire is done, sensor waits for conveyor to be off because quiet; when release, conveyor can move again
-//	public Semaphore stopSem = new Semaphore(1); // start at 1 because sensor should start conveyor properly at first
+	public Semaphore stopSem = new Semaphore(1); // start at 1 because sensor should start conveyor properly at first
 	
 	private Transducer t;
 	public MachineType type;
