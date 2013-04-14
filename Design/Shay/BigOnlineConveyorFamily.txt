@@ -1,0 +1,30 @@
+DATA
+
+	private GeneralConveyorAgent startConveyor, endConveyor;
+	private OnlineWorkstationAgent workstation;
+	
+		
+MESSAGES
+	public void msgHereIsGlass(Glass glass) {
+		startConveyor.msgHereIsGlass(glass); // forwarding glass piece
+	}
+	
+	public void msgPositionFree() {
+		endConveyor.msgPositionFree();
+	}
+	
+METHODS
+	public void setPreviousLineComponent(LineComponent lc) {
+		startConveyor.setPrev(lc);
+	}
+	
+	public void setNextLineComponent(LineComponent lc) {
+		endConveyor.setNext(lc);
+	}
+	
+	public void startThreads() {
+		startConveyor.startThread();
+		workstation.startThread();
+		endConveyor.startThread();
+	}
+}
