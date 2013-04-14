@@ -9,7 +9,7 @@ USC Spring 2013 - GlassLine Factory project for CS 201
 - Design Doc is in the Design folder organized by student name.
 - Our agents are in src/engine/agent
 	- Look in packages engine.agent.david, engine.agent.evan, engine.agent.shay, engine.agent.tim for each of our v0 code.
-	- We split up work among other agents
+	- We split up work among other agents.
 - Our agents are instantiated in the FactoryPanel class, and key code there connects our agents together.
 
 ## Running code
