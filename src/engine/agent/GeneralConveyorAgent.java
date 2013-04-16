@@ -11,13 +11,16 @@ import shared.*;
 import shared.interfaces.*;
 import transducer.*;
 
-public class GeneralConveyorAgent extends Agent implements LineComponent, ActionListener {
+public class GeneralConveyorAgent extends Agent implements LineComponent, ActionListener, NonnormConveyorInteraction {
 	// *** DATA ***
 	
 	private LineComponent prev, next;
 	private int id; // place in GUI
 	
 	enum GlassState {pending, arrived, moving, atEnd, waiting, sent, done};
+	enum GUIBreakState {stop, stopped, restart};
+	private GUIBreakState gbs;
+	
 	private class MyGlass {
 		public Glass g;
 		public GlassState gs;
@@ -32,7 +35,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	
 	private boolean posFree, moving, waitingToSendPosFree; // popup ready, is moving, waiting for glass to move off of front sensor
 	private int glassMoved; // how far has glass moved
-	private static final int glassMovedPosFreeTicks = 0; // how many ticks of GUITimer before glass is off front sensor
+	private static final int glassMovedPosFreeTicks = 12; // how many ticks of GUITimer before glass is off front sensor
 	
 	/* Assigns references from arguments and sets other data appropriately. */
 	public GeneralConveyorAgent(String name, Transducer trans, int index, Timer guiTimer) {
@@ -48,6 +51,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		
 		guiTimer.addActionListener(this); // timer from the GUI to prevent a dumb bug
 		glassMoved = 0;
+		gbs = null;
 	}
 	
 	// *** MESSAGES ***
@@ -61,6 +65,16 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	/* From popup. */
 	public void msgPositionFree() {
 		posFree = true;
+		stateChanged();
+	}
+	
+	/* This message is from the GUI to  */
+	public void msgGUIBreak(boolean stop) {
+		if  (stop) {
+			gbs = GUIBreakState.stop;
+		} else {
+			gbs = GUIBreakState.restart;
+		}
 		stateChanged();
 	}
 	
@@ -114,7 +128,15 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
-		if (waitingToSendPosFree && glassMoved == glassMovedPosFreeTicks) {
+		if (gbs == GUIBreakState.stop) {
+			guiStopConveyor();
+			return false; // agent shouldn't do anything until it is unstopped
+		} else if (gbs == GUIBreakState.restart) {
+			guiRestartConveyor();
+			return true;
+		} else if (gbs == GUIBreakState.stopped) {
+			return false; // don't do anything if stopped
+		} else if (waitingToSendPosFree && glassMoved == glassMovedPosFreeTicks) {
 			sendPositionFree();
 			return true;
 		}
@@ -152,6 +174,18 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	}
 	
 	// *** ACTIONS ***
+	
+	/* Stop conveyor when GUI says to break. */
+	private void guiStopConveyor() {
+		doStopConveyor();
+		gbs = GUIBreakState.stopped;
+	}
+	
+	/* Restart conveyor on GUI command. */
+	private void guiRestartConveyor() {
+		doStartConveyor();
+		gbs = null;
+	}
 	
 	/* Send msgPositionFree after enough GUITimer ticks have passed while conveyor is moving since glass left front sensor. */
 	private void sendPositionFree() {

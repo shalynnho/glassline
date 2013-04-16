@@ -157,7 +157,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
 				if (g.processState == processState.awaitingRemoval) { // If glass needs to be sent out to next conveyor and a position is available
-					if (passNextCF == true /*|| !tickets.isEmpty()*/) { // If there is a ticket for the glass to go to the next conveyor family
+					if (!tickets.isEmpty()) { // If there is a ticket for the glass to go to the next conveyor family
 						glass = g;
 						break;
 					}
