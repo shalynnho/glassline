@@ -97,7 +97,7 @@ public class TracePanel extends JPanel implements ActionListener {
 	 * @param agent
 	 */
 	private void addPanelMessage(String message, Agent agent) {
-		TracePanelMessage panelMessage = new TracePanelMessage(message, agent);
+		TracePanelMessage panelMessage = new TracePanelMessage("["+agent.getName()+"] "+ message + "\n", agent);
 		if (tracePanelMessages.size() == MESSAGELIMIT) {
 			tracePanelMessages.remove();
 		}
