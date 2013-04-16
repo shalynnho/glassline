@@ -152,10 +152,13 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
 				if (family.thisSensor(args)) {
-					setState(PopupState.ACTIVE);
 					sensorOccupied = true;
-					stateChanged();
-//					System.err.println(name+ "'s popup state should do scheduler now ");
+					
+					// Only change state/trigger a check in the scheduler if we're not waiting for something else to complete, like WAITING_FOR_WORKSTATION_GLASS_RELEASE or WAITING_FOR_LOW_POPUP
+					if (state == PopupState.DOING_NOTHING) {
+						setState(PopupState.ACTIVE);
+						stateChanged();
+					}
 				}
 			}
 		} 
@@ -224,7 +227,6 @@ public class PopupAgent extends Agent implements Popup {
 				if (family.thisPopup(args)) {
 					setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
 					doReleaseGlassFromProperWorkstation();
-					print("JUST RELEASED GLASS FROM PROPER WORKSTATION");
 				}
 			}
 		}
@@ -442,7 +444,7 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	public void setState(PopupState s) {
-//		 System.out.println("changing state from " + state + " to " + s);
+//		 System.err.println("changing state from " + state + " to " + s);
 		 state = s;
 	}
 	
