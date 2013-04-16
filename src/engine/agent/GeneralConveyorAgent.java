@@ -32,7 +32,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	
 	private boolean posFree, moving, waitingToSendPosFree; // popup ready, is moving, waiting for glass to move off of front sensor
 	private int glassMoved; // how far has glass moved
-	private static final int glassMovedPosFreeTicks = 12; // how many ticks of GUITimer before glass is off front sensor
+	private static final int glassMovedPosFreeTicks = 0; // how many ticks of GUITimer before glass is off front sensor
 	
 	/* Assigns references from arguments and sets other data appropriately. */
 	public GeneralConveyorAgent(String name, Transducer trans, int index, Timer guiTimer) {

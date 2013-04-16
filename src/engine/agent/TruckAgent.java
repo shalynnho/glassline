@@ -19,13 +19,18 @@ public class TruckAgent extends Agent implements LineComponent {
 			animSem[i] = new Semaphore(0);
 		
 		transducer.register(this, TChannel.TRUCK);
+		loadFinished = alreadyTold = false;
+		glasses = new ArrayList<Glass>();
 	}
 	
 	// *** DATA ***
-	private List<Glass> glasses = new ArrayList<Glass>();
+	private List<Glass> glasses;
 	private LineComponent prev;
-	private boolean alreadyTold = false; // true if already told previous family that position is free (to prevent repeated messaging)
+	private boolean alreadyTold; // true if already told previous family that position is free (to prevent repeated messaging)
+	private boolean loadFinished; // true when done loading
 	private Semaphore animSem[];
+	
+	private static final int maxGlass = 4;
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() {
@@ -33,30 +38,33 @@ public class TruckAgent extends Agent implements LineComponent {
 	}
 	
 	public void msgHereIsGlass(Glass g) {
-		alreadyTold = false;
 		glasses.add(g);
 		stateChanged();
-	}
-	
-	// *** SCHEDULER ***
-	public boolean pickAndExecuteAnAction() {
-		if (!glasses.isEmpty()) {
-			actLoadAndEmptyTruck();
-			return true;
-		} else if (!alreadyTold && glasses.isEmpty()) {
-			actTellPrevPosFree();
-			return true;
-		}
-		return false;
 	}
 	
 	/* React to events on TRUCK channel. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
 			animSem[0].release();
+			alreadyTold = false;
+			if (glasses.size() == maxGlass)
+				loadFinished = true;
+			stateChanged();
 		} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
 			animSem[1].release();
 		}
+	}
+	
+	// *** SCHEDULER ***
+	public boolean pickAndExecuteAnAction() {
+		if (loadFinished) {
+			actLoadAndEmptyTruck();
+			return true;
+		} else if (!alreadyTold && glasses.size() < maxGlass) {
+			actTellPrevPosFree();
+			return true;
+		}
+		return false;
 	}
 	
 	// *** ACTIONS ***
@@ -68,7 +76,8 @@ public class TruckAgent extends Agent implements LineComponent {
 	private void actLoadAndEmptyTruck() {
 		doLoadGlass();
 		doEmptyTruck();
-		glasses.remove(0);
+		glasses.clear();
+		loadFinished = false;
 	}
 	
 	// *** ANIMATION ACTIONS ***
