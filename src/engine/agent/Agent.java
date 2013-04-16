@@ -8,8 +8,8 @@ import java.util.concurrent.Semaphore;
 
 import transducer.TChannel;
 import transducer.TEvent;
-import transducer.Transducer;
 import transducer.TReceiver;
+import transducer.Transducer;
 
 /**
  * Superclass for all threaded Agents. Agents have a thread devoted to their scheduler and subclasses must override pickAndExecuteAnAction(). 
@@ -190,6 +190,9 @@ public abstract class Agent implements TReceiver {
 	/** Print message */
 	protected void print(String msg) {
 		print(msg, null);
+		if (tracePanel != null) {
+			tracePanel.print(msg, this);
+		}
 	}
 	
 	public void testprint(String msg) {
