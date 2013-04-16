@@ -1,19 +1,26 @@
 package gui.panels;
 
-import engine.agent.*;
+import engine.agent.BigOnlineConveyorFamilyImp;
+import engine.agent.BinRobotAgent;
+import engine.agent.OfflineWorkstationAgent;
+import engine.agent.SmallOnlineConveyorFamilyImp;
+import engine.agent.TruckAgent;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormConveyorInteraction;
-import transducer.*;
+import transducer.Transducer;
 
 /**
  * The FactoryPanel is highest level panel in the actual kitting cell. The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. It is responsible for
@@ -138,6 +145,7 @@ public class FactoryPanel extends JPanel {
 			
 			// Initial robot that has the glasses
 			binRobot = new BinRobotAgent("Bin Robot", transducer);
+			binRobot.setTracePanel(cPanel.getTracePanel());
 			cPanel.setBinRobot(binRobot);
 			
 			// Cutter
