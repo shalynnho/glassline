@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import shared.Glass;
 import shared.enums.MachineType;
+import shared.interfaces.NonnormConveyorInteraction;
 import transducer.*;
 
 /**
@@ -43,6 +44,9 @@ public class FactoryPanel extends JPanel {
 	private BinRobotAgent binRobot;
 	
 	/* ConveyorFamilies & accompanying workstation */
+	
+	private NonnormConveyorInteraction conveyors[];
+	
 	// Cutter
 	private BigOnlineConveyorFamilyImp cutterFamily;
 	
