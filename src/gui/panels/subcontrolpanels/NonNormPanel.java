@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +33,9 @@ public class NonNormPanel extends JPanel {
 
 	/** Title label **/
 	JLabel titleLabel;
+	
+	/** NonNormSelect Panels */
+	List<NonNormSelectPanel> nonNormSelectPanels;
 
 	/**
 	 * Creates a new HavocPanel and links the control panel to it
@@ -67,38 +68,52 @@ public class NonNormPanel extends JPanel {
 		// titleLabelPanel.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 		titleLabelPanel.setBackground(Color.black);
 
-		// make buttons
-		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
-		nonNormButtons.add(new JButton("NON NORM 1"));
-		nonNormButtons.add(new JButton("NON NORM 2"));
-		nonNormButtons.add(new JButton("NON NORM 3"));
-		nonNormButtons.add(new JButton("NON NORM 4"));
-		nonNormButtons.add(new JButton("NON NORM 5"));
-		nonNormButtons.add(new JButton("NON NORM 6"));
-		nonNormButtons.add(new JButton("NON NORM 7"));
-		nonNormButtons.add(new JButton("NON NORM 8"));
+		// Set up the nonNormSelectionPanel list
+		nonNormSelectPanels = new ArrayList<NonNormSelectPanel>();
+		
+		nonNormSelectPanels.add(new NonNormSelectPanel("Conveyor", 15, parent));
+		nonNormSelectPanels.add(new NonNormSelectPanel("Popup", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectPanel("Offline", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectPanel("Online", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectPanel("Truck", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectPanel("Bin", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectPanel("Sensor", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectPanel("TEST", 16, null));
 
-		// add listeners
-		nonNormButtons.get(0).addActionListener(new NonNorm1Listener());
-		nonNormButtons.get(1).addActionListener(new NonNorm2Listener());
-		nonNormButtons.get(2).addActionListener(new NonNorm3Listener());
-		nonNormButtons.get(3).addActionListener(new NonNorm4Listener());
-		nonNormButtons.get(4).addActionListener(new NonNorm5Listener());
-		nonNormButtons.get(5).addActionListener(new NonNorm6Listener());
-		nonNormButtons.get(6).addActionListener(new NonNorm7Listener());
-		nonNormButtons.get(7).addActionListener(new NonNorm8Listener());
+				
+//		// make buttons
+//		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
+//		nonNormButtons.add(new JButton("NON NORM 1"));
+//		nonNormButtons.add(new JButton("NON NORM 2"));
+//		nonNormButtons.add(new JButton("NON NORM 3"));
+//		nonNormButtons.add(new JButton("NON NORM 4"));
+//		nonNormButtons.add(new JButton("NON NORM 5"));
+//		nonNormButtons.add(new JButton("NON NORM 6"));
+//		nonNormButtons.add(new JButton("NON NORM 7"));
+//		nonNormButtons.add(new JButton("NON NORM 8"));
+//
+//		// add listeners
+//		nonNormButtons.get(0).addActionListener(new NonNorm1Listener());
+//		nonNormButtons.get(1).addActionListener(new NonNorm2Listener());
+//		nonNormButtons.get(2).addActionListener(new NonNorm3Listener());
+//		nonNormButtons.get(3).addActionListener(new NonNorm4Listener());
+//		nonNormButtons.get(4).addActionListener(new NonNorm5Listener());
+//		nonNormButtons.get(5).addActionListener(new NonNorm6Listener());
+//		nonNormButtons.get(6).addActionListener(new NonNorm7Listener());
+//		nonNormButtons.get(7).addActionListener(new NonNorm8Listener());
 
-		for (int i = 0; i < NUM_NON_NORMS; i++) {
-			nonNormButtons.get(i).setBackground(Color.white);
-			nonNormButtons.get(i).setForeground(Color.black);
-			nonNormButtons.get(i).setFont(new Font("SansSerif", Font.BOLD, 14));
-			nonNormButtons.get(i).setOpaque(true);
-			nonNormButtons.get(i).setBorderPainted(false);
-			nonNormButtons.get(i).setSize(20, 30);
-			nonNormButtons.get(i).setMinimumSize(new Dimension(20, 40));
-			nonNormButtons.get(i).setMaximumSize(new Dimension(20, 40));
-			nonNormButtons.get(i).setPreferredSize(new Dimension(20, 40));
-		}
+//		for (int i = 0; i < NUM_NON_NORMS; i++) {
+//			nonNormButtons.get(i).setBackground(Color.white);
+//			nonNormButtons.get(i).setForeground(Color.black);
+//			nonNormButtons.get(i).setFont(new Font("SansSerif", Font.BOLD, 14));
+//			nonNormButtons.get(i).setOpaque(true);
+//			nonNormButtons.get(i).setBorderPainted(false);
+//			nonNormButtons.get(i).setSize(20, 30);
+//			nonNormButtons.get(i).setMinimumSize(new Dimension(20, 40));
+//			nonNormButtons.get(i).setMaximumSize(new Dimension(20, 40));
+//			nonNormButtons.get(i).setPreferredSize(new Dimension(20, 40));
+//		}
+		
 		// add to panel
 		this.add(titleLabelPanel);
 
@@ -110,9 +125,13 @@ public class NonNormPanel extends JPanel {
 		colorLinesPanel1.add(clLabel1);
 		this.add(colorLinesPanel1);
 
-		for (JButton j : nonNormButtons) {
-			buttonPanel.add(j);
+//		for (JButton j : nonNormButtons) {
+//			buttonPanel.add(j);
+//		}
+		for (NonNormSelectPanel p  : nonNormSelectPanels) {
+			buttonPanel.add(p);
 		}
+		
 		buttonPanel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
 		this.add(buttonPanel);
 
@@ -133,100 +152,100 @@ public class NonNormPanel extends JPanel {
 		return parent;
 	}
 
-	/**
-	 * Non-norm 1
-	 */
-	public class NonNorm1Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 2
-	 */
-	public class NonNorm2Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 3
-	 */
-	public class NonNorm3Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 4
-	 */
-	public class NonNorm4Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 5
-	 */
-	public class NonNorm5Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 6
-	 */
-	public class NonNorm6Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 7
-	 */
-	public class NonNorm7Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
-
-	/**
-	 * Non-norm 8
-	 */
-	public class NonNorm8Listener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-
-		}
-	}
+//	/**
+//	 * Non-norm 1
+//	 */
+//	public class NonNorm1Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 2
+//	 */
+//	public class NonNorm2Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 3
+//	 */
+//	public class NonNorm3Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 4
+//	 */
+//	public class NonNorm4Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 5
+//	 */
+//	public class NonNorm5Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 6
+//	 */
+//	public class NonNorm6Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 7
+//	 */
+//	public class NonNorm7Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
+//
+//	/**
+//	 * Non-norm 8
+//	 */
+//	public class NonNorm8Listener implements ActionListener {
+//		/**
+//		 * Invoked whenever the button is pressed
+//		 */
+//		public void actionPerformed(ActionEvent ae) {
+//
+//		}
+//	}
 
 }
