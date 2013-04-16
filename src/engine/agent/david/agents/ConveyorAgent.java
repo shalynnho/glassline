@@ -3,8 +3,6 @@ package engine.agent.david.agents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import shared.Glass;
 import transducer.TChannel;

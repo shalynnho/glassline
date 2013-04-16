@@ -107,6 +107,7 @@ public class PopupAgent extends Agent implements Popup {
 			}
 			// Case 2-x deal with when sensor is occupied, which adds complications.
 			else {
+				// TODONOW: SOMETIMES NULL
 				MyGlass g = getNextUnhandledGlass(); // the *unhandled* glass - we make the glass at the sensor more important than any glass at a workstation
 				if (g != null) { // should be present since sensorOccupied = true
 					print("in popup sched 2");
@@ -131,7 +132,8 @@ public class PopupAgent extends Agent implements Popup {
 						return false;
 					}
 				} else {
-					System.err.println("Null unhandled glass!");
+					System.err.println(" Null unhandled glass! ");
+					
 				}
 			}
 		} // returning true above is actually meaningless since all act methods lead to WAIT state, so we just reach false anyway.
@@ -150,10 +152,13 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
 				if (family.thisSensor(args)) {
-					setState(PopupState.ACTIVE);
 					sensorOccupied = true;
-					stateChanged();
-//					System.err.println(name+ "'s popup state should do scheduler now ");
+					
+					// Only change state/trigger a check in the scheduler if we're not waiting for something else to complete, like WAITING_FOR_WORKSTATION_GLASS_RELEASE or WAITING_FOR_LOW_POPUP
+					if (state == PopupState.DOING_NOTHING) {
+						setState(PopupState.ACTIVE);
+						stateChanged();
+					}
 				}
 			}
 		} 
@@ -222,7 +227,6 @@ public class PopupAgent extends Agent implements Popup {
 				if (family.thisPopup(args)) {
 					setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
 					doReleaseGlassFromProperWorkstation();
-					print("JUST RELEASED GLASS FROM PROPER WORKSTATION");
 				}
 			}
 		}
@@ -440,7 +444,7 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	public void setState(PopupState s) {
-//		 System.out.println("changing state from " + state + " to " + s);
+//		 System.err.println("changing state from " + state + " to " + s);
 		 state = s;
 	}
 	

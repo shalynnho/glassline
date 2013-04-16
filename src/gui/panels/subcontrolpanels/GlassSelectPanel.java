@@ -3,6 +3,7 @@ package gui.panels.subcontrolpanels;
 import engine.agent.BinRobotAgent;
 import gui.panels.ControlPanel;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 	private JScrollPane scrollPane;
 	private JPanel mainPanel;
 	private ArrayList<JCheckBox> checkBoxes;
-	private JButton goButton = new JButton("GO!");
+	private JButton goButton = new JButton("Create glass!");
 	private BinRobotAgent binRobot;
 	
 	/**
@@ -38,7 +39,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 	 */
 	public GlassSelectPanel(ControlPanel cp) {
 		parent = cp;
-
+		
 		checkBoxes = new ArrayList<JCheckBox>();
 		checkBoxes.add(new JCheckBox(MachineType.CUTTER.toString()));
 		checkBoxes.add(new JCheckBox(MachineType.BREAKOUT.toString()));
@@ -51,9 +52,10 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 		checkBoxes.add(new JCheckBox(MachineType.UV_LAMP.toString()));
 		checkBoxes.add(new JCheckBox(MachineType.OVEN.toString()));
 		
-
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		
+		mainPanel.setBackground(Color.gray);
 		
 		for (int i=0; i<checkBoxes.size(); i++) {
 			//checkBoxes.get(i).setAlignmentX(CENTER_ALIGNMENT);
