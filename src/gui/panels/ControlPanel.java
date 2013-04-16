@@ -92,8 +92,8 @@ public class ControlPanel extends JPanel implements TReceiver {
 		this.setMaximumSize(size);
 		this.setPreferredSize(size);
 
-		this.setBackground(Color.black);
-		this.setForeground(Color.black);
+//		this.setBackground(Color.black);
+//		this.setForeground(Color.black);
 
 		// construct subpanels
 		titlePanel = new TitlePanel(this);

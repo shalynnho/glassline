@@ -107,6 +107,7 @@ public class PopupAgent extends Agent implements Popup {
 			}
 			// Case 2-x deal with when sensor is occupied, which adds complications.
 			else {
+				// TODONOW: SOMETIMES NULL
 				MyGlass g = getNextUnhandledGlass(); // the *unhandled* glass - we make the glass at the sensor more important than any glass at a workstation
 				if (g != null) { // should be present since sensorOccupied = true
 					print("in popup sched 2");
