@@ -132,7 +132,8 @@ public class PopupAgent extends Agent implements Popup {
 						return false;
 					}
 				} else {
-					System.err.println("Null unhandled glass!");
+					System.err.println(" Null unhandled glass! ");
+					
 				}
 			}
 		} // returning true above is actually meaningless since all act methods lead to WAIT state, so we just reach false anyway.
