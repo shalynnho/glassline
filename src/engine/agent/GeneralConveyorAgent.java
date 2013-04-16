@@ -11,7 +11,7 @@ import shared.*;
 import shared.interfaces.*;
 import transducer.*;
 
-public class GeneralConveyorAgent extends Agent implements LineComponent, ActionListener, NonnormConveyorInteraction {
+public class GeneralConveyorAgent extends Agent implements LineComponent, ActionListener, NonnormBreakInteraction {
 	// *** DATA ***
 	
 	private LineComponent prev, next;
@@ -237,4 +237,9 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	/* Setters */
 	public void setPrev(LineComponent lc) { prev = lc; }
 	public void setNext(LineComponent lc) { next = lc; }
+	
+	/* Necessary for TruckAgent queries. */
+	public boolean isEmpty() {
+		return glasses.isEmpty();
+	}
 }

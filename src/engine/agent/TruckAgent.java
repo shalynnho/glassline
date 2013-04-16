@@ -25,12 +25,12 @@ public class TruckAgent extends Agent implements LineComponent {
 	
 	// *** DATA ***
 	private List<Glass> glasses;
-	private LineComponent prev;
+	private GeneralConveyorAgent prev;
 	private boolean alreadyTold; // true if already told previous family that position is free (to prevent repeated messaging)
 	private boolean loadFinished; // true when done loading
 	private Semaphore animSem[];
 	
-	private static final int maxGlass = 4;
+	private static final int maxGlass = 10;
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() {
@@ -57,7 +57,7 @@ public class TruckAgent extends Agent implements LineComponent {
 	
 	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction() {
-		if (loadFinished) {
+		if (loadFinished || prev.isEmpty()) {
 			actLoadAndEmptyTruck();
 			return true;
 		} else if (!alreadyTold && glasses.size() < maxGlass) {
@@ -102,7 +102,8 @@ public class TruckAgent extends Agent implements LineComponent {
 
 	// *** EXTRA ***
 	public void setPrevLineComponent(LineComponent l) {
-		prev = l;
+		if (l instanceof GeneralConveyorAgent)
+			prev = (GeneralConveyorAgent)l;
 	}
 
 }

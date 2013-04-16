@@ -13,10 +13,10 @@ public class BigOnlineConveyorFamilyImp implements LineComponent {
 	private OnlineWorkstationAgent workstation;
 	
 	/* Constructor creates components and sets internal next/prev. */
-	public BigOnlineConveyorFamilyImp(MachineType type, Transducer trans, int startConveyorIndex, Timer guiTimer) {
-		startConveyor = new GeneralConveyorAgent(type.toString() + " start conveyor", trans, startConveyorIndex, guiTimer);
-		workstation = new OnlineWorkstationAgent(type.toString() + " workstation", type, trans);
-		endConveyor = new GeneralConveyorAgent(type.toString() + " end conveyor", trans, startConveyorIndex + 1, guiTimer);
+	public BigOnlineConveyorFamilyImp(GeneralConveyorAgent sc, GeneralConveyorAgent ec, OnlineWorkstationAgent w) {
+		startConveyor = sc;
+		endConveyor = ec;
+		workstation = w;
 		
 		startConveyor.setNext(workstation);
 		workstation.setPrev(startConveyor);

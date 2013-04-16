@@ -1,26 +1,21 @@
 package gui.panels;
 
-import engine.agent.BigOnlineConveyorFamilyImp;
-import engine.agent.BinRobotAgent;
-import engine.agent.OfflineWorkstationAgent;
-import engine.agent.SmallOnlineConveyorFamilyImp;
-import engine.agent.TruckAgent;
+import engine.agent.*;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import shared.Glass;
 import shared.enums.MachineType;
-import shared.interfaces.NonnormConveyorInteraction;
-import transducer.Transducer;
+import shared.interfaces.NonnormBreakInteraction;
+import transducer.*;
 
 /**
  * The FactoryPanel is highest level panel in the actual kitting cell. The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. It is responsible for
@@ -50,9 +45,12 @@ public class FactoryPanel extends JPanel {
 	// Initial robot agent
 	private BinRobotAgent binRobot;
 	
-	/* ConveyorFamilies & accompanying workstation */
+	/* Arrays of components for the nonnormative break interactions. */
+	private List<NonnormBreakInteraction> conveyors;
+	private List<OnlineWorkstationAgent> onlineWorkstations;
+	private List<OfflineWorkstationAgent> offlineWorkstations;
 	
-	private NonnormConveyorInteraction conveyors[];
+	/* ConveyorFamilies & accompanying workstation */
 	
 	// Cutter
 	private BigOnlineConveyorFamilyImp cutterFamily;
@@ -64,7 +62,7 @@ public class FactoryPanel extends JPanel {
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
 	
 	// Drill - Evan's
-	private OfflineWorkstationAgent drillWorkstation[];//, crossSeamerWorkstation[]; // just for now extra families
+	private OfflineWorkstationAgent drillWorkstation[];
 	private ConveyorFamilyImplementation drillFamily;
 	
 	// CrossSeamer - Tim's
@@ -143,19 +141,24 @@ public class FactoryPanel extends JPanel {
 			/* Instantiate Agents */
 			javax.swing.Timer timer = parent.getTimer(); // needed for GeneralConveyorAgent
 			
+			/* Initialize components. */
+			conveyors = new ArrayList<NonnormBreakInteraction>(15);
+			onlineWorkstations = new ArrayList<OnlineWorkstationAgent>(7);
+			offlineWorkstations = new ArrayList<OfflineWorkstationAgent>(6);
+			
 			// Initial robot that has the glasses
 			binRobot = new BinRobotAgent("Bin Robot", transducer);
 			binRobot.setTracePanel(cPanel.getTracePanel());
 			cPanel.setBinRobot(binRobot);
 			
 			// Cutter
-			cutterFamily = new BigOnlineConveyorFamilyImp(MachineType.CUTTER, transducer, 0, timer);
+			cutterFamily = createBigOnlineFamily(MachineType.CUTTER, transducer, 0, timer);
 
 			// Breakout
-			breakoutFamily = new SmallOnlineConveyorFamilyImp(MachineType.BREAKOUT, transducer, 2, timer);
+			breakoutFamily = createSmallOnlineFamily(MachineType.BREAKOUT, transducer, 2, timer);
 			
 			// Manual Breakout
-			manualBreakoutFamily = new BigOnlineConveyorFamilyImp(MachineType.MANUAL_BREAKOUT, transducer, 3, timer);
+			manualBreakoutFamily = createBigOnlineFamily(MachineType.MANUAL_BREAKOUT, transducer, 3, timer);
 			
 			// Drill
 			drillWorkstation = new OfflineWorkstationAgent[2];
@@ -182,16 +185,16 @@ public class FactoryPanel extends JPanel {
 				grinderWorkstation[i].setPopupWorkstationInteraction(grinderFamily);
 			
 			// Washer
-			washerFamily = new BigOnlineConveyorFamilyImp(MachineType.WASHER, transducer, 8, timer);
+			washerFamily = createBigOnlineFamily(MachineType.WASHER, transducer, 8, timer);
 
 			// Painter
-			painterFamily = new SmallOnlineConveyorFamilyImp(MachineType.PAINT, transducer, 10, timer);
+			painterFamily = createSmallOnlineFamily(MachineType.PAINT, transducer, 10, timer);
 
 			// UV Lamp
-			lampFamily = new BigOnlineConveyorFamilyImp(MachineType.UV_LAMP, transducer, 11, timer);
+			lampFamily = createBigOnlineFamily(MachineType.UV_LAMP, transducer, 11, timer);
 
 			// Oven
-			ovenFamily = new BigOnlineConveyorFamilyImp(MachineType.OVEN, transducer, 13, timer);
+			ovenFamily = createBigOnlineFamily(MachineType.OVEN, transducer, 13, timer);
 			
 			// TRUCK
 			truck = new TruckAgent("Truck", transducer);
@@ -228,7 +231,7 @@ public class FactoryPanel extends JPanel {
 			ovenFamily.setPreviousLineComponent(lampFamily);
 			
 			ovenFamily.setNextLineComponent(truck);
-			truck.setPrevLineComponent(ovenFamily);
+			truck.setPrevLineComponent((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1));
 			
 			// Set things in motion!
 			createInitialGlasses();
@@ -240,6 +243,21 @@ public class FactoryPanel extends JPanel {
 		}
 		
 		System.out.println("Backend initialization finished.");
+	}
+	
+	/* This method creates a BigOnlineConveyorFamily and places components in NonnormBreakInteraction arrays. */
+	private BigOnlineConveyorFamilyImp createBigOnlineFamily(MachineType type, Transducer trans, int startConveyorIndex, Timer guiTimer) {
+		conveyors.add(new GeneralConveyorAgent(type.toString() + " start conveyor", trans, startConveyorIndex, guiTimer));
+		onlineWorkstations.add(new OnlineWorkstationAgent(type.toString() + " workstation", type, trans));
+		conveyors.add(new GeneralConveyorAgent(type.toString() + " end conveyor", trans, startConveyorIndex + 1, guiTimer));
+		return new BigOnlineConveyorFamilyImp((GeneralConveyorAgent)conveyors.get(conveyors.size() - 2), (GeneralConveyorAgent)conveyors.get(conveyors.size() - 1), onlineWorkstations.get(onlineWorkstations.size() - 1));
+	}
+	
+	/* This method creates a SmallOnlineConveyorFamily and places components in NonnormBreakInteraction arrays. */
+	private SmallOnlineConveyorFamilyImp createSmallOnlineFamily(MachineType type, Transducer trans, int convIndex, Timer guiTimer) {
+		conveyors.add(new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex, guiTimer));
+		onlineWorkstations.add(new OnlineWorkstationAgent(type.toString() + " workstation", type, trans));
+		return new SmallOnlineConveyorFamilyImp((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1), onlineWorkstations.get(onlineWorkstations.size() - 1));
 	}
 
 	/**

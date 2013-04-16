@@ -13,14 +13,14 @@ public class SmallOnlineConveyorFamilyImp implements LineComponent {
 	private OnlineWorkstationAgent workstation;
 	
 	/* Constructor creates components and sets internal next/prev. */
-	public SmallOnlineConveyorFamilyImp(MachineType type, Transducer trans, int convIndex, Timer guiTimer) {
-		conveyor = new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex, guiTimer);
-		workstation = new OnlineWorkstationAgent(type.toString() + " workstation", type, trans);
+	public SmallOnlineConveyorFamilyImp(GeneralConveyorAgent c, OnlineWorkstationAgent w) {
+		conveyor = c;
+		workstation = w;
 		
 		conveyor.setNext(workstation);
 		workstation.setPrev(conveyor);
 	}
-	
+
 	/* Messages */
 	public void msgHereIsGlass(Glass g) {
 		conveyor.msgHereIsGlass(g);

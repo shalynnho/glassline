@@ -4,11 +4,12 @@ import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
+import shared.interfaces.NonnormBreakInteraction;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class OnlineWorkstationAgent extends Agent implements LineComponent {
+public class OnlineWorkstationAgent extends Agent implements LineComponent, NonnormBreakInteraction {
 	private MachineType type;
 	private TChannel channel;
 	private Glass glass;
@@ -41,6 +42,12 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent {
 	public void msgPositionFree() {
 		recPosFree = true;
 		stateChanged();
+	}
+
+	/* For the GUI break interaction to stop or start working again. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/* Transducer event. Always on the <type> TChannel. */
