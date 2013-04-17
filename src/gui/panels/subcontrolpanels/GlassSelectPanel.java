@@ -55,6 +55,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
+		this.setBackground(Color.gray);
 		mainPanel.setBackground(Color.gray);
 		
 		for (int i=0; i<checkBoxes.size(); i++) {
