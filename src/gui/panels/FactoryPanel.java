@@ -1,13 +1,21 @@
 package gui.panels;
 
-import engine.agent.*;
+import engine.agent.BigOnlineConveyorFamilyImp;
+import engine.agent.BinRobotAgent;
+import engine.agent.GeneralConveyorAgent;
+import engine.agent.OfflineWorkstationAgent;
+import engine.agent.OnlineWorkstationAgent;
+import engine.agent.SmallOnlineConveyorFamilyImp;
+import engine.agent.TruckAgent;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -15,7 +23,7 @@ import javax.swing.Timer;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormBreakInteraction;
-import transducer.*;
+import transducer.Transducer;
 
 /**
  * The FactoryPanel is highest level panel in the actual kitting cell. The FactoryPanel makes all the back end components, connects them to the GuiComponents in the DisplayPanel. It is responsible for
@@ -166,20 +174,25 @@ public class FactoryPanel extends JPanel {
 			for (int i = 0; i < 2; ++i) {
 				drillWorkstation[i] = new OfflineWorkstationAgent(MachineType.DRILL.toString() + i, MachineType.DRILL, i, transducer);
 				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+				drillWorkstation[i].setTracePanel(cPanel.getTracePanel());
 			}
 			
 			// Cross Seamer
 			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
-			for (int i = 0; i < 2; ++i)
+			for (int i = 0; i < 2; ++i){
 				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
+				crossSeamerWorkstation[i].setTracePanel(cPanel.getTracePanel());
+			}
 			crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
 			for (int i = 0; i < 2; ++i)
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
 			
 			// Grinder
 			grinderWorkstation = new OfflineWorkstationAgent[2];
-			for (int i = 0; i < 2; ++i)
+			for (int i = 0; i < 2; ++i) {
 				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + i, MachineType.GRINDER, i, transducer);
+				grinderWorkstation[i].setTracePanel(cPanel.getTracePanel());
+			}
 			grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, grinderWorkstation[0], grinderWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
 				grinderWorkstation[i].setPopupWorkstationInteraction(grinderFamily);
@@ -198,6 +211,7 @@ public class FactoryPanel extends JPanel {
 			
 			// TRUCK
 			truck = new TruckAgent("Truck", transducer);
+			truck.setTracePanel(cPanel.getTracePanel());
 			
 			// Connect them!
 			binRobot.setNextLineComponent(cutterFamily);
@@ -247,16 +261,30 @@ public class FactoryPanel extends JPanel {
 	
 	/* This method creates a BigOnlineConveyorFamily and places components in NonnormBreakInteraction arrays. */
 	private BigOnlineConveyorFamilyImp createBigOnlineFamily(MachineType type, Transducer trans, int startConveyorIndex, Timer guiTimer) {
-		conveyors.add(new GeneralConveyorAgent(type.toString() + " start conveyor", trans, startConveyorIndex, guiTimer));
-		onlineWorkstations.add(new OnlineWorkstationAgent(type.toString() + " workstation", type, trans));
-		conveyors.add(new GeneralConveyorAgent(type.toString() + " end conveyor", trans, startConveyorIndex + 1, guiTimer));
+		GeneralConveyorAgent start = new GeneralConveyorAgent(type.toString() + " start conveyor", trans, startConveyorIndex, guiTimer);
+		GeneralConveyorAgent end = new GeneralConveyorAgent(type.toString() + " end conveyor", trans, startConveyorIndex + 1, guiTimer);
+		OnlineWorkstationAgent ws = new OnlineWorkstationAgent(type.toString() + " workstation", type, trans);
+		
+		start.setTracePanel(cPanel.getTracePanel());
+		end.setTracePanel(cPanel.getTracePanel());
+		ws.setTracePanel(cPanel.getTracePanel());
+		
+		conveyors.add(start);
+		onlineWorkstations.add(ws);
+		conveyors.add(end);
 		return new BigOnlineConveyorFamilyImp((GeneralConveyorAgent)conveyors.get(conveyors.size() - 2), (GeneralConveyorAgent)conveyors.get(conveyors.size() - 1), onlineWorkstations.get(onlineWorkstations.size() - 1));
 	}
 	
 	/* This method creates a SmallOnlineConveyorFamily and places components in NonnormBreakInteraction arrays. */
 	private SmallOnlineConveyorFamilyImp createSmallOnlineFamily(MachineType type, Transducer trans, int convIndex, Timer guiTimer) {
-		conveyors.add(new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex, guiTimer));
-		onlineWorkstations.add(new OnlineWorkstationAgent(type.toString() + " workstation", type, trans));
+		GeneralConveyorAgent c = new GeneralConveyorAgent(type.toString() + " conveyor", trans, convIndex, guiTimer);
+		OnlineWorkstationAgent ws = new OnlineWorkstationAgent(type.toString() + " workstation", type, trans);
+		
+		c.setTracePanel(cPanel.getTracePanel());
+		ws.setTracePanel(cPanel.getTracePanel());
+		
+		conveyors.add(c);
+		onlineWorkstations.add(ws);
 		return new SmallOnlineConveyorFamilyImp((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1), onlineWorkstations.get(onlineWorkstations.size() - 1));
 	}
 
