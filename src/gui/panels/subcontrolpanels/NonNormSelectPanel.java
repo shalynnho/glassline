@@ -78,7 +78,7 @@ public class NonNormSelectPanel extends JPanel {
 		c.anchor = GridBagConstraints.LINE_END;
 		this.add(spinner, c);
 		
-		this.validate();		
+		this.validate();
 	}
 
 	public class BreakListener implements ActionListener {
@@ -86,7 +86,8 @@ public class NonNormSelectPanel extends JPanel {
 		 * Invoked whenever the button is pressed
 		 */
 		public void actionPerformed(ActionEvent ae) {
-
+			System.out.println(ae.getSource());
+			System.out.println("break!");
 		}
 	}
 	
@@ -95,7 +96,8 @@ public class NonNormSelectPanel extends JPanel {
 		 * Invoked whenever the button is pressed
 		 */
 		public void actionPerformed(ActionEvent ae) {
-
+			System.out.println(ae.getSource());
+			System.out.println("unbreak!");
 		}
 	}
 
