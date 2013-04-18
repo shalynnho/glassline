@@ -314,12 +314,13 @@ public class FactoryPanel extends JPanel {
 				MachineType.UV_LAMP, MachineType.OVEN}));
 		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, 
 				MachineType.GRINDER, MachineType.OVEN}));
-		
-		
-		// This sequence would replicate the error of a stopping Grinder family, but should now be fixed
-//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
-//		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
-//		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
+
+//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER}));
+//		glasses.add(new Glass(new MachineType[] { }));
 		
 		binRobot.seedGlasses(glasses);
 	}

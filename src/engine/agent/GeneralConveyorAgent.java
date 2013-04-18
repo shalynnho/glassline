@@ -3,13 +3,17 @@ package engine.agent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Timer;
 
-import shared.*;
-import shared.interfaces.*;
-import transducer.*;
+import shared.Glass;
+import shared.interfaces.LineComponent;
+import shared.interfaces.NonnormBreakInteraction;
+import transducer.TChannel;
+import transducer.TEvent;
+import transducer.Transducer;
 
 public class GeneralConveyorAgent extends Agent implements LineComponent, ActionListener, NonnormBreakInteraction {
 	// *** DATA ***
@@ -31,7 +35,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		}
 	}
 	
-	private List<MyGlass> glasses;
+	private List<MyGlass> glasses = Collections.synchronizedList(new ArrayList<MyGlass>());;
 	
 	private boolean posFree, moving, waitingToSendPosFree; // popup ready, is moving, waiting for glass to move off of front sensor
 	private int glassMoved; // how far has glass moved
