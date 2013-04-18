@@ -55,6 +55,7 @@ public class FactoryPanel extends JPanel {
 	
 	/* Arrays of components for the nonnormative break interactions. */
 	private List<NonnormBreakInteraction> conveyors;
+	private List<NonnormBreakInteraction> popups;
 	private List<OnlineWorkstationAgent> onlineWorkstations;
 	private List<OfflineWorkstationAgent> offlineWorkstations;
 	
@@ -151,6 +152,7 @@ public class FactoryPanel extends JPanel {
 			
 			/* Initialize components. */
 			conveyors = new ArrayList<NonnormBreakInteraction>(15);
+			popups = new ArrayList<NonnormBreakInteraction>(3);
 			onlineWorkstations = new ArrayList<OnlineWorkstationAgent>(7);
 			offlineWorkstations = new ArrayList<OfflineWorkstationAgent>(6);
 			
@@ -161,7 +163,7 @@ public class FactoryPanel extends JPanel {
 			
 			// Cutter
 			cutterFamily = createBigOnlineFamily(MachineType.CUTTER, transducer, 0, timer);
-
+			
 			// Breakout
 			breakoutFamily = createSmallOnlineFamily(MachineType.BREAKOUT, transducer, 2, timer);
 			
@@ -170,11 +172,22 @@ public class FactoryPanel extends JPanel {
 			
 			// Drill
 			drillWorkstation = new OfflineWorkstationAgent[2];
-			drillFamily = new ConveyorFamilyImplementation(transducer, drillWorkstation, MachineType.DRILL, 5, 0);
+			
+			{ // create drill conveyor family
+				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("c" + 5, transducer, 5);
+				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("p" + 0, c, drillWorkstation, MachineType.DRILL, transducer, 0);
+				
+				drillFamily = new ConveyorFamilyImplementation(c, p);
+				
+				conveyors.add(c);
+				popups.add(p);
+			}
+			
 			for (int i = 0; i < 2; ++i) {
 				drillWorkstation[i] = new OfflineWorkstationAgent(MachineType.DRILL.toString() + i, MachineType.DRILL, i, transducer);
 				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
 				drillWorkstation[i].setTracePanel(cPanel.getTracePanel());
+				offlineWorkstations.add(drillWorkstation[i]);
 			}
 			
 			// Cross Seamer
@@ -182,6 +195,7 @@ public class FactoryPanel extends JPanel {
 			for (int i = 0; i < 2; ++i){
 				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
 				crossSeamerWorkstation[i].setTracePanel(cPanel.getTracePanel());
+				offlineWorkstations.add(crossSeamerWorkstation[i]);
 			}
 			crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
 			for (int i = 0; i < 2; ++i)
@@ -192,6 +206,7 @@ public class FactoryPanel extends JPanel {
 			for (int i = 0; i < 2; ++i) {
 				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + i, MachineType.GRINDER, i, transducer);
 				grinderWorkstation[i].setTracePanel(cPanel.getTracePanel());
+				offlineWorkstations.add(grinderWorkstation[i]);
 			}
 			grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, grinderWorkstation[0], grinderWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
@@ -272,7 +287,7 @@ public class FactoryPanel extends JPanel {
 		conveyors.add(start);
 		onlineWorkstations.add(ws);
 		conveyors.add(end);
-		return new BigOnlineConveyorFamilyImp((GeneralConveyorAgent)conveyors.get(conveyors.size() - 2), (GeneralConveyorAgent)conveyors.get(conveyors.size() - 1), onlineWorkstations.get(onlineWorkstations.size() - 1));
+		return new BigOnlineConveyorFamilyImp(start, end, ws);
 	}
 	
 	/* This method creates a SmallOnlineConveyorFamily and places components in NonnormBreakInteraction arrays. */
@@ -285,7 +300,7 @@ public class FactoryPanel extends JPanel {
 		
 		conveyors.add(c);
 		onlineWorkstations.add(ws);
-		return new SmallOnlineConveyorFamilyImp((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1), onlineWorkstations.get(onlineWorkstations.size() - 1));
+		return new SmallOnlineConveyorFamilyImp(c, ws);
 	}
 
 	/**
