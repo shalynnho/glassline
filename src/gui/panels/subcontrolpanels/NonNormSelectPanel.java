@@ -46,8 +46,10 @@ public class NonNormSelectPanel extends JPanel {
 		
 		breakButton.setSize(new Dimension(7, 20));
 		unbreakButton.setSize(new Dimension(7, 20));
+		
 		breakButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 		unbreakButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+		
 		breakButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		unbreakButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
