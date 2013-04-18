@@ -47,7 +47,7 @@ public class TruckAgent extends Agent implements LineComponent {
 		if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
 			animSem[0].release();
 			alreadyTold = false;
-			if (glasses.size() == maxGlass)
+			//if (glasses.size() == maxGlass)
 				loadFinished = true;
 			stateChanged();
 		} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
