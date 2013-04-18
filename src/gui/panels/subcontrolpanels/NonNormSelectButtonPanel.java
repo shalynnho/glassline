@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-public class NonNormSelectPanel extends JPanel {
+public class NonNormSelectButtonPanel extends JPanel {
 	
 	private ControlPanel controlPanel;
 	private int maxNum;
@@ -25,7 +25,7 @@ public class NonNormSelectPanel extends JPanel {
 	private JButton breakButton, unbreakButton;
 	private JSpinner spinner;
 		
-	public NonNormSelectPanel (String name, int n, ControlPanel cp) {
+	public NonNormSelectButtonPanel (String name, int n, ControlPanel cp) {
 		super(new GridBagLayout());
 		this.name = name;
 		this.maxNum = n;
