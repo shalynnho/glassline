@@ -7,7 +7,7 @@ import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class ConveyorAgent extends Agent implements LineComponent {
+public class ConveyorAgent extends Agent implements LineComponent, NonnormBreakInteraction {
 	// *** DATA ***
 	
 	private LineComponent prev;
@@ -30,10 +30,9 @@ public class ConveyorAgent extends Agent implements LineComponent {
 	private boolean posFree, moving; // popup ready
 	
 	/* Assigns references from arguments and sets other data appropriately. */
-	public ConveyorAgent(String name, Popup pop, Transducer trans, int index) {
+	public ConveyorAgent(String name, Transducer trans, int index) {
 		super(name, trans);
 		
-		p = pop;
 		transducer.register(this, TChannel.SENSOR);
 		id = index;
 		
@@ -54,6 +53,12 @@ public class ConveyorAgent extends Agent implements LineComponent {
 	public void msgPositionFree() {
 		posFree = true;
 		stateChanged();
+	}
+
+	/* This message is from the GUI to stop or restart. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/* Transducer event. Always on the SENSOR TChannel. */

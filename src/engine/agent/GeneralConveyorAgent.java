@@ -72,7 +72,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		stateChanged();
 	}
 	
-	/* This message is from the GUI to  */
+	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
 		if  (stop) {
 			gbs = GUIBreakState.stop;

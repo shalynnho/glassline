@@ -35,7 +35,7 @@ public class NonNormPanel extends JPanel {
 	JLabel titleLabel;
 	
 	/** NonNormSelect Panels */
-	List<NonNormSelectPanel> nonNormSelectPanels;
+	List<NonNormSelectButtonPanel> nonNormSelectPanels;
 
 	/**
 	 * Creates a new HavocPanel and links the control panel to it
@@ -69,15 +69,15 @@ public class NonNormPanel extends JPanel {
 		titleLabelPanel.setBackground(Color.black);
 
 		// Set up the nonNormSelectionPanel list
-		nonNormSelectPanels = new ArrayList<NonNormSelectPanel>(NUM_NON_NORMS);
-		nonNormSelectPanels.add(new NonNormSelectPanel("Conveyor", 15, parent));
-		nonNormSelectPanels.add(new NonNormSelectPanel("Popup", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectPanel("Offline", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectPanel("Online", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectPanel("Truck", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectPanel("Bin", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectPanel("Sensor", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectPanel("TEST", 16, null));
+		nonNormSelectPanels = new ArrayList<NonNormSelectButtonPanel>(NUM_NON_NORMS);
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Conveyor", 15, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Popup", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Offline", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Online", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Truck", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Bin", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Sensor", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("TEST", 16, null));
 		
 		// add to panel
 		this.add(titleLabelPanel);
@@ -90,7 +90,7 @@ public class NonNormPanel extends JPanel {
 		colorLinesPanel1.add(clLabel1);
 		this.add(colorLinesPanel1);
 
-		for (NonNormSelectPanel p  : nonNormSelectPanels) {
+		for (NonNormSelectButtonPanel p  : nonNormSelectPanels) {
 			buttonPanel.add(p);
 		}
 		

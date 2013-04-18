@@ -30,7 +30,7 @@ public class TruckAgent extends Agent implements LineComponent {
 	private boolean loadFinished; // true when done loading
 	private Semaphore animSem[];
 	
-	private static final int maxGlass = 10;
+	private static final int maxGlass = 1;
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() {
@@ -47,7 +47,7 @@ public class TruckAgent extends Agent implements LineComponent {
 		if (event == TEvent.TRUCK_GUI_LOAD_FINISHED) {
 			animSem[0].release();
 			alreadyTold = false;
-			//if (glasses.size() == maxGlass)
+			if (glasses.size() == maxGlass)
 				loadFinished = true;
 			stateChanged();
 		} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
