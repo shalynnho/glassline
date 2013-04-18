@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.interfaces.LineComponent;
+import shared.interfaces.NonnormBreakInteraction;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class TruckAgent extends Agent implements LineComponent {
+public class TruckAgent extends Agent implements LineComponent, NonnormBreakInteraction {
 	// *** Constructor(s) ***
 	// Make sure to do setNextConveyorFamily upon creation
 	public TruckAgent(String name, Transducer trans) {
@@ -53,6 +54,12 @@ public class TruckAgent extends Agent implements LineComponent {
 		} else if (event == TEvent.TRUCK_GUI_EMPTY_FINISHED) {
 			animSem[1].release();
 		}
+	}
+
+	/* This message is from the GUI to stop or restart. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	// *** SCHEDULER ***
