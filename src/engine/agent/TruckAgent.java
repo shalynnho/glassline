@@ -64,7 +64,7 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 	
 	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction() {
-		if (loadFinished || prev.isEmpty()) {
+		if (loadFinished || (!glasses.isEmpty() && prev.isEmpty())) {
 			actLoadAndEmptyTruck();
 			return true;
 		} else if (!alreadyTold && glasses.size() < maxGlass) {
