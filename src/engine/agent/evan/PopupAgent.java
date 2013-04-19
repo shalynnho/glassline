@@ -9,7 +9,7 @@ import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class PopupAgent extends Agent implements Popup {
+public class PopupAgent extends Agent implements Popup, NonnormBreakInteraction {
 	// *** DATA ***
 	
 	private LineComponent next, c; // the next LineComponent and the previous conveyor
@@ -80,6 +80,12 @@ public class PopupAgent extends Agent implements Popup {
 			if (mg.g.equals(g))
 				mg.gs = GlassState.doneProcessing;
 		stateChanged();
+	}
+
+	/* This message is from the GUI to stop or restart. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/* Transducer event. */

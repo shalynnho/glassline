@@ -3,13 +3,14 @@ package engine.agent;
 import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.enums.MachineType;
+import shared.interfaces.NonnormBreakInteraction;
 import shared.interfaces.PopupWorkstationInteraction;
 import shared.interfaces.OfflineWorkstation;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation {
+public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation, NonnormBreakInteraction {
 	// *** DATA ***
 	
 	private MachineType mt;
@@ -66,6 +67,12 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 			return true;
 		}
 		return false;
+	}
+
+	/* For the GUI break interaction to stop or start working again. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	// *** ACTIONS ***

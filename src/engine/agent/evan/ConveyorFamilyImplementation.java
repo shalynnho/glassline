@@ -11,9 +11,9 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	private ConveyorAgent c;
 	private PopupAgent p;
 	
-	public ConveyorFamilyImplementation(Transducer t, OfflineWorkstation mach[], MachineType mt, int cid, int pid) {
-		c = new ConveyorAgent("c" + cid, p, t, cid);
-		p = new PopupAgent("p" + pid, c, mach, mt, t, pid);
+	public ConveyorFamilyImplementation(ConveyorAgent con, PopupAgent pop) {
+		c = con;
+		p = pop;
 		c.setPopup(p);
 	}
 	

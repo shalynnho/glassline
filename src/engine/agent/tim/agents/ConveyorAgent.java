@@ -5,6 +5,7 @@ import java.util.*;
 import javax.swing.Popup;
 
 import shared.Glass;
+import shared.interfaces.NonnormBreakInteraction;
 import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -73,6 +74,12 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		events.add(e);
 		print("Event added: " + e.toString());
 		stateChanged();
+	}
+
+	/* This message is from the GUI to stop or restart. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	//Scheduler:

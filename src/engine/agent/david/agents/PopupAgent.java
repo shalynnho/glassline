@@ -50,6 +50,10 @@ public class PopupAgent extends Agent implements Popup {
 	public enum WorkstationState {
 		FREE, BUSY, DONE_BUT_STILL_HAS_GLASS
 	}
+	enum GUIBreakState {
+		BOTH_BROKEN, BOTTOM_BROKEN, TOP_BROKEN, NORMATIVE
+	}
+	GUIBreakState breakState = GUIBreakState.NORMATIVE;
 
 	PopupState state = PopupState.DOING_NOTHING;
 	WorkstationState wsState1 = WorkstationState.FREE;
@@ -87,6 +91,11 @@ public class PopupAgent extends Agent implements Popup {
 			stateChanged(); // only check scheduler if doing nothing
 		}
 		// otherwise, popup is busy WAITING_FOR something else to happen, or is already ACTIVE doing something perhaps for the other workstation
+	}
+
+	// Sent from gui for non-norm of only allowing 0, 1, or 2 workstations to work
+	public void msgBreakWorkstation(boolean shouldBreak, int index) {
+		// TODO
 	}
 
 	// *** SCHEDULER ***
@@ -426,7 +435,21 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	private boolean aWorkstationIsFree() {
-		return aWorkstationHasState(WorkstationState.FREE);
+		// Check for non-norm first
+		if (breakState == GUIBreakState.BOTH_BROKEN) {
+			return false;
+		} else if (breakState == GUIBreakState.TOP_BROKEN) {
+			// Only check 2nd workstation
+			return wsState2 == WorkstationState.FREE;
+		} else if (breakState == GUIBreakState.BOTTOM_BROKEN) {
+			// Only check 1st workstation
+			return wsState1 == WorkstationState.FREE;
+		} 
+
+		// Normative case
+		else {
+			return aWorkstationHasState(WorkstationState.FREE);
+		}
 	}
 
 	private boolean bothWorkstationsOccupiedButAtLeastOneIsDone() {
