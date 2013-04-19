@@ -33,6 +33,9 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	
 	boolean positionFreePopUp;
 	
+	private enum GUIBreakState {stop, stopped, restart, running};
+	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI conveyor is broken or not
+	
 	// Constructors:
 	public ConveyorAgent(String name, Transducer transducer, int guiIndex) {
 		// Set the passed in values first
@@ -78,12 +81,32 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
+		if (stop) {
+			guiBreakState = GUIBreakState.stop;
+		} 
+		else {
+			guiBreakState = GUIBreakState.restart;
+		}
+		stateChanged();
 	}
 
 	//Scheduler:
 	public boolean pickAndExecuteAnAction() {
+		// Check to see if a GUI break message came in
+		if (guiBreakState == GUIBreakState.stop) {
+			actBreakConveyorOff();
+			return false; // Make sure the method does not call again
+		}
+		
+		else if (guiBreakState == GUIBreakState.restart) {
+			actBreakConveyorOn();
+			return true; 		
+		}
+		
+		else if (guiBreakState == GUIBreakState.stopped) {
+			return false; // C'mon the Conveyor is broken!  It shouldn't run until this state is changed
+		}
+		
 		if (events.isEmpty()) { return false; }
 		
 		ConveyorEvent e = events.remove(0);
@@ -203,6 +226,32 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			//turnOffConveyorGUI();
 	}
 	
+	// New Non-norm GUI actions
+	private void actBreakConveyorOff() {
+		turnOffConveyorGUI();
+		guiBreakState = GUIBreakState.stopped; 
+	}
+	
+	private void actBreakConveyorOn() {
+		turnOnConveyorGUI();
+		guiBreakState = GUIBreakState.running; 
+	}
+
+	//Other Methods:
+	@Override
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+		if (channel == TChannel.CONVEYOR && ((Integer) args[0] == guiIndex)) {
+			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {
+				turnOnConveyorGUI();
+			}
+			else if (event == TEvent.CONVEYOR_DO_STOP && conveyorOn) {
+				turnOffConveyorGUI();
+			}
+		}
+	}
+	
+	// Methods that turn the GUI conveyor on or off
+	
 	private void turnOnConveyorGUI() {
 		if (!conveyorOn) {
 			Integer[] args = {guiIndex};
@@ -218,19 +267,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 			print("Turned off conveyor " + guiIndex);
 			conveyorOn = false;
-		}
-	}
-
-	//Other Methods:
-	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel == TChannel.CONVEYOR && ((Integer) args[0] == guiIndex)) {
-			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {
-				turnOnConveyorGUI();
-			}
-			else if (event == TEvent.CONVEYOR_DO_STOP && conveyorOn) {
-				turnOffConveyorGUI();
-			}
 		}
 	}
 

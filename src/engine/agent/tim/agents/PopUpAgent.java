@@ -47,6 +47,9 @@ public class PopUpAgent extends Agent implements PopUp {
 	// Add list for tickets that allow the glass to move on to the next conveyor family
 	private List<Boolean> tickets;
 	
+	private enum GUIBreakState {stop, stopped, restart, running};
+	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI conveyor is broken or not
+	
 	// Constructors:
 	public PopUpAgent(String name, Transducer transducer, List<OfflineWorkstationAgent> machines, int guiIndex) {  
 		// Set the passed in values first
@@ -151,12 +154,32 @@ public class PopUpAgent extends Agent implements PopUp {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
+		if (stop) {
+			guiBreakState = GUIBreakState.stop;
+		} 
+		else {
+			guiBreakState = GUIBreakState.restart;
+		}
+		stateChanged();		
 	}
 
 	//Scheduler:
 	public boolean pickAndExecuteAnAction() {
+		// Check to see if a GUI break message came in
+		if (guiBreakState == GUIBreakState.stop) {
+			actBreakPopUpOff();
+			return false; // Make sure the method does not call again
+		}
+		
+		else if (guiBreakState == GUIBreakState.restart) {
+			actBreakPopUpOn();
+			return true; 		
+		}
+		
+		else if (guiBreakState == GUIBreakState.stopped) {
+			return false; // C'mon the PopUp is broken!  It shouldn't run until this state is changed
+		}
+		
 		// Use null variables for determining is value is found from synchronized loop
 		MyGlassPopUp glass = null;
 		MachineCom machCom = null;
@@ -291,6 +314,17 @@ public class PopUpAgent extends Agent implements PopUp {
 		doLoadGlassWorkStation(com.machineIndex);
 		print("Glass " + glass.glass.getID() + " passed to machine " + com.machine.getName());
 	}	
+	
+	// New Non-norm GUI actions
+	private void actBreakPopUpOff() {
+		// Does the popUp just keep it's previous state while broken, or will something else change here?
+		guiBreakState = GUIBreakState.stopped; 
+	}
+	
+	private void actBreakPopUpOn() {
+		// Does the popUp just keep it's previous state while broken, or will something else change here?		
+		guiBreakState = GUIBreakState.running; 
+	}
 
 	//Other Methods:
 	@Override
