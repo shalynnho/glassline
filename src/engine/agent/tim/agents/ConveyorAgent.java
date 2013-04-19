@@ -11,6 +11,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
+import engine.agent.tim.agents.PopUpAgent.GUIBreakState;
 import engine.agent.tim.interfaces.Conveyor;
 import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.ConveyorFamilyImp;
@@ -240,7 +241,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (!(guiBreakState == GUIBreakState.running)) { return; } // If broken, do not receive messages 
+		if (guiBreakState != GUIBreakState.running) { return; } // If broken, do not receive messages 
 		
 		if (channel == TChannel.CONVEYOR && ((Integer) args[0] == guiIndex)) {
 			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {

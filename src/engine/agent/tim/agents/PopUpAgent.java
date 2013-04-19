@@ -50,6 +50,9 @@ public class PopUpAgent extends Agent implements PopUp {
 	private enum GUIBreakState {stop, stopped, restart, running};
 	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI conveyor is broken or not
 	
+	// Add an event queue, so that GUI events can be processed as soon as the PopUp is unBroken
+	List<TEvent> queuedEvents;
+	
 	// Constructors:
 	public PopUpAgent(String name, Transducer transducer, List<OfflineWorkstationAgent> machines, int guiIndex) {  
 		// Set the passed in values first
@@ -80,6 +83,8 @@ public class PopUpAgent extends Agent implements PopUp {
 		for (int j = 0; j < 5; j++) {
 			animationSemaphores.add(new Semaphore(0));
 		}
+		
+		queuedEvents = Collections.synchronizedList(new ArrayList<TEvent>()); // Set up the queued events list
 		
 		initializeTransducerChannels();		
 	}
@@ -324,12 +329,21 @@ public class PopUpAgent extends Agent implements PopUp {
 	private void actBreakPopUpOn() {
 		// Does the popUp just keep it's previous state while broken, or will something else change here?		
 		guiBreakState = GUIBreakState.running; 
+		// Process all of the pending events
+		while (!queuedEvents.isEmpty()) { // Fire all of the events in the order they were received -- this will unblock all of the animation semaphores in the correct order
+			Integer[] args = {guiIndex};
+			TEvent event = queuedEvents.remove(0);
+			if (event == TEvent.WORKSTATION_LOAD_FINISHED) // Send this event as it would come from the workStation
+				transducer.fireEvent(processType.getChannel(), event, null); // Only channel is checked, not machineIndex
+			else // Send it as if it came from the popUp
+				transducer.fireEvent(TChannel.POPUP, event, args);
+		}
 	}
 
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (!(guiBreakState == GUIBreakState.running)) { return; } // If broken, do not receive messages
+		if (guiBreakState != GUIBreakState.running) { queuedEvents.add(event); return; } // If broken, do not receive messages, but queue the messages to be processed later so the semaphores will be released when the machine is online
 		
 		// Catch all of the animation events and open up the correct semaphores to continue the processing of the glass on the PopUp or workstation
 		if ((channel == TChannel.POPUP && (Integer) args[0] == guiIndex ) || channel == processType.getChannel()) {
