@@ -240,6 +240,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+		if (!(guiBreakState == GUIBreakState.running)) { return; } // If broken, do not receive messages 
+		
 		if (channel == TChannel.CONVEYOR && ((Integer) args[0] == guiIndex)) {
 			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {
 				turnOnConveyorGUI();
