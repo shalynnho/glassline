@@ -1,17 +1,15 @@
 package engine.agent.tim.agents;
 
-import java.util.*;
-
-import javax.swing.Popup;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import shared.Glass;
-import shared.interfaces.NonnormBreakInteraction;
 import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
-import engine.agent.tim.agents.PopUpAgent.GUIBreakState;
 import engine.agent.tim.interfaces.Conveyor;
 import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.ConveyorFamilyImp;
