@@ -6,9 +6,10 @@ import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.MyGlassConveyor;
 
 import shared.Glass;
+import shared.interfaces.NonnormBreakInteraction;
 import shared.interfaces.OfflineConveyorFamily;
 
-public interface Conveyor {
+public interface Conveyor extends NonnormBreakInteraction {
 	public abstract void msgGiveGlassToConveyor(Glass glass);
 	public abstract void msgPositionFree();	
 	public abstract void msgUpdateGlass(ConveyorEvent e);

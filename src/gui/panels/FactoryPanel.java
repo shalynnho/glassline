@@ -201,6 +201,10 @@ public class FactoryPanel extends JPanel {
 			for (int i = 0; i < 2; ++i)
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
 			
+			// add components
+			conveyors.add(crossSeamerFamily.getConveyor());
+			popups.add(crossSeamerFamily.getPopUp());
+			
 			// Grinder
 			grinderWorkstation = new OfflineWorkstationAgent[2];
 			for (int i = 0; i < 2; ++i) {
