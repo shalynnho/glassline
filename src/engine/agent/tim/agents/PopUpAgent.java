@@ -13,6 +13,7 @@ import engine.agent.tim.misc.MyGlassPopUp;
 import engine.agent.tim.misc.MyGlassPopUp.processState;
 import shared.Glass;
 import shared.enums.MachineType;
+import shared.interfaces.NonnormBreakInteraction;
 import shared.interfaces.OfflineConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
@@ -146,6 +147,12 @@ public class PopUpAgent extends Agent implements PopUp {
 		tickets.add(new Boolean(true));
 		print("Got msgPositionFree() " + tickets.size());
 		stateChanged();
+	}
+
+	/* This message is from the GUI to stop or restart. */
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	//Scheduler:

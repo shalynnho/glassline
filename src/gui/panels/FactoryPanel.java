@@ -200,6 +200,10 @@ public class FactoryPanel extends JPanel {
 			for (int i = 0; i < 2; ++i)
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
 			
+			// add components
+			conveyors.add(crossSeamerFamily.getConveyor());
+			popups.add(crossSeamerFamily.getPopUp());
+			
 			// Grinder
 			// 1. create grinder conveyor family and its internals
 			grinderWorkstation = new OfflineWorkstationAgent[2];
@@ -367,6 +371,32 @@ public class FactoryPanel extends JPanel {
 		lampFamily.startThreads();
 		ovenFamily.startThreads();
 		truck.startThread();
+	}
+	
+	/* Break a conveyor. */
+	public void breakConveyor(boolean stop, int i) {
+		conveyors.get(i).msgGUIBreak(stop);
+	}
+	
+	/* Break a popup. */
+	public void breakPopup(boolean stop, int i) {
+		popups.get(i).msgGUIBreak(stop);
+	}
+	
+	/* Break an onlineWorkstation. */
+	public void breakOnlineWorkstation(boolean stop, int i) {
+		onlineWorkstations.get(i).msgGUIBreak(stop);
+	}
+	
+	/* Break an offlineWorkstation. */
+	public void breakOfflineWorkstation(boolean stop, int i) {
+		//TODO tell the popup
+		offlineWorkstations.get(i).msgGUIBreak(stop);
+	}
+	
+	/* Break the truck. */
+	public void breakTruck(boolean stop) {
+		truck.msgGUIBreak(stop);
 	}
 
 	/**

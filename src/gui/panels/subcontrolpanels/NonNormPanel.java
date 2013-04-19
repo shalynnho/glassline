@@ -71,13 +71,13 @@ public class NonNormPanel extends JPanel {
 		// Set up the nonNormSelectionPanel list
 		nonNormSelectPanels = new ArrayList<NonNormSelectButtonPanel>(NUM_NON_NORMS);
 		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Conveyor", 15, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Popup", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Offline", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Online", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Truck", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Bin", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Sensor", 16, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("TEST", 16, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Popup", 3, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Offline", 6, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Online", 7, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Truck", 1, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Sensor", 30, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Glass", 6, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("TEST", 6, null));
 		
 		// add to panel
 		this.add(titleLabelPanel);
@@ -96,6 +96,8 @@ public class NonNormPanel extends JPanel {
 		
 		buttonPanel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
 		this.add(buttonPanel);
+		
+		this.add(new WorkstationSpeedSliderPanel());
 
 		JPanel colorLinesPanel2 = new JPanel();
 		colorLinesPanel2.setPreferredSize(new Dimension(350, 40));

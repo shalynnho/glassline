@@ -42,7 +42,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 		
 		breakButton = new JButton("Break " + name);
 		unbreakButton = new JButton("Unbreak " + name);
-		spinner = new JSpinner(new SpinnerNumberModel(0, 0, maxNum - 1 , 1));
+		spinner = new JSpinner(new SpinnerNumberModel(1, 1, maxNum , 1));
 		
 		breakButton.setSize(new Dimension(7, 20));
 		unbreakButton.setSize(new Dimension(7, 20));
