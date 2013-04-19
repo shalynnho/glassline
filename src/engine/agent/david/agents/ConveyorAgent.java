@@ -51,6 +51,11 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		stateChanged();
 	}
 	
+	@Override
+	public void msgGUIBreak(boolean stop) {
+		// TODO
+	}
+	
 	// *** SCHEDULER ***
 	@Override
 	public boolean pickAndExecuteAnAction() {

@@ -209,6 +209,14 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 		popupIndex = i;
 	}
 
+	public Conveyor getConveyor() {
+		return conv;
+	}
+
+	public Popup getPopup() {
+		return popup;
+	}
+
 	/* Testing helpers */
 	public void setConveyor(Conveyor c) {
 		conv = c;

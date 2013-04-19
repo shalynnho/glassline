@@ -2,14 +2,14 @@ package engine.agent.david.interfaces;
 
 import java.util.List;
 
+import shared.Glass;
+import shared.interfaces.NonnormBreakInteraction;
+import shared.interfaces.PopupWorkstationInteraction;
 import engine.agent.david.agents.PopupAgent.PopupState;
 import engine.agent.david.agents.PopupAgent.WorkstationState;
 import engine.agent.david.misc.ConveyorFamilyEntity.MyGlass;
 
-import shared.Glass;
-import shared.interfaces.PopupWorkstationInteraction;
-
-public interface Popup extends PopupWorkstationInteraction {
+public interface Popup extends PopupWorkstationInteraction, NonnormBreakInteraction {
 	// *** MESSAGES ***
 	public void msgGlassComing(MyGlass myGlass); // from conveyor
 	public void msgPositionFree(); // from next family

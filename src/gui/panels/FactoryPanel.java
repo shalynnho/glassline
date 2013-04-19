@@ -172,10 +172,9 @@ public class FactoryPanel extends JPanel {
 			
 			// Drill
 			drillWorkstation = new OfflineWorkstationAgent[2];
-			
 			{ // create drill conveyor family
-				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("c" + 5, transducer, 5);
-				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("p" + 0, c, drillWorkstation, MachineType.DRILL, transducer, 0);
+				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5);
+				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("Drill popup", c, drillWorkstation, MachineType.DRILL, transducer, 0);
 				
 				drillFamily = new ConveyorFamilyImplementation(c, p);
 				
@@ -202,6 +201,7 @@ public class FactoryPanel extends JPanel {
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
 			
 			// Grinder
+			// 1. create grinder conveyor family and its internals
 			grinderWorkstation = new OfflineWorkstationAgent[2];
 			for (int i = 0; i < 2; ++i) {
 				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + i, MachineType.GRINDER, i, transducer);
@@ -211,6 +211,14 @@ public class FactoryPanel extends JPanel {
 			grinderFamily = new ConveyorFamilyEntity(transducer, 7, 2, grinderWorkstation[0], grinderWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
 				grinderWorkstation[i].setPopupWorkstationInteraction(grinderFamily);
+			// 2. add pointers of conveyor agents and popup agents to list
+			{
+				engine.agent.david.interfaces.Conveyor c = grinderFamily.getConveyor();
+				engine.agent.david.interfaces.Popup p = grinderFamily.getPopup();
+					
+				conveyors.add(c);
+				popups.add(p);
+			}
 			
 			// Washer
 			washerFamily = createBigOnlineFamily(MachineType.WASHER, transducer, 8, timer);

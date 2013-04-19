@@ -2,11 +2,11 @@ package engine.agent.david.interfaces;
 
 import java.util.List;
 
+import shared.Glass;
+import shared.interfaces.NonnormBreakInteraction;
 import engine.agent.david.agents.ConveyorAgent.ConveyorState;
 
-import shared.Glass;
-
-public interface Conveyor {
+public interface Conveyor extends NonnormBreakInteraction {
 	
 	// *** MESSAGES ***
 	public void msgHereIsGlass(Glass g); // from previous sensor

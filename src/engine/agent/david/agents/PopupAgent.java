@@ -93,8 +93,8 @@ public class PopupAgent extends Agent implements Popup {
 		// otherwise, popup is busy WAITING_FOR something else to happen, or is already ACTIVE doing something perhaps for the other workstation
 	}
 
-	// Sent from gui for non-norm of only allowing 0, 1, or 2 workstations to work
-	public void msgBreakWorkstation(boolean shouldBreak, int index) {
+	@Override
+	public void msgGUIBreak(boolean stop) {
 		// TODO
 	}
 
