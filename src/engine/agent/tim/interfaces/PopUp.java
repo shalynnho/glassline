@@ -5,11 +5,12 @@ import java.util.List;
 import engine.agent.tim.misc.MyGlassPopUp;
 
 import shared.Glass;
+import shared.interfaces.NonNormBreakWorkstationInteraction;
 import shared.interfaces.NonnormBreakInteraction;
 import shared.interfaces.OfflineConveyorFamily;
 import shared.interfaces.PopupWorkstationInteraction;
 
-public interface PopUp extends PopupWorkstationInteraction, NonnormBreakInteraction {
+public interface PopUp extends PopupWorkstationInteraction, NonnormBreakInteraction, NonNormBreakWorkstationInteraction {
 	public abstract void msgGiveGlassToPopUp(Glass glass);
 	public abstract int getFreeChannels();
 	public abstract boolean doesGlassNeedProcessing(Glass glass); // This method will be used by the conveyor to see if a piece of glass needs to processing from a machine
