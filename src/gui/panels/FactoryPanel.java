@@ -399,6 +399,16 @@ public class FactoryPanel extends JPanel {
 		truck.msgGUIBreak(stop);
 	}
 
+	public void breakSensor(boolean b, int value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void breakGlass(boolean b, int value) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * Returns the parent frame of this panel
 	 * 

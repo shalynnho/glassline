@@ -71,13 +71,13 @@ public class NonNormPanel extends JPanel {
 		// Set up the nonNormSelectionPanel list
 		nonNormSelectPanels = new ArrayList<NonNormSelectButtonPanel>(NUM_NON_NORMS);
 		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Conveyor", 15, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Popup", 3, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Offline", 6, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Online", 7, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Truck", 1, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Sensor", 30, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Glass", 6, null));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("TEST", 6, null));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Popup", 3, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Offline", 6, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Online", 7, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Truck", 1, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Sensor", 30,parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Glass", 6, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel("TEST", 6, parent));
 		
 		// add to panel
 		this.add(titleLabelPanel);

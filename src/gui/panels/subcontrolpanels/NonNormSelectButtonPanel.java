@@ -1,6 +1,7 @@
 package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
+import gui.panels.FactoryPanel;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -29,7 +30,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 		super(new GridBagLayout());
 		this.name = name;
 		this.maxNum = n;
-		controlPanel = cp;
+		this.controlPanel = cp;
 		
 		this.setBackground(Color.white);
 		this.setForeground(Color.black);
@@ -88,7 +89,34 @@ public class NonNormSelectButtonPanel extends JPanel {
 		 * Invoked whenever the button is pressed
 		 */
 		public void actionPerformed(ActionEvent ae) {
-
+			FactoryPanel factoryPanel = controlPanel.getGuiParent();
+			int id = (int)spinner.getValue() - 1;
+			switch(name) {
+				case "Conveyor":
+					factoryPanel.breakConveyor(true, id);
+					break;
+				case "Popup":
+					factoryPanel.breakPopup(true, id);
+					break;
+				case "Offline":
+					factoryPanel.breakOfflineWorkstation(true, id);
+					break;
+				case "Online":
+					factoryPanel.breakOnlineWorkstation(true, id);
+					break;
+				case "Truck":
+					factoryPanel.breakTruck(true);
+					break;
+				case "Sensor":
+					factoryPanel.breakSensor(true, id);
+					break;
+				case "Glass":
+					factoryPanel.breakGlass(true, id);
+					break;
+				case "TEST":
+					// test
+					break;
+			}
 		}
 	}
 	
@@ -97,7 +125,34 @@ public class NonNormSelectButtonPanel extends JPanel {
 		 * Invoked whenever the button is pressed
 		 */
 		public void actionPerformed(ActionEvent ae) {
-
+			FactoryPanel factoryPanel = controlPanel.getGuiParent();
+			int id = (int)spinner.getValue() - 1;
+			switch(name) {
+				case "Conveyor":
+					factoryPanel.breakConveyor(false, id);
+					break;
+				case "Popup":
+					factoryPanel.breakPopup(false, id);
+					break;
+				case "Offline":
+					factoryPanel.breakOfflineWorkstation(false, id);
+					break;
+				case "Online":
+					factoryPanel.breakOnlineWorkstation(false, id);
+					break;
+				case "Truck":
+					factoryPanel.breakTruck(false);
+					break;
+				case "Sensor":
+					factoryPanel.breakSensor(false, id);
+					break;
+				case "Glass":
+					factoryPanel.breakGlass(false, id);
+					break;
+				case "TEST":
+					// test
+					break;
+			}
 		}
 	}
 
