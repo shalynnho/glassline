@@ -6,10 +6,12 @@ public class MachineCom { // Will hold a communication channel to a robot, allow
 	public OfflineWorkstationAgent machine; // Robot reference
 	public boolean inUse; // Is this channel currently occupied by a piece of glass
 	public int machineIndex; // Where the machine is located within the animation
+	public boolean isBroken;
 	
 	public MachineCom(OfflineWorkstationAgent machine, int machineIndex) {
 		this.machine = machine;
 		this.inUse = false; // At start, this channel is obviously not being used, so it has to be false
-		this.machineIndex = machineIndex; 
+		this.machineIndex = machineIndex;
+		this.isBroken = false; // To start, the machine is operating properly, so this value is false
 	}
 }

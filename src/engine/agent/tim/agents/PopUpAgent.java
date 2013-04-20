@@ -167,6 +167,20 @@ public class PopUpAgent extends Agent implements PopUp {
 		}
 		stateChanged();		
 	}
+	
+	/*This message will come from the GUI to break a certain workstation*/
+	public void msgGUIBreakWorkstation(boolean stop, int machineIndex) {
+		if (stop) { // Then halt communication through this machineCom
+			if (machineComs.get(machineIndex).isBroken == false) {
+				machineComs.get(machineIndex).isBroken = true;
+			}
+		}
+		else { // Then Re-set up communication through this machineCom
+			if (machineComs.get(machineIndex).isBroken == true) {
+				machineComs.get(machineIndex).isBroken = false;
+			}			
+		}
+	}
 
 	//Scheduler:
 	public boolean pickAndExecuteAnAction() {
@@ -212,7 +226,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.processState == processState.unprocessed) { // If glass needs to be sent out to a machine and a position is available
 					synchronized(machineComs) {
 						for (MachineCom com: machineComs) {
-							if ((com.inUse == false && popUpDown == true)) { // If there is an available machine and the popUp is down
+							if ((com.inUse == false && popUpDown == true && com.isBroken == false)) { // If there is an available machine and the popUp is down and machine is not broken
 								glass = g;
 								machCom = com;
 								break;
@@ -243,7 +257,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.processState == processState.awaitingArrival) { // If glass needs to be sent out to next conveyor and a position is available
 					synchronized(machineComs) {
 						for (MachineCom com: machineComs) {
-							if ((com.inUse == false) || !g.glass.getNeedsProcessing(processType)) { // If there is an available machine and the popUp is down
+							if ((com.inUse == false && com.isBroken == false) || !g.glass.getNeedsProcessing(processType)) { // If there is an available machine and it is not broken or glass does not need processing
 								glass = g;
 								machCom = com;
 								break;

@@ -88,7 +88,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		}
 		stateChanged();
 	}
-
+	
 	//Scheduler:
 	public boolean pickAndExecuteAnAction() {
 		// Check to see if a GUI break message came in
