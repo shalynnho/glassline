@@ -17,16 +17,18 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import shared.enums.NonNormTarget;
+
 public class NonNormSelectButtonPanel extends JPanel {
 	
 	private ControlPanel controlPanel;
 	private int maxNum;
-	private String name;
+	private NonNormTarget name;
 	
 	private JButton breakButton, unbreakButton;
 	private JSpinner spinner;
 		
-	public NonNormSelectButtonPanel (String name, int n, ControlPanel cp) {
+	public NonNormSelectButtonPanel (NonNormTarget name, int n, ControlPanel cp) {
 		super(new GridBagLayout());
 		this.name = name;
 		this.maxNum = n;
@@ -90,30 +92,30 @@ public class NonNormSelectButtonPanel extends JPanel {
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			FactoryPanel factoryPanel = controlPanel.getGuiParent();
-			int id = (int)spinner.getValue() - 1;
+			int id = Integer.parseInt((String) spinner.getValue()) - 1;
 			switch(name) {
-				case "Conveyor":
+				case CONVEYOR:
 					factoryPanel.breakConveyor(true, id);
 					break;
-				case "Popup":
+				case POPUP:
 					factoryPanel.breakPopup(true, id);
 					break;
-				case "Offline":
+				case OFFLINE:
 					factoryPanel.breakOfflineWorkstation(true, id);
 					break;
-				case "Online":
+				case ONLINE:
 					factoryPanel.breakOnlineWorkstation(true, id);
 					break;
-				case "Truck":
+				case TRUCK:
 					factoryPanel.breakTruck(true);
 					break;
-				case "Sensor":
+				case SENSOR:
 					factoryPanel.breakSensor(true, id);
 					break;
-				case "Glass":
+				case GLASS:
 					factoryPanel.breakGlass(true, id);
 					break;
-				case "TEST":
+				case TEST:
 					// test
 					break;
 			}
@@ -126,30 +128,30 @@ public class NonNormSelectButtonPanel extends JPanel {
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			FactoryPanel factoryPanel = controlPanel.getGuiParent();
-			int id = (int)spinner.getValue() - 1;
+			int id = Integer.parseInt((String) spinner.getValue()) - 1;
 			switch(name) {
-				case "Conveyor":
+				case CONVEYOR:
 					factoryPanel.breakConveyor(false, id);
 					break;
-				case "Popup":
+				case POPUP:
 					factoryPanel.breakPopup(false, id);
 					break;
-				case "Offline":
+				case OFFLINE:
 					factoryPanel.breakOfflineWorkstation(false, id);
 					break;
-				case "Online":
+				case ONLINE:
 					factoryPanel.breakOnlineWorkstation(false, id);
 					break;
-				case "Truck":
+				case TRUCK:
 					factoryPanel.breakTruck(false);
 					break;
-				case "Sensor":
+				case SENSOR:
 					factoryPanel.breakSensor(false, id);
 					break;
-				case "Glass":
+				case GLASS:
 					factoryPanel.breakGlass(false, id);
 					break;
-				case "TEST":
+				case TEST:
 					// test
 					break;
 			}

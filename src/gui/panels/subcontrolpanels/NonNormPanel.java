@@ -15,6 +15,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import shared.enums.NonNormTarget;
+
 /**
  * The NonNormPanel is responsible for initiating and managing non-normative situations. It contains buttons for each possible non-norm.
  * 
@@ -70,14 +72,14 @@ public class NonNormPanel extends JPanel {
 
 		// Set up the nonNormSelectionPanel list
 		nonNormSelectPanels = new ArrayList<NonNormSelectButtonPanel>(NUM_NON_NORMS);
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Conveyor", 15, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Popup", 3, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Offline", 6, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Online", 7, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Truck", 1, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Sensor", 30,parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("Glass", 6, parent));
-		nonNormSelectPanels.add(new NonNormSelectButtonPanel("TEST", 6, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.CONVEYOR, 15, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.POPUP, 3, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.OFFLINE, 6, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.ONLINE, 7, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.TRUCK, 1, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.SENSOR, 30,parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.GLASS, 6, parent));
+		nonNormSelectPanels.add(new NonNormSelectButtonPanel(NonNormTarget.TEST, 6, parent));
 		
 		// add to panel
 		this.add(titleLabelPanel);
