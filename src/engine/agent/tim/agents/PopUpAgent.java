@@ -7,6 +7,7 @@ import engine.agent.Agent;
 import engine.agent.OfflineWorkstationAgent;
 import engine.agent.tim.interfaces.Machine;
 import engine.agent.tim.interfaces.PopUp;
+import engine.agent.tim.misc.ConveyorEvent;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import engine.agent.tim.misc.MachineCom;
 import engine.agent.tim.misc.MyGlassPopUp;
@@ -52,6 +53,9 @@ public class PopUpAgent extends Agent implements PopUp {
 	
 	// Add an event queue, so that GUI events can be processed as soon as the PopUp is unBroken
 	List<TEvent> queuedEvents;
+	
+	// Make a timer to wake up the scheduler if glass could not be passed to next conveyor
+	Timer timer = new Timer();
 	
 	// Constructors:
 	public PopUpAgent(String name, Transducer transducer, List<OfflineWorkstationAgent> machines, int guiIndex) {  
@@ -212,6 +216,12 @@ public class PopUpAgent extends Agent implements PopUp {
 					}
 					else {
 						print("Glass needs to be removed, but no position free");
+						timer.schedule(new TimerTask() { 
+							public void run() {
+								pickAndExecuteAnAction();
+							}
+						}, 1000);
+						print("Here");
 						return false; // Do not want another piece of glass to collide, so shut the agent down until positionFree() is called
 					}
 				}				
@@ -281,6 +291,9 @@ public class PopUpAgent extends Agent implements PopUp {
 		cf.getConveyor().msgPositionFree(); // Tell conveyor to send down the glass
 		// Wait until the glass is loaded to continue further action
 		doDelayForAnimation(0); 
+		// Send back message to conveyor that message was received
+		cf.getConveyor().msgUpdateGlass(ConveyorEvent.onPopUp);
+		
 		if (glass.glass.getNeedsProcessing(processType))
 			glass.processState = processState.unprocessed;
 		else 
@@ -289,19 +302,19 @@ public class PopUpAgent extends Agent implements PopUp {
 	}
 	
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
-		cf.getNextCF().msgHereIsGlass(glass.glass);
+		cf.getNextCF().msgHereIsGlass(glass.glass);		
+		print("Glass " + glass.glass.getID() + " soon to be passed to nextCF");
 		tickets.remove(0); // Make sure to remove the ticket, as it has already been used 
-		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
-		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
-			Integer[] args = {cf.getConveyor().getGUIIndex()};
-			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
-		}				
+//		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
+//		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
+//			Integer[] args = {cf.getConveyor().getGUIIndex()};
+//			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+//		}				
 		// Fire transducer event to release glass index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
 		doReleaseGlassPopUp();
 		passNextCF = false;
-		glassToBeProcessed.remove(glass);	
+		glassToBeProcessed.remove(glass);
 		print("Glass " + glass.glass.getID() + " passed to nextCF");
-
 	}
 	
 	private void actRemoveGlassFromMachine(MyGlassPopUp glass) {
@@ -322,10 +335,11 @@ public class PopUpAgent extends Agent implements PopUp {
 		glass.processState = processState.processing;
 		glass.machineIndex = com.machineIndex;
 		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
-		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
-			Integer[] args = {cf.getConveyor().getGUIIndex()};
-			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
-		}				
+//		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
+//			Integer[] args = {cf.getConveyor().getGUIIndex()};
+//			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+//		}		
+		
 		// Fire the PopUp up transducer event index – make sure to stall the agent until the glass arrives to prevent any weird synchronization issues
 		doMovePopUpUp();
 		com.machine.msgHereIsGlass(glass.glass);
