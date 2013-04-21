@@ -375,38 +375,43 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break a conveyor. */
 	public void breakConveyor(boolean stop, int i) {
+		System.err.println("breaking conveyor "+i);
 		conveyors.get(i).msgGUIBreak(stop);
 	}
 	
 	/* Break a popup. */
 	public void breakPopup(boolean stop, int i) {
+		System.err.println("breaking popup "+i);
 		popups.get(i).msgGUIBreak(stop);
 	}
 	
 	/* Break an onlineWorkstation. */
 	public void breakOnlineWorkstation(boolean stop, int i) {
+		System.err.println("breaking online workstation " +i);
 		onlineWorkstations.get(i).msgGUIBreak(stop);
 	}
 	
 	/* Break an offlineWorkstation. */
 	public void breakOfflineWorkstation(boolean stop, int i) {
+		
 		//TODO tell the popup
 		offlineWorkstations.get(i).msgGUIBreak(stop);
 	}
 	
 	/* Break the truck. */
 	public void breakTruck(boolean stop) {
+		System.err.println("breaking truck");
 		truck.msgGUIBreak(stop);
 	}
 
-	public void breakSensor(boolean b, int value) {
+	public void breakSensor(boolean b, int id) {
+		System.err.println("breaking sensor...");
 		// TODO Auto-generated method stub
-		
 	}
 
-	public void breakGlass(boolean b, int value) {
+	public void breakGlass(boolean b, int id) {
+		System.err.println("breaking glass...");
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**

@@ -54,6 +54,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	@Override
 	public void msgGUIBreak(boolean stop) {
 		// TODO
+		print("Received msgGUIBreak: "+stop);
+		
 	}
 	
 	// *** SCHEDULER ***
