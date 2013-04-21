@@ -16,6 +16,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import shared.enums.NonNormTarget;
 
@@ -27,6 +29,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 	
 	private JButton breakButton, unbreakButton;
 	private JSpinner spinner;
+	private boolean[] breakState;
 		
 	public NonNormSelectButtonPanel (NonNormTarget name, int n, ControlPanel cp) {
 		super(new GridBagLayout());
@@ -43,21 +46,19 @@ public class NonNormSelectButtonPanel extends JPanel {
 		this.setMaximumSize(new Dimension(15, 40));
 		this.setPreferredSize(new Dimension(15, 40));
 		
-		breakButton = new JButton("Break " + name);
-		unbreakButton = new JButton("Unbreak " + name);
+		breakState = new boolean[maxNum];
+		for (int i = 0; i < maxNum; i++) {
+			breakState[i] = true;
+		}
+		
 		spinner = new JSpinner(new SpinnerNumberModel(1, 1, maxNum , 1));
+		spinner.addChangeListener(new SpinnerListener());
 		
+		breakButton = new JButton("Break " + name);
 		breakButton.setSize(new Dimension(7, 20));
-		unbreakButton.setSize(new Dimension(7, 20));
-		
 		breakButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-		unbreakButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-		
 		breakButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		unbreakButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
 		breakButton.addActionListener((new BreakListener()));
-		unbreakButton.addActionListener((new UnbreakListener()));
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -66,14 +67,6 @@ public class NonNormSelectButtonPanel extends JPanel {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.LINE_START;
 		this.add(breakButton, c);
-		
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 3;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.LINE_START;
-		this.add(unbreakButton, c);
 		
 		c = new GridBagConstraints();
 		c.gridx = 3;
@@ -86,7 +79,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 		this.validate();		
 	}
 
-	public class BreakListener implements ActionListener {
+	protected class BreakListener implements ActionListener {
 		/**
 		 * Invoked whenever the button is pressed
 		 */
@@ -95,69 +88,61 @@ public class NonNormSelectButtonPanel extends JPanel {
 			int id = ((Integer) spinner.getValue()) - 1;
 			switch(name) {
 				case CONVEYOR:
-					factoryPanel.breakConveyor(true, id);
+					factoryPanel.breakConveyor(breakState[id], id);
 					break;
 				case POPUP:
-					factoryPanel.breakPopup(true, id);
+					factoryPanel.breakPopup(breakState[id], id);
 					break;
 				case OFFLINE:
-					factoryPanel.breakOfflineWorkstation(true, id);
+					factoryPanel.breakOfflineWorkstation(breakState[id], id);
 					break;
 				case ONLINE:
-					factoryPanel.breakOnlineWorkstation(true, id);
+					factoryPanel.breakOnlineWorkstation(breakState[id], id);
 					break;
 				case TRUCK:
-					factoryPanel.breakTruck(true);
+					factoryPanel.breakTruck(breakState[id]);
 					break;
 				case SENSOR:
-					factoryPanel.breakSensor(true, id);
+					factoryPanel.breakSensor(breakState[id], id);
 					break;
 				case GLASS:
-					factoryPanel.breakGlass(true, id);
+					factoryPanel.breakGlass(breakState[id], id);
 					break;
 				case TEST:
 					// test
 					break;
+			}
+			
+			switchButtonState(id);
+		}
+		
+		private void switchButtonState(int id) {
+			if (breakState[id]) {
+				breakState[id] = false;
+				breakButton.setText("Unbreak " + name);
+			} else {
+				breakState[id] = true;
+				breakButton.setText("Break " + name);
 			}
 		}
 	}
 	
-	public class UnbreakListener implements ActionListener {
-		/**
-		 * Invoked whenever the button is pressed
-		 */
-		public void actionPerformed(ActionEvent ae) {
-			FactoryPanel factoryPanel = controlPanel.getGuiParent();
-			int id = ((Integer) spinner.getValue()) - 1;
-			switch(name) {
-				case CONVEYOR:
-					factoryPanel.breakConveyor(false, id);
-					break;
-				case POPUP:
-					factoryPanel.breakPopup(false, id);
-					break;
-				case OFFLINE:
-					factoryPanel.breakOfflineWorkstation(false, id);
-					break;
-				case ONLINE:
-					factoryPanel.breakOnlineWorkstation(false, id);
-					break;
-				case TRUCK:
-					factoryPanel.breakTruck(false);
-					break;
-				case SENSOR:
-					factoryPanel.breakSensor(false, id);
-					break;
-				case GLASS:
-					factoryPanel.breakGlass(false, id);
-					break;
-				case TEST:
-					// test
-					break;
-			}
-		}
-	}
+	protected class SpinnerListener implements ChangeListener {
 
-	
-	
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			JSpinner spinner = (JSpinner) e.getSource();
+		    int value = (int) spinner.getValue();
+		    displayButtonState(value - 1);
+		}
+		
+		private void displayButtonState(int id) {
+			if(breakState[id]) {
+				breakButton.setText("Break " + name);
+			} else {
+				breakButton.setText("Unbreak " + name);
+			}
+		}
+		
+	}
 }
