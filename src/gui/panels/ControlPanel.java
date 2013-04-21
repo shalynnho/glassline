@@ -165,6 +165,7 @@ public class ControlPanel extends JPanel implements TReceiver {
 		this();
 
 		transducer = fTransducer;
+		transducer.register(this, TChannel.CONTROL_PANEL);
 
 		parent = fPanel;
 	}
@@ -189,7 +190,13 @@ public class ControlPanel extends JPanel implements TReceiver {
 	 * Listens to events fired on the transducer, especially from Agents
 	 */
 	public synchronized void eventFired(TChannel channel, TEvent event, Object[] args) {
-		// TODO implement as needed
+		if (channel == TChannel.CONTROL_PANEL) {
+			if (event == TEvent.START) {
+				parent.stopFactory(false);
+			} else if (event == TEvent.STOP) {
+				parent.stopFactory(true);
+			}
+		}
 	}
 
 	/**
@@ -201,6 +208,9 @@ public class ControlPanel extends JPanel implements TReceiver {
 		// TODO set the transducer, then register with all the necessary channels
 		// transducer = newTransducer;
 		// transducer.register...
+		// SHAY: I'm just going to do all this in the constructor because the transducer is
+		// already passed in from factory panel. I don't think we ever need to set a
+		// NEW transducer, do we?
 	}
 
 	/**

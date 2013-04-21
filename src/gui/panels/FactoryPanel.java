@@ -461,6 +461,10 @@ public class FactoryPanel extends JPanel {
 		System.err.println("breaking glass..."+"; "+b);
 		// TODO Auto-generated method stub
 	}
+	
+	public void stopFactory(boolean stop) {
+		// TODO
+	}
 
 	/**
 	 * Returns the parent frame of this panel
