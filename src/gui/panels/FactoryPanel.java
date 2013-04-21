@@ -70,13 +70,19 @@ public class FactoryPanel extends JPanel {
 	// Manual Breakout
 	private BigOnlineConveyorFamilyImp manualBreakoutFamily;
 	
-	// Drill - Evan's
-	private OfflineWorkstationAgent drillWorkstation[];
-	private ConveyorFamilyImplementation drillFamily;
+//	// Drill - Evan's
+//	private OfflineWorkstationAgent drillWorkstation[];
+//	private ConveyorFamilyImplementation drillFamily;
+//	
+//	// CrossSeamer - Tim's
+//	private OfflineWorkstationAgent crossSeamerWorkstation[];
+//	private ConveyorFamilyImp crossSeamerFamily;
 	
-	// CrossSeamer - Tim's
+	/** TEMP */
+	private OfflineWorkstationAgent drillWorkstation[];
+	private ConveyorFamilyEntity drillFamily;
 	private OfflineWorkstationAgent crossSeamerWorkstation[];
-	private ConveyorFamilyImp crossSeamerFamily;
+	private ConveyorFamilyEntity crossSeamerFamily;
 	
 	// Grinder - David's
 	private OfflineWorkstationAgent grinderWorkstation[];
@@ -171,38 +177,75 @@ public class FactoryPanel extends JPanel {
 			manualBreakoutFamily = createBigOnlineFamily(MachineType.MANUAL_BREAKOUT, transducer, 3, timer);
 			
 			// Drill
-			drillWorkstation = new OfflineWorkstationAgent[2];
-			{ // create drill conveyor family
-				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5);
-				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("Drill popup", c, drillWorkstation, MachineType.DRILL, transducer, 0);
-				
-				drillFamily = new ConveyorFamilyImplementation(c, p);
-				
-				conveyors.add(c);
-				popups.add(p);
-			}
+//			drillWorkstation = new OfflineWorkstationAgent[2];
+//			{ // create drill conveyor family
+//				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5);
+//				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("Drill popup", c, drillWorkstation, MachineType.DRILL, transducer, 0);
+//				
+//				drillFamily = new ConveyorFamilyImplementation(c, p);
+//				
+//				conveyors.add(c);
+//				popups.add(p);
+//			}
+//			
+//			for (int i = 0; i < 2; ++i) {
+//				drillWorkstation[i] = new OfflineWorkstationAgent(MachineType.DRILL.toString() + i, MachineType.DRILL, i, transducer);
+//				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+//				drillWorkstation[i].setTracePanel(cPanel.getTracePanel());
+//				offlineWorkstations.add(drillWorkstation[i]);
+//			}
+//			
+//			// Cross Seamer
+//			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
+//			for (int i = 0; i < 2; ++i){
+//				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
+//				crossSeamerWorkstation[i].setTracePanel(cPanel.getTracePanel());
+//				offlineWorkstations.add(crossSeamerWorkstation[i]);
+//			}
+//			crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
+//			for (int i = 0; i < 2; ++i)
+//				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
+//			
+//			// add components
+//			conveyors.add(crossSeamerFamily.getConveyor());
+//			popups.add(crossSeamerFamily.getPopUp());
 			
+			// TEMP
+			drillWorkstation = new OfflineWorkstationAgent[2];
 			for (int i = 0; i < 2; ++i) {
-				drillWorkstation[i] = new OfflineWorkstationAgent(MachineType.DRILL.toString() + i, MachineType.DRILL, i, transducer);
-				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+				drillWorkstation[i] = new OfflineWorkstationAgent(MachineType.DRILL.toString() + " workstation " + i, MachineType.DRILL, i, transducer);
 				drillWorkstation[i].setTracePanel(cPanel.getTracePanel());
 				offlineWorkstations.add(drillWorkstation[i]);
 			}
-			
-			// Cross Seamer
+			drillFamily = new ConveyorFamilyEntity(transducer, 7, 2, drillWorkstation[0], drillWorkstation[1]);
+			for (int i = 0; i < 2; ++i)
+				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
+			// 2. add pointers of conveyor agents and popup agents to list
+			{
+				engine.agent.david.interfaces.Conveyor c = drillFamily.getConveyor();
+				engine.agent.david.interfaces.Popup p = drillFamily.getPopup();
+					
+				conveyors.add(c);
+				popups.add(p);
+			}
+
 			crossSeamerWorkstation = new OfflineWorkstationAgent[2];
-			for (int i = 0; i < 2; ++i){
-				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + i, MachineType.CROSS_SEAMER, i, transducer);
+			for (int i = 0; i < 2; ++i) {
+				crossSeamerWorkstation[i] = new OfflineWorkstationAgent(MachineType.CROSS_SEAMER.toString() + " workstation " + i, MachineType.CROSS_SEAMER, i, transducer);
 				crossSeamerWorkstation[i].setTracePanel(cPanel.getTracePanel());
 				offlineWorkstations.add(crossSeamerWorkstation[i]);
 			}
-			crossSeamerFamily = new ConveyorFamilyImp("Cross Seamer Family", transducer, "Sensors", 12, 13, "Conveyor", 6, "PopUp", 1, crossSeamerWorkstation, MachineType.CROSS_SEAMER);
+			crossSeamerFamily = new ConveyorFamilyEntity(transducer, 7, 2, crossSeamerWorkstation[0], crossSeamerWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
-				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily.getPopUp());
-			
-			// add components
-			conveyors.add(crossSeamerFamily.getConveyor());
-			popups.add(crossSeamerFamily.getPopUp());
+				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily);
+			// 2. add pointers of conveyor agents and popup agents to list
+			{
+				engine.agent.david.interfaces.Conveyor c = crossSeamerFamily.getConveyor();
+				engine.agent.david.interfaces.Popup p = crossSeamerFamily.getPopup();
+					
+				conveyors.add(c);
+				popups.add(p);
+			}
 			
 			// Grinder
 			// 1. create grinder conveyor family and its internals
@@ -254,9 +297,11 @@ public class FactoryPanel extends JPanel {
 			drillFamily.setPreviousLineComponent(manualBreakoutFamily);
 			
 			drillFamily.setNextLineComponent(crossSeamerFamily);
-			crossSeamerFamily.setPrevCF(drillFamily);
+//			crossSeamerFamily.setPrevCF(drillFamily);
+			crossSeamerFamily.setPreviousLineComponent(drillFamily);
 			
-			crossSeamerFamily.setNextCF(grinderFamily);
+			crossSeamerFamily.setNextLineComponent(grinderFamily);
+//			crossSeamerFamily.setNextCF(grinderFamily);
 			grinderFamily.setPreviousLineComponent(crossSeamerFamily);
 			
 			grinderFamily.setNextLineComponent(washerFamily);
@@ -275,7 +320,7 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1));
 			
 			// Set things in motion!
-			createInitialGlasses();
+//			createInitialGlasses();
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
