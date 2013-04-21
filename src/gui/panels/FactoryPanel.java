@@ -217,7 +217,7 @@ public class FactoryPanel extends JPanel {
 				drillWorkstation[i].setTracePanel(cPanel.getTracePanel());
 				offlineWorkstations.add(drillWorkstation[i]);
 			}
-			drillFamily = new ConveyorFamilyEntity(transducer, 7, 2, drillWorkstation[0], drillWorkstation[1]);
+			drillFamily = new ConveyorFamilyEntity(transducer, 5, 0, drillWorkstation[0], drillWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
 				drillWorkstation[i].setPopupWorkstationInteraction(drillFamily);
 			// 2. add pointers of conveyor agents and popup agents to list
@@ -235,7 +235,7 @@ public class FactoryPanel extends JPanel {
 				crossSeamerWorkstation[i].setTracePanel(cPanel.getTracePanel());
 				offlineWorkstations.add(crossSeamerWorkstation[i]);
 			}
-			crossSeamerFamily = new ConveyorFamilyEntity(transducer, 7, 2, crossSeamerWorkstation[0], crossSeamerWorkstation[1]);
+			crossSeamerFamily = new ConveyorFamilyEntity(transducer, 6, 1, crossSeamerWorkstation[0], crossSeamerWorkstation[1]);
 			for (int i = 0; i < 2; ++i)
 				crossSeamerWorkstation[i].setPopupWorkstationInteraction(crossSeamerFamily);
 			// 2. add pointers of conveyor agents and popup agents to list
