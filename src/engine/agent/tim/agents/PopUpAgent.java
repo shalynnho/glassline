@@ -221,6 +221,7 @@ public class PopUpAgent extends Agent implements PopUp {
 								pickAndExecuteAnAction();
 							}
 						}, 1000);
+						print("Here");
 						return false; // Do not want another piece of glass to collide, so shut the agent down until positionFree() is called
 					}
 				}				
@@ -301,8 +302,8 @@ public class PopUpAgent extends Agent implements PopUp {
 	}
 	
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
-		cf.getNextCF().msgHereIsGlass(glass.glass);
-		tickets.remove(0); // Make sure to remove the ticket, as it has already been used 
+		cf.getNextCF().msgHereIsGlass(glass.glass);		
+		print("Glass " + glass.glass.getID() + " soon to be passed to nextCF");
 //		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
 //		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
 //			Integer[] args = {cf.getConveyor().getGUIIndex()};
@@ -312,8 +313,8 @@ public class PopUpAgent extends Agent implements PopUp {
 		doReleaseGlassPopUp();
 		passNextCF = false;
 		glassToBeProcessed.remove(glass);	
+		tickets.remove(0); // Make sure to remove the ticket, as it has already been used 
 		print("Glass " + glass.glass.getID() + " passed to nextCF");
-
 	}
 	
 	private void actRemoveGlassFromMachine(MyGlassPopUp glass) {
