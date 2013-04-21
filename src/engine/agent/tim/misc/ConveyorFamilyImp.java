@@ -94,7 +94,7 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		return prevCF;
 	}
 
-	public void setPrevCF(LineComponent prevCF) {
+	public void setPreviousLineComponent(LineComponent prevCF) {
 		this.prevCF = prevCF;
 	}
 
@@ -110,7 +110,7 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 		return nextCF;
 	}
 
-	public void setNextCF(LineComponent nextCF) {
+	public void setNextLineComponent(LineComponent nextCF) {
 		this.nextCF = nextCF;
 	}
 

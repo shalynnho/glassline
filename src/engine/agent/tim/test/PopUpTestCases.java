@@ -72,8 +72,8 @@ public class PopUpTestCases {
 		ConveyorFamilyImp realCF = new ConveyorFamilyImp("realCF", conveyor, sensor, popUp);
 		
 		// Link up the conveyor families
-		realCF.setPrevCF(mockPrevCF);
-		realCF.setNextCF(mockNextCF);
+		realCF.setPreviousLineComponent(mockPrevCF);
+		realCF.setNextLineComponent(mockNextCF);
 		mockNextCF.setPrevCF(realCF);
 		
 		// Now begin the testing for the sensor and conveyor
@@ -225,8 +225,8 @@ public class PopUpTestCases {
 		ConveyorFamilyImp realCF = new ConveyorFamilyImp("realCF", conveyor, sensor, popUp);
 		
 		// Link up the conveyor families
-		realCF.setPrevCF(mockPrevCF);
-		realCF.setNextCF(mockNextCF);
+		realCF.setPreviousLineComponent(mockPrevCF);
+		realCF.setNextLineComponent(mockNextCF);
 		mockNextCF.setPrevCF(realCF);
 		
 		// Now begin the testing for the sensor and conveyor

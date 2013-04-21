@@ -106,8 +106,8 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		realCF = new ConveyorFamilyImp("realCF", conveyor, sensor, popUp);
 		
 		// Link up the conveyor families
-		realCF.setPrevCF(mockPrevCF);
-		realCF.setNextCF(mockNextCF);
+		realCF.setPreviousLineComponent(mockPrevCF);
+		realCF.setNextLineComponent(mockNextCF);
 		mockNextCF.setPrevCF(realCF);
 		
 		// Start all of the agent threads
@@ -139,8 +139,8 @@ public class TimsOfflineCFIntegrationTest extends GuiTestSM {// implements TRece
 		mockNextCF = new MockConveyorFamily("mockNextCF");
 		
 		// Link up the conveyor families
-		crossSeamerFamily.setPrevCF(mockPrevCF);
-		crossSeamerFamily.setNextCF(mockNextCF);
+		crossSeamerFamily.setPreviousLineComponent(mockPrevCF);
+		crossSeamerFamily.setNextLineComponent(mockNextCF);
 		mockNextCF.setPrevCF(crossSeamerFamily);
 		
 		// Start the agent threads
