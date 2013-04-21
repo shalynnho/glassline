@@ -3,6 +3,7 @@ package engine.agent.tim.agents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import shared.Glass;
 import shared.interfaces.OfflineConveyorFamily;
@@ -33,7 +34,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	boolean positionFreePopUp;
 	
 	private enum GUIBreakState {stop, stopped, restart, running};
-	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI conveyor is broken or not
+	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI conveyor is broken or not	
 	
 	// Constructors:
 	public ConveyorAgent(String name, Transducer transducer, int guiIndex) {
@@ -56,6 +57,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private void initializeTransducerChannels() { // Initialize the transducer channels and everything else related to it
 		// Register any appropriate channels
 		transducer.register(this, TChannel.CONVEYOR); // Set this agent to listen to the CONVEYOR channel of the transducer
+		transducer.register(this, TChannel.POPUP); // Set this agent to listen to the CONVEYOR channel of the transducer
 	}
 
 	//Messages:
@@ -182,6 +184,21 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			actSetGlassOffPopUpSensor(glass); return true;
 		}
 		
+		if (e == ConveyorEvent.onPopUp) {
+			synchronized(glassSheets) {
+				for (MyGlassConveyor g: glassSheets) {
+					if (g.conveyorState == conveyorState.beforePopUp) {
+						glass = g;
+						break;
+					}
+				}
+			}		
+		}
+		
+		if (glass != null) {
+			actSetGlassOffConveyor(glass); return true;
+		}
+		
 		print("An event did not match a piece of glass's state, that's a problem");
 		
 		return false;		
@@ -219,10 +236,16 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 
 	private void actSetGlassOffPopUpSensor(MyGlassConveyor g) {
+		g.conveyorState = conveyorState.beforePopUp;
+		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
+	}
+	
+	private void actSetGlassOffConveyor(MyGlassConveyor g) {
 		glassSheets.remove(g);
 		print("MyGlass " + g.glass.getID() + " removed from conveyor");
-		//if (glassSheets.size() == 0)
-			//turnOffConveyorGUI();
+		if (glassSheets.size() == 0) {
+			turnOffConveyorGUI();
+		}
 	}
 	
 	// New Non-norm GUI actions
@@ -239,20 +262,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (guiBreakState != GUIBreakState.running) { return; } // If broken, do not receive messages 
-		
-		if (channel == TChannel.CONVEYOR && ((Integer) args[0] == guiIndex)) {
-			if (event == TEvent.CONVEYOR_DO_START && !conveyorOn) {
-				turnOnConveyorGUI();
-			}
-			else if (event == TEvent.CONVEYOR_DO_STOP && conveyorOn) {
-				turnOffConveyorGUI();
-			}
-		}
+		// N/A
 	}
 	
-	// Methods that turn the GUI conveyor on or off
-	
+	// Methods that turn the GUI conveyor on or off	
 	private void turnOnConveyorGUI() {
 		if (!conveyorOn) {
 			Integer[] args = {guiIndex};
