@@ -92,7 +92,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			FactoryPanel factoryPanel = controlPanel.getGuiParent();
-			int id = Integer.parseInt((String) spinner.getValue()) - 1;
+			int id = ((Integer) spinner.getValue()) - 1;
 			switch(name) {
 				case CONVEYOR:
 					factoryPanel.breakConveyor(true, id);
@@ -128,7 +128,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			FactoryPanel factoryPanel = controlPanel.getGuiParent();
-			int id = Integer.parseInt((String) spinner.getValue()) - 1;
+			int id = ((Integer) spinner.getValue()) - 1;
 			switch(name) {
 				case CONVEYOR:
 					factoryPanel.breakConveyor(false, id);
