@@ -208,7 +208,7 @@ public class FactoryPanel extends JPanel {
 			// 1. create grinder conveyor family and its internals
 			grinderWorkstation = new OfflineWorkstationAgent[2];
 			for (int i = 0; i < 2; ++i) {
-				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + i, MachineType.GRINDER, i, transducer);
+				grinderWorkstation[i] = new OfflineWorkstationAgent(MachineType.GRINDER.toString() + " workstation " + i, MachineType.GRINDER, i, transducer);
 				grinderWorkstation[i].setTracePanel(cPanel.getTracePanel());
 				offlineWorkstations.add(grinderWorkstation[i]);
 			}
@@ -376,19 +376,19 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break a conveyor. */
 	public void breakConveyor(boolean stop, int i) {
-		System.err.println("breaking conveyor "+i);
+		System.err.println("breaking conveyor "+i+"; "+stop);
 		conveyors.get(i).msgGUIBreak(stop);
 	}
 	
 	/* Break a popup. */
 	public void breakPopup(boolean stop, int i) {
-		System.err.println("breaking popup "+i);
+		System.err.println("breaking popup "+i+"; "+stop);
 		popups.get(i).msgGUIBreak(stop);
 	}
 	
 	/* Break an onlineWorkstation. */
 	public void breakOnlineWorkstation(boolean stop, int i) {
-		System.err.println("breaking online workstation " +i);
+		System.err.println("breaking online workstation " +i+"; "+stop);
 		onlineWorkstations.get(i).msgGUIBreak(stop);
 	}
 	
@@ -402,17 +402,17 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break the truck. */
 	public void breakTruck(boolean stop) {
-		System.err.println("breaking truck");
+		System.err.println("breaking truck"+"; "+stop);
 		truck.msgGUIBreak(stop);
 	}
 
 	public void breakSensor(boolean b, int id) {
-		System.err.println("breaking sensor...");
+		System.err.println("breaking sensor..."+"; "+b);
 		// TODO Auto-generated method stub
 	}
 
 	public void breakGlass(boolean b, int id) {
-		System.err.println("breaking glass...");
+		System.err.println("breaking glass..."+"; "+b);
 		// TODO Auto-generated method stub
 	}
 
