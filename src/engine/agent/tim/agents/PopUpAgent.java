@@ -177,11 +177,11 @@ public class PopUpAgent extends Agent implements PopUp {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		if (stop && guiBreakState != GUIBreakState.stopped) {
+		if (stop && guiBreakState == GUIBreakState.running) {
 			guiBreakState = GUIBreakState.stop;
 			stateChanged();
 		} 
-		else if (guiBreakState != GUIBreakState.running){
+		else if (!stop && guiBreakState == GUIBreakState.stopped) {
 			guiBreakState = GUIBreakState.restart;
 			stateChanged();
 		}
@@ -232,12 +232,12 @@ public class PopUpAgent extends Agent implements PopUp {
 					}
 					else {
 						print("Glass needs to be removed, but no position free");
-						timer.schedule(new TimerTask() { 
-							public void run() {
-								pickAndExecuteAnAction();
-							}
-						}, 1000);
-						print("Here");
+//						timer.schedule(new TimerTask() { 
+//							public void run() {
+//								pickAndExecuteAnAction();
+//							}
+//						}, 1000);
+//						print("Here");
 						return false; // Do not want another piece of glass to collide, so shut the agent down until positionFree() is called
 					}
 				}				

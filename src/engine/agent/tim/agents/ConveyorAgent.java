@@ -28,7 +28,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private ConveyorFamilyImp cf; // Reference to the current conveyor family
 	
 	private List<ConveyorEvent> events; // Used to hold all of the sensor events
-
+	
 	int guiIndex; // Needed to communicate with the transducer conveyor
 	
 	boolean positionFreePopUp;
@@ -82,15 +82,14 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		if (stop && guiBreakState != GUIBreakState.stopped) {
+		if (stop && guiBreakState == GUIBreakState.running) {
 			guiBreakState = GUIBreakState.stop;
 			stateChanged();
 		} 
-		else if (guiBreakState != GUIBreakState.running){
+		else if (!stop && guiBreakState == GUIBreakState.stopped) {
 			guiBreakState = GUIBreakState.restart;
 			stateChanged();
-		}
-		
+		}		
 	}
 	
 	//Scheduler:
@@ -158,7 +157,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			actSetGlassOnPopUpSensor(glass); return true;
 		}
 		
-		if (e == ConveyorEvent.popUpFree) {
+		if (e == ConveyorEvent.popUpFree || positionFreePopUp) {
 			synchronized(glassSheets) {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.onPopUpSensor) {
