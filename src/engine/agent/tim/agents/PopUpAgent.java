@@ -291,7 +291,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		cf.getConveyor().msgPositionFree(); // Tell conveyor to send down the glass
 		// Wait until the glass is loaded to continue further action
 		doDelayForAnimation(0); 
-		// Send back message to conveyor that message was recieved
+		// Send back message to conveyor that message was received
 		cf.getConveyor().msgUpdateGlass(ConveyorEvent.onPopUp);
 		
 		if (glass.glass.getNeedsProcessing(processType))
