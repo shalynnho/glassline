@@ -95,7 +95,9 @@ public class PopupAgent extends Agent implements Popup {
 
 	@Override
 	public void msgGUIBreak(boolean stop) {
+		print("Received msgGUIBreak: "+stop);
 		// TODO
+		
 	}
 
 	// *** SCHEDULER ***
@@ -206,7 +208,7 @@ public class PopupAgent extends Agent implements Popup {
 					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
 //					sensorOccupied = false; // done above now
 					family.runningState = RunningState.OFF_BC_QUIET;
-					family.stopSem.release(); // release so conveyor can be caused to move sensor again
+					family.stopSem.release(); // release so conveyor can be caused to move by sensor again
 //					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doMovePopupUp();
@@ -291,7 +293,7 @@ public class PopupAgent extends Agent implements Popup {
 					nextPosFree = false;
 	
 					family.runningState = RunningState.OFF_BC_QUIET;
-					family.stopSem.release(); // release so conveyor can be caused to move sensor again
+					family.stopSem.release(); // release so conveyor can be caused to move by sensor again
 //					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doReleaseGlassFromPopup();
@@ -434,6 +436,8 @@ public class PopupAgent extends Agent implements Popup {
 		return aWorkstationHasState(WorkstationState.DONE_BUT_STILL_HAS_GLASS);
 	}
 
+	// Pre: breakState is changed when FactoryPanel's breakOfflineWorkstation is called in
+	// TODO / CHECK later
 	private boolean aWorkstationIsFree() {
 		// Check for non-norm first
 		if (breakState == GUIBreakState.BOTH_BROKEN) {

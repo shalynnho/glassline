@@ -67,17 +67,21 @@ public class SensorAgent extends Agent implements Sensor {
 	// *** ACTIONS ***
 	public void actPassOnGlass(Glass g) {
 		print("Doing actPassOnGlass");
-		try {
-			// only supports one glass at a time
-			// Wait for sem release, which means that the conveyor is ready to receive the next glass
-			// sem is released by popup agent when running state is OFF_BC_QUIET
-			family.stopSem.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+
+		// Only supports one glass at a time
+		// Wait for sem release, which means that the conveyor is ready to receive the next glass
+		// sem is released by popup agent when running state is OFF_BC_QUIET
+		family.acquireSem(family.stopSem);
 		
+		// Also check if we need to stop everything in the event the conveyor is broken
+		// normative case, takes 1 permit and it goes back to 1 after start conveyor properly
+		// non-normative, conv acquires first, and then this is blocked; when unbreak happens, permit available again
+		// other non-normative: sensor acquires first, conv blocked and we're waiting a bit, sensor starts conveyor, releases semaphore right below, then conv continues in msgGUIBreak, updates break state properly, stops conveyor
+		family.acquireSem(family.brokenStopSem);
 		family.doStartConveyor();
 		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;
+		family.brokenStopSem.release();
+		
 		family.conv.msgHereIsGlass(g);
 	}
 	

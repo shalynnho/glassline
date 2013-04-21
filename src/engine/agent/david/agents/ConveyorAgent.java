@@ -53,29 +53,47 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	
 	@Override
 	public void msgGUIBreak(boolean stop) {
-		// TODO
 		print("Received msgGUIBreak: "+stop);
-		
+		if (stop) { // break
+			family.acquireSem(family.brokenStopSem); // TODONOW
+			
+			family.prevRState = family.runningState;
+			System.err.println("state saved: "+family.runningState);
+			family.runningState = RunningState.OFF_BC_BROKEN;
+			family.doStopConveyor();
+		} else { // unbreak
+			family.runningState = family.prevRState;
+			family.prevRState = null;
+			System.err.println("state brought back: "+family.runningState);
+			
+			if (family.isRunning()) // if runningState is one of the ON_ ones, make sure conveyor is running b/c that's what it was doing before
+				family.doStartConveyor();
+			
+			family.brokenStopSem.release();
+		}
+		stateChanged();
 	}
 	
 	// *** SCHEDULER ***
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if (state == ConveyorState.GLASS_JUST_ARRIVED) {
-			// !glasses.isEmpty() should be true
-			state = ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR;
-			actTellPopupGlassOnConveyor(glasses.get(0));
-			return true;
-		} else if (state == ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR) { // technically could be merged into NOTHING_TO_DO
-			// Do nothing. Next thing that happens is conveyor auto-stops via eventFired, popup agent realizes sensorOccupied = true, 
-			// does actLoadGlassOntoPopup which *then tells this conveyor agent msgTakingGlass()*
-//			return false;
-		} else if (state == ConveyorState.SHOULD_NOTIFY_POSITION_FREE) {
-			state = ConveyorState.NOTHING_TO_DO;
-			actTellSensorPositionFree();
-//			return false;
-		} else { // NOTHING_TO_DO
-//			return false;
+		if (family.runningState != RunningState.OFF_BC_BROKEN) {
+			if (state == ConveyorState.GLASS_JUST_ARRIVED) {
+				// !glasses.isEmpty() should be true
+				state = ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR;
+				actTellPopupGlassOnConveyor(glasses.get(0));
+				return true;
+			} else if (state == ConveyorState.WAITING_FOR_GLASS_TO_REACH_ENDING_SENSOR) { // technically could be merged into NOTHING_TO_DO
+				// Do nothing. Next thing that happens is conveyor auto-stops via eventFired, popup agent realizes sensorOccupied = true, 
+				// does actLoadGlassOntoPopup which *then tells this conveyor agent msgTakingGlass()*
+	//			return false;
+			} else if (state == ConveyorState.SHOULD_NOTIFY_POSITION_FREE) {
+				state = ConveyorState.NOTHING_TO_DO;
+				actTellSensorPositionFree();
+	//			return false;
+			} else { // NOTHING_TO_DO
+	//			return false;
+			}
 		}
 		
 		// Testing purposes

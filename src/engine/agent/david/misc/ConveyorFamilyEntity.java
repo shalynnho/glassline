@@ -57,6 +57,7 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	
 	// when acquire is done, sensor waits for conveyor to be off because quiet; when release, conveyor can move again
 	public Semaphore stopSem = new Semaphore(1); // start at 1 because sensor should start conveyor properly at first
+	public Semaphore brokenStopSem = new Semaphore(1); // check if broken conveyor; acquire in sensor agent and release in conveyor agent 
 	
 	private Transducer t;
 	public MachineType type;
@@ -76,10 +77,10 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	// State of conveyor family so we know if the conveyor is on or off because (BC) of whatever reasons; mainly used for testing/validation
 	public RunningState runningState = RunningState.OFF_BC_QUIET;
-
+	public RunningState prevRState = null; // only to save prev state if broken
 	public enum RunningState {
 		// On states are listed in order of how they would appear. Off states come in between.
-		ON_BC_SENSOR_TO_CONVEYOR, ON_BC_CONVEYOR_TO_SENSOR, ON_BC_SENSOR_TO_POPUP, OFF_BC_QUIET, OFF_BC_WAITING_AT_SENSOR
+		ON_BC_SENSOR_TO_CONVEYOR, ON_BC_CONVEYOR_TO_SENSOR, ON_BC_SENSOR_TO_POPUP, OFF_BC_QUIET, OFF_BC_WAITING_AT_SENSOR, OFF_BC_BROKEN
 	}
 
 	public class MyGlass {
@@ -217,6 +218,22 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 		return popup;
 	}
 
+	/**
+	 * Quick helper to call acquire on s - so we don't need try catch all the time
+	 * @param s
+	 */
+	public void acquireSem(Semaphore s) {
+		try {
+			s.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean isRunning() {
+		return runningState == RunningState.ON_BC_CONVEYOR_TO_SENSOR || runningState == RunningState.ON_BC_SENSOR_TO_CONVEYOR || runningState == RunningState.ON_BC_SENSOR_TO_POPUP; 
+	}
+	
 	/* Testing helpers */
 	public void setConveyor(Conveyor c) {
 		conv = c;

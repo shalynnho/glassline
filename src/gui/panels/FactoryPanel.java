@@ -275,7 +275,7 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1));
 			
 			// Set things in motion!
-//			createInitialGlasses();
+			createInitialGlasses();
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
@@ -322,32 +322,30 @@ public class FactoryPanel extends JPanel {
 		// Create some glasses to be run through the glassline, and give them to the initial robot (the bin robot)
 		List<Glass> glasses = new ArrayList<Glass>();
 				
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
-				MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
-				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
-				MachineType.UV_LAMP, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL,
-				MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.CROSS_SEAMER,
-				MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT,
-				MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
-				MachineType.UV_LAMP, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.GRINDER, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT,
-				MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
-				MachineType.UV_LAMP, MachineType.OVEN}));
-		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, 
-				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT, /*MachineType.MANUAL_BREAKOUT,*/
+//				MachineType.DRILL, MachineType.CROSS_SEAMER, MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.DRILL,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.CROSS_SEAMER,
+//				MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT,
+//				MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, MachineType.GRINDER, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.CUTTER, MachineType.BREAKOUT,
+//				MachineType.GRINDER, MachineType.WASHER, MachineType.PAINT,
+//				MachineType.UV_LAMP, MachineType.OVEN}));
+//		glasses.add(new Glass(new MachineType[] { MachineType.BREAKOUT, 
+//				MachineType.GRINDER, MachineType.OVEN}));
 
-//		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.CROSS_SEAMER }));
-//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
-//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER }));
-//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER}));
-//		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER}));
-//		glasses.add(new Glass(new MachineType[] { }));
+		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { }));
 		
 		binRobot.seedGlasses(glasses);
 	}
@@ -373,6 +371,9 @@ public class FactoryPanel extends JPanel {
 		truck.startThread();
 	}
 	
+	/** Break methods for Non-norms */
+	/* Note that the int passed is always the index (0-based) of the conveyor/popup/etc. */
+	
 	/* Break a conveyor. */
 	public void breakConveyor(boolean stop, int i) {
 		System.err.println("breaking conveyor "+i);
@@ -393,8 +394,9 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break an offlineWorkstation. */
 	public void breakOfflineWorkstation(boolean stop, int i) {
-		
 		//TODO tell the popup
+		
+		
 		offlineWorkstations.get(i).msgGUIBreak(stop);
 	}
 	
