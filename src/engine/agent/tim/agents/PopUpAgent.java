@@ -177,13 +177,14 @@ public class PopUpAgent extends Agent implements PopUp {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		if (stop) {
+		if (stop && guiBreakState != GUIBreakState.stopped) {
 			guiBreakState = GUIBreakState.stop;
+			stateChanged();
 		} 
-		else {
+		else if (guiBreakState != GUIBreakState.running){
 			guiBreakState = GUIBreakState.restart;
+			stateChanged();
 		}
-		stateChanged();		
 	}
 	
 	/*This message will come from the GUI to break a certain workstation*/

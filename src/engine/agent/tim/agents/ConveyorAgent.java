@@ -82,13 +82,15 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		if (stop) {
+		if (stop && guiBreakState != GUIBreakState.stopped) {
 			guiBreakState = GUIBreakState.stop;
+			stateChanged();
 		} 
-		else {
+		else if (guiBreakState != GUIBreakState.running){
 			guiBreakState = GUIBreakState.restart;
+			stateChanged();
 		}
-		stateChanged();
+		
 	}
 	
 	//Scheduler:
