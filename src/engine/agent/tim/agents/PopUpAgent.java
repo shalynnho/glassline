@@ -124,6 +124,8 @@ public class PopUpAgent extends Agent implements PopUp {
 			animationSemaphores.add(new Semaphore(0));
 		}
 		
+		queuedEvents = Collections.synchronizedList(new ArrayList<TEvent>()); // Set up the queued events list
+		
 		initializeTransducerChannels();		
 	}
 	
@@ -136,8 +138,20 @@ public class PopUpAgent extends Agent implements PopUp {
 
 	//Messages:
 	public void msgGiveGlassToPopUp(Glass g) { // Get Glass from conveyor to PopUp
-		glassToBeProcessed.add(new MyGlassPopUp(g, processState.awaitingArrival));
-		print("Glass with ID (" + g.getID() + ") added");
+		// Check to see that g does not already exist in the popUp agent
+		boolean glassInPopUp = false;
+		synchronized (glassToBeProcessed) {
+			for (MyGlassPopUp glass: glassToBeProcessed) {
+				if (glass.glass.equals(g)) {
+					glassInPopUp = true;
+					break;
+				}
+			}
+		}
+		if (glassInPopUp == false) {
+			glassToBeProcessed.add(new MyGlassPopUp(g, processState.awaitingArrival));
+			print("Glass with ID (" + g.getID() + ") added");
+		}
 		stateChanged();
 	}
 
@@ -184,6 +198,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				machineComs.get(machineIndex).isBroken = false;
 			}			
 		}
+		stateChanged();
 	}
 
 	//Scheduler:
@@ -210,7 +225,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
 				if (g.processState == processState.awaitingRemoval) { // If glass needs to be sent out to next conveyor and a position is available
-					if (!tickets.isEmpty()) { // If there is a ticket for the glass to go to the next conveyor family
+					if (!tickets.isEmpty() || passNextCF) { // If there is a ticket for the glass to go to the next conveyor family
 						glass = g;
 						break;
 					}
@@ -304,7 +319,8 @@ public class PopUpAgent extends Agent implements PopUp {
 	private void actPassGlassToNextCF(MyGlassPopUp glass) {
 		cf.getNextCF().msgHereIsGlass(glass.glass);		
 		print("Glass " + glass.glass.getID() + " soon to be passed to nextCF");
-		tickets.remove(0); // Make sure to remove the ticket, as it has already been used 
+		if (!tickets.isEmpty())
+			tickets.remove(0); // Make sure to remove the ticket, as it has already been used 
 //		// Fire the transducer to turn off this CF's conveyor if there is no glass on it
 //		if (cf.getConveyor().getGlassSheets().size() == 0) { // Turn off the conveyor, there is no glass on it
 //			Integer[] args = {cf.getConveyor().getGUIIndex()};
@@ -371,7 +387,7 @@ public class PopUpAgent extends Agent implements PopUp {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (guiBreakState != GUIBreakState.running) { queuedEvents.add(event); return; } // If broken, do not receive messages, but queue the messages to be processed later so the semaphores will be released when the machine is online
+		//if (guiBreakState != GUIBreakState.running) { queuedEvents.add(event); return; } // If broken, do not receive messages, but queue the messages to be processed later so the semaphores will be released when the machine is online
 		
 		// Catch all of the animation events and open up the correct semaphores to continue the processing of the glass on the PopUp or workstation
 		if ((channel == TChannel.POPUP && (Integer) args[0] == guiIndex ) || channel == processType.getChannel()) {

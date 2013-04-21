@@ -217,10 +217,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	private void actSetGlassOffEntrySensor(MyGlassConveyor g) {
 		g.conveyorState = conveyorState.beforePopUpSensor;
 		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
-		if (cf.getPrevCF() != null) {
-			cf.getPrevCF().msgPositionFree();
-			print("msgPositionFree() sent to previous LineComponent");
-		}
+//		if (cf.getPrevCF() != null) {
+//			cf.getPrevCF().msgPositionFree();
+//			print("msgPositionFree() sent to previous LineComponent");
+//		}
 	}
 
 	private void actSetGlassOnPopUpSensor(MyGlassConveyor g) {
@@ -228,6 +228,11 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		print("MyGlass " + g.glass.getID() + " at conveyorState: " + g.conveyorState.toString());
 		turnOffConveyorGUI(); 
 		cf.getPopUp().msgGiveGlassToPopUp(g.glass);
+		// Temp measure to see if weird glass overlapping issue stops when sending the message from OffEntrySensor when just breaking the conveyor
+		if (cf.getPrevCF() != null) {
+			cf.getPrevCF().msgPositionFree();
+			print("msgPositionFree() sent to previous LineComponent");
+		}
 		positionFreePopUp = false; // Wait for the popUp to send the msgPositionFree message to allow the conveyor to turn back on
 	}
 
