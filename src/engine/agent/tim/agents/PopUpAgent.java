@@ -192,14 +192,15 @@ public class PopUpAgent extends Agent implements PopUp {
 		if (stop) { // Then halt communication through this machineCom
 			if (machineComs.get(machineIndex).isBroken == false) {
 				machineComs.get(machineIndex).isBroken = true;
+				stateChanged();
 			}
 		}
 		else { // Then Re-set up communication through this machineCom
 			if (machineComs.get(machineIndex).isBroken == true) {
 				machineComs.get(machineIndex).isBroken = false;
+				stateChanged();
 			}			
 		}
-		stateChanged();
 	}
 
 	//Scheduler:
@@ -268,7 +269,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
-				if (g.processState == processState.doneProcessing) { // If glass needs to be sent out to next conveyor and a position is available
+				if (g.processState == processState.doneProcessing && machineComs.get(g.machineIndex).isBroken == false) { // If glass needs to be sent out to next conveyor and a position is available
 					glass = g;
 					break;
 				}				
