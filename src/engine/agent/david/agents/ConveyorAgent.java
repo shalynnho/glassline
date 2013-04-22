@@ -58,13 +58,13 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			family.acquireSem(family.brokenStopSem); // TODONOW
 			
 			family.prevRState = family.runningState;
-			System.err.println("state saved: "+family.runningState);
+//			System.err.println("state saved: "+family.runningState);
 			family.runningState = RunningState.OFF_BC_BROKEN;
 			family.doStopConveyor();
 		} else { // unbreak
 			family.runningState = family.prevRState;
 			family.prevRState = null;
-			System.err.println("state brought back: "+family.runningState);
+//			System.err.println("state brought back: "+family.runningState);
 			
 			if (family.isRunning()) // if runningState is one of the ON_ ones, make sure conveyor is running b/c that's what it was doing before
 				family.doStartConveyor();

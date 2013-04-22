@@ -132,7 +132,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			JSpinner spinner = (JSpinner) e.getSource();
-		    int value = (int) spinner.getValue();
+		    int value = (Integer) spinner.getValue();
 		    displayButtonState(value - 1);
 		}
 		
