@@ -283,7 +283,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.processState == processState.awaitingArrival) { // If glass needs to be sent out to next conveyor and a position is available
 					synchronized(machineComs) {
 						for (MachineCom com: machineComs) {
-							if ((com.inUse == false && com.isBroken == false) || !g.glass.getNeedsProcessing(processType)) { // If there is an available machine and it is not broken or glass does not need processing
+							if (((com.inUse == false && com.isBroken == false) || !g.glass.getNeedsProcessing(processType))) { // If there is an available machine and it is not broken or glass does not need processing
 								glass = g;
 								machCom = com;
 								break;
@@ -305,6 +305,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		// Fire transducer event to move the popUp down here index – make sure to stall the agent until the right time to prevent any weird synchronization issues
 		doMovePopUpDown();
 		cf.getConveyor().msgPositionFree(); // Tell conveyor to send down the glass
+		print("Conveyor sent msgPositionFree()");
 		// Wait until the glass is loaded to continue further action
 		doDelayForAnimation(0); 
 		// Send back message to conveyor that message was received
@@ -530,5 +531,25 @@ public class PopUpAgent extends Agent implements PopUp {
 	 */
 	public List<MachineCom> getMachineComs() {
 		return machineComs;
+	}
+	
+	public boolean isGlassOnPopUp() {
+		synchronized (glassToBeProcessed) {
+			for (MyGlassPopUp g: glassToBeProcessed) {
+				if (g.processState == processState.unprocessed ||
+					g.processState == processState.awaitingRemoval ||
+					g.processState == processState.doneProcessing) { // If glass is on or transitioning to/from popUp
+					return true;
+				}
+				if (g.processState == processState.awaitingArrival) { // If there is a piece of glass already moving towards the popUp
+					for (MyGlassPopUp gl: glassToBeProcessed) {
+						if (gl != g && gl.processState == processState.awaitingArrival) {
+							return true;
+						}
+					}
+				}
+			}			
+		}
+		return false;
 	}
 }

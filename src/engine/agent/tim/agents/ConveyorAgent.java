@@ -111,7 +111,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		
 		if (events.isEmpty()) { return false; }
 		
-		ConveyorEvent e = events.remove(0);
+		ConveyorEvent e = events.remove(events.size() - 1);
 		
 		MyGlassConveyor glass = null; // Use null variable for determining is value is found from synchronized loop
 		
@@ -157,7 +157,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			actSetGlassOnPopUpSensor(glass); return true;
 		}
 		
-		if (e == ConveyorEvent.popUpFree || positionFreePopUp) {
+		if ((e == ConveyorEvent.popUpFree || positionFreePopUp)) {
 			synchronized(glassSheets) {
 				for (MyGlassConveyor g: glassSheets) {
 					if (g.conveyorState == conveyorState.onPopUpSensor) {
@@ -168,7 +168,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			}		
 		}
 		if (glass != null) {
-			actTurnOnConveyorAndSendGlass(); return true;
+			actTurnOnConveyorAndSendGlass(glass); return true;
 		}
 		
 		if (e == ConveyorEvent.offPopUpSensor) {
@@ -237,8 +237,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		positionFreePopUp = false; // Wait for the popUp to send the msgPositionFree message to allow the conveyor to turn back on
 	}
 
-	private void actTurnOnConveyorAndSendGlass() {
+	private void actTurnOnConveyorAndSendGlass(MyGlassConveyor g) {
 		turnOnConveyorGUI(); 
+		g.conveyorState = conveyorState.referenceJustsentToPopUp;
+		
 	}
 
 	private void actSetGlassOffPopUpSensor(MyGlassConveyor g) {
@@ -261,8 +263,10 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	
 	private void actBreakConveyorOn() {
-		turnOnConveyorGUI();
-		guiBreakState = GUIBreakState.running; 
+		if (!cf.getPopUp().isGlassOnPopUp()) {
+			turnOnConveyorGUI();
+		}		
+		guiBreakState = GUIBreakState.running;
 	}
 
 	//Other Methods:

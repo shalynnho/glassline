@@ -20,6 +20,7 @@ public interface PopUp extends PopupWorkstationInteraction, NonnormBreakInteract
 	public abstract boolean isPopUpDown();
 	public abstract List<MyGlassPopUp> getGlassToBeProcessed();
 	public abstract void setCF(OfflineConveyorFamily conveyorFamilyImp);
+	public abstract boolean isGlassOnPopUp();
 
 	// These methods will specifically be used for testing purposes -- do not have to be always be implemented
 	public abstract void runScheduler();
