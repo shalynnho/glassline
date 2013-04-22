@@ -54,10 +54,13 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	}
 
 	// *** DATA - mostly accessible by contained agents ***
+	// acquired in sensor, released in popup agent
+	public Semaphore stopSem = new Semaphore(1); // check if conveyor is off because quiet (when popup officially taken a glass); when release, conveyor can move again
 	
-	// when acquire is done, sensor waits for conveyor to be off because quiet; when release, conveyor can move again
-	public Semaphore stopSem = new Semaphore(1); // start at 1 because sensor should start conveyor properly at first
-	public Semaphore brokenStopSem = new Semaphore(1); // check if broken conveyor; acquire in sensor agent and release in conveyor agent 
+	// acquired & released in sensor and conveyor agents
+	public Semaphore brokenStopSem = new Semaphore(1); // check if broken conveyor
+	
+//	public 
 	
 	private Transducer t;
 	public MachineType type;
@@ -116,6 +119,12 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	public void msgPositionFree() {
 		popup.msgPositionFree();
+
+		// option: have a check that popup is not broken before relaying the message
+		// if popup IS broken, then wait and set a timer to periodically check if it should pass the position free, 
+		// only doing so when popup is unbroken
+
+		// actually just do this in popupagent directly...
 	}
 
 	public void msgGlassDone(Glass g, int index) {

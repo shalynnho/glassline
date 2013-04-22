@@ -68,15 +68,23 @@ public class SensorAgent extends Agent implements Sensor {
 	public void actPassOnGlass(Glass g) {
 		print("Doing actPassOnGlass");
 
-		// Only supports one glass at a time
-		// Wait for sem release, which means that the conveyor is ready to receive the next glass
-		// sem is released by popup agent when running state is OFF_BC_QUIET
+		// Check that conveyor is currently OFF_BC_QUIET, done by Popup officially taking glass
 		family.acquireSem(family.stopSem);
-		
-		// Also check if we need to stop everything in the event the conveyor is broken
-		// normative case, takes 1 permit and it goes back to 1 after start conveyor properly
-		// non-normative, conv acquires first, and then this is blocked; when unbreak happens, permit available again
-		// other non-normative: sensor acquires first, conv blocked and we're waiting a bit, sensor starts conveyor, releases semaphore right below, then conv continues in msgGUIBreak, updates break state properly, stops conveyor
+
+		// the above acquire technically waits for popup to be unbroken too if popup is broken (b/c popup wouldn't be able ./. but wait)
+
+		/*
+		// Check that popup is not broken. If it is, stop here and make sure you don't start the conveyor
+		// ! Issue: break conveyor first, sensor waits before below, but it has already passed checking popup not broken,
+		// so if you break the popup next, and then unbreak ... conveyor still starts!
+		*/
+
+		// Check that conveyor is not broken
+		// 	normative case: takes 1 permit and it goes back to 1 after start conveyor properly
+		// 	non-normative 1: conv acquires first, and then this is blocked; when unbreak happens, permit available again
+		// 	non-normative 2: sensor acquires first, conv blocked and we're waiting a bit, sensor starts conveyor, 
+		// 		releases semaphore right below, then conv continues in msgGUIBreak, updates break state properly, stops conveyor
+		// 	non-normative 3 (2-ish): sensor acquires first and releases before msgGUIBreak to conveyor, conveyor gets semaphore and proceeds to stop, so we're still okay
 		family.acquireSem(family.brokenStopSem);
 		family.doStartConveyor();
 		family.runningState = RunningState.ON_BC_SENSOR_TO_CONVEYOR;

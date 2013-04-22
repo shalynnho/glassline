@@ -3,6 +3,7 @@ package engine.agent.david.agents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import shared.Glass;
 import shared.interfaces.OfflineWorkstation;
@@ -19,7 +20,7 @@ import engine.agent.david.misc.ConveyorFamilyEntity.RunningState;
 public class PopupAgent extends Agent implements Popup {
 	// *** Constructor(s) ***
 	public PopupAgent(ConveyorFamilyEntity f, Transducer transducer, OfflineWorkstation workstation1, OfflineWorkstation workstation2) {
-		super(f.type+" popup", transducer);
+		super(f.type + " popup", transducer);
 		family = f;
 		this.workstation1 = workstation1;
 		this.workstation2 = workstation2;
@@ -44,22 +45,44 @@ public class PopupAgent extends Agent implements Popup {
 	// Mainly used to differentiate between waiting for a transducer event to fire (WAIT_FOR) and when popup should actually check scheduler events (ACTIVE)
 	// if (ACTIVE) is used in scheduler, if (WAIT_FOR_SOMETHING) is used in eventFired to signal the popup is DOING_NOTHING for some animation to finish
 	public enum PopupState {
+		BROKEN,
 		ACTIVE, WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION, WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION, WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION, WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION, WAITING_FOR_LOW_POPUP_BEFORE_RELEASE, WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_RELEASING, WAITING_FOR_GLASS_TO_COME_FROM_SENSOR_BEFORE_LOADING_TO_WORKSTATION, WAITING_FOR_WORKSTATION_GLASS_RELEASE, DOING_NOTHING
 	} // DOING_NOTHING is the default, doing nothing state - neither checking scheduler nor waiting for an animation to finish
 
 	public enum WorkstationState {
 		FREE, BUSY, DONE_BUT_STILL_HAS_GLASS
 	}
-	enum GUIBreakState {
+
+	// GUI Workstation break state
+	private enum GUIWksBreakState {
 		BOTH_BROKEN, BOTTOM_BROKEN, TOP_BROKEN, NORMATIVE
 	}
-	GUIBreakState breakState = GUIBreakState.NORMATIVE;
 
+	private GUIWksBreakState wksBreakState = GUIWksBreakState.NORMATIVE;
+
+	// GUI Popup break state
+	// private enum GUIBreakState {
+	// BREAK_RECEIVED, UNBREAK_RECEIVED, IS_BROKEN, IS_UNBROKEN
+	// }
+	// private GUIBreakState breakState = GUIBreakState.IS_UNBROKEN;
+	PopupState prevState = null; // if not null, the non-norm of breaking the popup is active, and we eventually must revert the state back to this saved previous state
 	PopupState state = PopupState.DOING_NOTHING;
 	WorkstationState wsState1 = WorkstationState.FREE;
 	WorkstationState wsState2 = WorkstationState.FREE;
 
 	// *** MESSAGES ***
+
+	// TODONOW: IDEA: for each of these msg's (except guibreak), have the sender check before sending
+	// and if popup state is broken, don't send.. start a timer, and periodically try sending again
+	// CHECK HERE or in other agent?
+	// here makes more sense: if state is bad, just wait. but what of blocking the other agent's thread?
+	// it's okay if workstation is blocked - it has nothing else to do
+	// it's okay if conveyor is blocked - it won't do anything until msgTakingGlass comes
+
+	// what is 'blocking' here - how exactly am I 'stopping'? 
+	// if state is broken, start glass coming timer; every x seconds, check if state is broken; if so, restart timer; if not, send message (and stop timer)
+	// 
+
 	@Override
 	public void msgGlassComing(MyGlass myGlass) {
 		print("Received msgGlassComing");
@@ -72,7 +95,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	@Override
 	public void msgPositionFree() {
-		print("Received msgPositionFree"); 
+		print("Received msgPositionFree");
 		nextPosFree = true;
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -93,11 +116,20 @@ public class PopupAgent extends Agent implements Popup {
 		// otherwise, popup is busy WAITING_FOR something else to happen, or is already ACTIVE doing something perhaps for the other workstation
 	}
 
+	/**
+	 * To jam or unjam the popup
+	 */
 	@Override
 	public void msgGUIBreak(boolean stop) {
-		print("Received msgGUIBreak: "+stop);
-		// TODO
-		
+		print("Received msgGUIBreak: " + stop);
+		if (stop) {
+			prevState = state; // save state
+			state = PopupState.BROKEN;
+		} else {
+			state = prevState; // retrieve state
+			prevState = null;
+		}
+		stateChanged();
 	}
 
 	// *** SCHEDULER ***
@@ -105,7 +137,7 @@ public class PopupAgent extends Agent implements Popup {
 	public boolean pickAndExecuteAnAction() {
 		// ACTIVE is set by transducer and incoming messages. We only take action if we are 'active'.
 		if (state == PopupState.ACTIVE) {
-//			System.err.println(name+ "'s in scheduler! ");
+			// System.err.println(name+ "'s in scheduler! ");
 			// Case 1 (easy): Just deal with the workstation's finished glass by passing it on. No complications with sensor.
 			if (!sensorOccupied) {
 				// If next position is free and there exists a glass in glasses list that is finished by a workstation
@@ -121,8 +153,8 @@ public class PopupAgent extends Agent implements Popup {
 				MyGlass g = getNextUnhandledGlass(); // the *unhandled* glass - we make the glass at the sensor more important than any glass at a workstation
 				if (g != null) { // should be present since sensorOccupied = true
 					print("in popup sched 2");
-					print("nextposfree: "+nextPosFree+"; needs proc: "+g.needsProcessing());
-					
+					print("nextposfree: " + nextPosFree + "; needs proc: " + g.needsProcessing());
+
 					// Case 2: Regardless of workstation, just load sensor's glass and pass it on - no workstation interaction
 					if (nextPosFree && !g.needsProcessing()) {
 						print("case 2");
@@ -146,7 +178,7 @@ public class PopupAgent extends Agent implements Popup {
 				}
 			}
 		} // returning true above is actually meaningless since all act methods lead to WAIT state, so we just reach false anyway.
-		setState(PopupState.DOING_NOTHING); // this could interfere with other wait states if you returned true above
+		setState(PopupState.DOING_NOTHING); // if you returned true above, you might reach here while in WAIT state, so this could interfere with other wait states
 		return false;
 	}
 
@@ -154,7 +186,7 @@ public class PopupAgent extends Agent implements Popup {
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// Most checks here involve seeing if state is a form of WAITING_FOR, which happen from scheduler actions.
 
-//		System.out.println(channel + " | " + event);
+		// System.out.println(channel + " | " + event);
 
 		// Exception: we must update sensor status regardless of the state.
 		if (!sensorOccupied) { // should only bother to check if sensor is not occupied - here, the popup only cares about listening to see if a glass has arrived at the preceding sensor
@@ -162,7 +194,7 @@ public class PopupAgent extends Agent implements Popup {
 				// When the sensor right before the popup has been pressed, allow loading of glass onto popup
 				if (family.thisSensor(args)) {
 					sensorOccupied = true;
-					
+
 					// Only change state/trigger a check in the scheduler if we're not waiting for something else to complete, like WAITING_FOR_WORKSTATION_GLASS_RELEASE or WAITING_FOR_LOW_POPUP
 					if (state == PopupState.DOING_NOTHING) {
 						setState(PopupState.ACTIVE);
@@ -170,24 +202,24 @@ public class PopupAgent extends Agent implements Popup {
 					}
 				}
 			}
-		} 
-		
+		}
+
 		// TEMP
-//		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
-//			if (family.thisSensor(args)) {
-//				System.err.println(name+ "'s popup state: "+state);
-//			}
-//		}
-		
+		// if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED) {
+		// if (family.thisSensor(args)) {
+		// System.err.println(name+ "'s popup state: "+state);
+		// }
+		// }
+
 		if (sensorOccupied) {
 			if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
 				if (family.thisSensor(args)) {
-					// no state changed because not needed here 
+					// no state changed because not needed here
 					sensorOccupied = false;
 				}
 			}
 		}
-			
+
 		// From actLoadSensorsGlassOntoWorkstation, step 2 (sometimes)
 		if (state == PopupState.WAITING_FOR_LOW_POPUP_BEFORE_LOADING_TO_WORKSTATION) {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN) {
@@ -204,12 +236,13 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				if (family.thisPopup(args)) {
 					setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_LOADING_TO_WORKSTATION);
-//					sensorOccupied = false; // done above now
+					// sensorOccupied = false; // done above now
 					family.runningState = RunningState.OFF_BC_QUIET;
-					family.stopSem.release(); // release so conveyor can be caused to move by sensor again
-//					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doMovePopupUp();
+					family.stopSem.release(); // release so conveyor can be caused to move by sensor again
+					// System.err.println("RELEASED");
+					
 				}
 			}
 		}
@@ -219,11 +252,11 @@ public class PopupAgent extends Agent implements Popup {
 				if (family.thisPopup(args)) {
 					setState(PopupState.ACTIVE);
 					MyGlass g = glasses.remove(0); // first glass should be the one
-	
+
 					OfflineWorkstation w = getWorkstationWithState(WorkstationState.FREE);
 					updateWorkstationState(w, WorkstationState.BUSY);
 					w.msgHereIsGlass(g.getGlass());
-	
+
 					family.doLoadGlassOntoWorkstation(w.getIndex());
 					stateChanged();
 				}
@@ -244,7 +277,7 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == family.workstationChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED) {
 				// Need to check proper workstation? No, because doReleaseGlassFromProperWorkstation() chooses the one that is ready to release.
 				// The scheduler can pick up next time and release the other workstation's glass if it's also done.
-				
+
 				setState(PopupState.WAITING_FOR_LOW_POPUP_WITH_GLASS_FROM_WORKSTATION);
 				family.doMovePopupDown();
 			}
@@ -283,19 +316,19 @@ public class PopupAgent extends Agent implements Popup {
 			if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED) {
 				if (family.thisPopup(args)) {
 					setState(PopupState.ACTIVE);
-//					sensorOccupied = false; // done above now
-	
+					// sensorOccupied = false; // done above now
+
 					// Here we can send the next family the message. No need to check POPUP_GUI_RELEASE_FINISHED b/c that is detected _after_ the next family's sensor already gets the glass.
 					MyGlass mg = glasses.remove(0); // should be first glass
 					family.next.msgHereIsGlass(mg.getGlass());
 					nextPosFree = false;
-	
+
 					family.runningState = RunningState.OFF_BC_QUIET;
-					family.stopSem.release(); // release so conveyor can be caused to move by sensor again
-//					System.err.println("RELEASED");
 					family.doStopConveyor();
 					family.doReleaseGlassFromPopup();
-	
+					family.stopSem.release(); // release so conveyor can be caused to move by sensor again
+					// System.err.println("RELEASED");
+
 					stateChanged();
 				}
 			}
@@ -346,7 +379,7 @@ public class PopupAgent extends Agent implements Popup {
 		if (!isUp) {
 			setState(PopupState.WAITING_FOR_HIGH_POPUP_BEFORE_RELEASING_FROM_WORKSTATION);
 			family.doMovePopupUp();
-			// System.err.println("here xxx"); 
+			// System.err.println("here xxx");
 		} else { // popup already up
 			setState(PopupState.WAITING_FOR_WORKSTATION_GLASS_RELEASE);
 			doReleaseGlassFromProperWorkstation();
@@ -365,7 +398,7 @@ public class PopupAgent extends Agent implements Popup {
 			// Important: update workstation to be free again
 			updateWorkstationState(workstation2.getIndex(), WorkstationState.FREE); // index 1
 		}
-		
+
 		// No need to move popup down here because this happens in eventFired next
 		// transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, new Object[] { family.getPopupIndex() });
 	}
@@ -434,19 +467,19 @@ public class PopupAgent extends Agent implements Popup {
 		return aWorkstationHasState(WorkstationState.DONE_BUT_STILL_HAS_GLASS);
 	}
 
-	// Pre: breakState is changed when FactoryPanel's breakOfflineWorkstation is called in
+	// Pre: wksBreakState is changed when FactoryPanel's breakOfflineWorkstation is called in
 	// TODO / CHECK later
 	private boolean aWorkstationIsFree() {
 		// Check for non-norm first
-		if (breakState == GUIBreakState.BOTH_BROKEN) {
+		if (wksBreakState == GUIWksBreakState.BOTH_BROKEN) {
 			return false;
-		} else if (breakState == GUIBreakState.TOP_BROKEN) {
+		} else if (wksBreakState == GUIWksBreakState.TOP_BROKEN) {
 			// Only check 2nd workstation
 			return wsState2 == WorkstationState.FREE;
-		} else if (breakState == GUIBreakState.BOTTOM_BROKEN) {
+		} else if (wksBreakState == GUIWksBreakState.BOTTOM_BROKEN) {
 			// Only check 1st workstation
 			return wsState1 == WorkstationState.FREE;
-		} 
+		}
 
 		// Normative case
 		else {
@@ -468,11 +501,29 @@ public class PopupAgent extends Agent implements Popup {
 		}
 	}
 
-	public void setState(PopupState s) {
-//		 System.err.println("changing state from " + state + " to " + s);
-		 state = s;
+	/**
+	 * Method to change popup state
+	 * Surrounded by semaphore to guarantee state is only changed one at a time; significant if msgGUIBreak comes in
+	 */
+	private void setState(PopupState s) {
+
+		// TODONOW: 
+		// This is bad. A bunch of places, like workstation's msgGlassDone and next family's msgPosFree, would get
+		// stuck and waiting here... and by then the state may not be write in proceeding to set state.
+
+		// so REMOVE the prevState check below...
+
+
+		if (prevState == null) {
+			// System.err.println("changing state from " + state + " to " + s);
+			state = s;
+		} else {
+			// popup is currently broken
+
+		}
+			
 	}
-	
+
 	// Testing helpers
 	public void setWorkstationState(int i, WorkstationState s) {
 		if (i == 1) {
@@ -481,6 +532,7 @@ public class PopupAgent extends Agent implements Popup {
 			wsState2 = s;
 		}
 	}
+
 	// public void setNextPosFree(boolean b) {
 	// nextPosFree = b;
 	// }
@@ -504,7 +556,7 @@ public class PopupAgent extends Agent implements Popup {
 		return state;
 	}
 
-	@Override	
+	@Override
 	public boolean getNextPosFree() {
 		return nextPosFree;
 	}

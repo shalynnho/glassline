@@ -55,7 +55,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	public void msgGUIBreak(boolean stop) {
 		print("Received msgGUIBreak: "+stop);
 		if (stop) { // break
-			family.acquireSem(family.brokenStopSem); // TODONOW
+			family.acquireSem(family.brokenStopSem); // won't stop gui because this should always get it quite quickly. might have to wait for sensor briefly, but that's trivial and unnoticeable
 			
 			family.prevRState = family.runningState;
 //			System.err.println("state saved: "+family.runningState);
@@ -130,6 +130,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		MyGlass myGlass = family.new MyGlass(g, glassState);
 
 		family.runningState = RunningState.ON_BC_CONVEYOR_TO_SENSOR;
+
+		// TODONOW
 		family.popup.msgGlassComing(myGlass);
 
 		// Trust that conveyor knows to stop glass the moment the right sensor fires. See eventFired.
