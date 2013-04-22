@@ -190,14 +190,14 @@ public class PopUpAgent extends Agent implements PopUp {
 	/*This message will come from the GUI to break a certain workstation*/
 	public void msgGUIBreakWorkstation(boolean stop, int machineIndex) {
 		if (stop) { // Then halt communication through this machineCom
-			if (machineComs.get(machineIndex).isBroken == false) {
-				machineComs.get(machineIndex).isBroken = true;
+			if (machineComs.get(machineIndex % 2).isBroken == false) {
+				machineComs.get(machineIndex % 2).isBroken = true;
 				stateChanged();
 			}
 		}
 		else { // Then Re-set up communication through this machineCom
-			if (machineComs.get(machineIndex).isBroken == true) {
-				machineComs.get(machineIndex).isBroken = false;
+			if (machineComs.get(machineIndex % 2).isBroken == true) {
+				machineComs.get(machineIndex % 2).isBroken = false;
 				stateChanged();
 			}			
 		}

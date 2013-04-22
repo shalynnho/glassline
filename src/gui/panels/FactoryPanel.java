@@ -442,6 +442,11 @@ public class FactoryPanel extends JPanel {
 	public void breakOfflineWorkstation(boolean stop, int i) {
 		//TODO tell the popup
 		
+		// @Tim -- Added in code to test my popUp for msgGUIBreak - seems to work
+		if (i == 2 || i == 3) {
+			System.err.println("breaking PopUpWorkstation"+"; "+stop);
+			crossSeamerFamily.getPopUp().msgGUIBreakWorkstation(stop, i);
+		}
 		
 		offlineWorkstations.get(i).msgGUIBreak(stop);
 	}
