@@ -36,7 +36,7 @@ public class ConveyorAgent extends Agent implements LineComponent, NonnormBreakI
 		transducer.register(this, TChannel.SENSOR);
 		id = index;
 		
-		glasses = new ArrayList<MyGlass>();
+		glasses = Collections.synchronizedList(new ArrayList<MyGlass>());
 		posFree = true;
 		moving = false;
 	}

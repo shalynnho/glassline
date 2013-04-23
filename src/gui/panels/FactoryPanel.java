@@ -433,9 +433,8 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break an offlineWorkstation. */
 	public void breakOfflineWorkstation(boolean stop, int i) {
-		popups.get(i / 2).msgGUIBreakWorkstation(stop, i % 2);
-		
 		offlineWorkstations.get(i).msgGUIBreak(stop);
+		popups.get(i / 2).msgGUIBreakWorkstation(stop, i % 2);
 	}
 	
 	/* Break the truck. */
