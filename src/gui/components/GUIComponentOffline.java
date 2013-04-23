@@ -43,6 +43,11 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * List of icons for animations
 	 */
 	ArrayList<ImageIcon> imageicons = new ArrayList<ImageIcon>();
+	
+	/**
+	 * Boolean to make it so when a piece of glass is stuck on the workstation that the WORKSTATION_LOAD_FINISHED is only sent once 
+	 */
+	private boolean glassSentOnLoad = false;
 
 	/**
 	 * Constructor for GUIComponentOffline
@@ -146,10 +151,14 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		else if (part.getCenterY() > getCenterY())
 			part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
 
-		if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
+		if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY() && !glassSentOnLoad) {
 			Object[] args = new Object[1];
 			args[0] = index;
 			transducer.fireEvent(channel, TEvent.WORKSTATION_LOAD_FINISHED, args);
+			glassSentOnLoad = true; // While part is on WS, leave this as true
+		}
+		else if (!(part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY())) {
+			glassSentOnLoad = false; // Set this to false as soon as the part leaves, so the next one can be processed
 		}
 	}
 	

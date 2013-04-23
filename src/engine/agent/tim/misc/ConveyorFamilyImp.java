@@ -121,4 +121,22 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 	public Sensor getSensor() {
 		return sensors;
 	}
+
+	@Override
+	public void msgGUIBreakWorkstation(boolean stop, int index) {
+		popUp.msgGUIBreakWorkstation(stop, index);
+		
+	}
+
+	@Override
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
+		popUp.msgGUIBreakRemovedGlassFromWorkstation(index);
+		
+	}
+
+	@Override
+	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
+	}
 }
