@@ -23,7 +23,7 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 	private ControlPanel controlPanel;
 	
 	private String[] workstations = {"Drill0", "Drill1", "Cross Seamer0", "Cross Seamer1", "Grinder0", "Grinder1"};
-	private JComboBox<String> workstationComboBox;
+	private JComboBox workstationComboBox;
 	
 	private JSlider speedSlider;
 	private String selected;
@@ -36,7 +36,7 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 		controlPanel = cp;
 				
 		selected = "Drill0";
-		workstationComboBox = new JComboBox<String>(workstations);
+		workstationComboBox = new JComboBox(workstations);
 		workstationComboBox.addActionListener(new ComboBoxListener());
 		
 		speeds = new HashMap<String,Integer>();
@@ -77,7 +77,7 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			JComboBox<String> cb = (JComboBox<String>) evt.getSource();
+			JComboBox cb = (JComboBox) evt.getSource();
 			selected = (String) cb.getSelectedItem();
 			speedSlider.setValue(speeds.get(selected));
 		}
