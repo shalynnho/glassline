@@ -1,28 +1,21 @@
 package gui.panels;
 
-import engine.agent.BigOnlineConveyorFamilyImp;
-import engine.agent.BinRobotAgent;
-import engine.agent.GeneralConveyorAgent;
-import engine.agent.OfflineWorkstationAgent;
-import engine.agent.OnlineWorkstationAgent;
-import engine.agent.SmallOnlineConveyorFamilyImp;
+import engine.agent.*;
 import engine.agent.TruckAgent;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormBreakInteraction;
+import shared.interfaces.PopupWorkstationInteraction;
 import transducer.Transducer;
 
 /**
@@ -55,7 +48,7 @@ public class FactoryPanel extends JPanel {
 	
 	/* Arrays of components for the nonnormative break interactions. */
 	private List<NonnormBreakInteraction> conveyors;
-	private List<NonnormBreakInteraction> popups;
+	private List<PopupWorkstationInteraction> popups;
 	private List<OnlineWorkstationAgent> onlineWorkstations;
 	private List<OfflineWorkstationAgent> offlineWorkstations;
 	
@@ -159,7 +152,7 @@ public class FactoryPanel extends JPanel {
 			
 			/* Initialize components. */
 			conveyors = new ArrayList<NonnormBreakInteraction>(15);
-			popups = new ArrayList<NonnormBreakInteraction>(3);
+			popups = new ArrayList<PopupWorkstationInteraction>(3);
 			onlineWorkstations = new ArrayList<OnlineWorkstationAgent>(7);
 			offlineWorkstations = new ArrayList<OfflineWorkstationAgent>(6);
 			
@@ -440,15 +433,8 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break an offlineWorkstation. */
 	public void breakOfflineWorkstation(boolean stop, int i) {
-		//TODO tell the popup
-		
-		// @Tim -- Added in code to test my popUp for msgGUIBreak - seems to work
-		if (i == 2 || i == 3) {
-			System.err.println("breaking PopUpWorkstation"+"; "+stop);
-			crossSeamerFamily.getPopUp().msgGUIBreakWorkstation(stop, i);
-		}
-		
 		offlineWorkstations.get(i).msgGUIBreak(stop);
+		popups.get(i / 2).msgGUIBreakWorkstation(stop, i % 2);
 	}
 	
 	/* Break the truck. */

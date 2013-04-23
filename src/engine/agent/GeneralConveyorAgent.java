@@ -35,7 +35,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		}
 	}
 	
-	private List<MyGlass> glasses = Collections.synchronizedList(new ArrayList<MyGlass>());;
+	private List<MyGlass> glasses;
 	
 	private boolean posFree, moving, waitingToSendPosFree; // popup ready, is moving, waiting for glass to move off of front sensor
 	private int glassMoved; // how far has glass moved
@@ -48,7 +48,7 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		transducer.register(this, TChannel.SENSOR);
 		id = index;
 		
-		glasses = new ArrayList<MyGlass>();
+		glasses = Collections.synchronizedList(new ArrayList<MyGlass>());
 		posFree = true;
 		moving = false;
 		waitingToSendPosFree = false;
