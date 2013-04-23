@@ -444,12 +444,13 @@ public class FactoryPanel extends JPanel {
 	}
 
 	public void breakSensor(boolean b, int id) {
-		System.err.println("breaking sensor..."+"; "+b);
+		System.err.println("breaking sensor..."+b);
 		// TODO Auto-generated method stub
 	}
-
+	
 	public void breakGlass(boolean b, int id) {
-		System.err.println("breaking glass..."+"; "+b);
+		System.err.println("breaking glass..."+b);
+		popups.get(id / 2).msgGUIBreakRemovedGlassFromWorkstation(id % 2);
 		// TODO Auto-generated method stub
 	}
 	
