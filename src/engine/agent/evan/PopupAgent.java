@@ -9,7 +9,7 @@ import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class PopupAgent extends Agent implements Popup, NonnormBreakInteraction {
+public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	
 	private LineComponent next, c; // the next LineComponent and the previous conveyor
