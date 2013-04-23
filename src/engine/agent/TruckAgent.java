@@ -3,6 +3,7 @@ package engine.agent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+
 import shared.Glass;
 import shared.interfaces.LineComponent;
 import shared.interfaces.NonnormBreakInteraction;
@@ -33,6 +34,9 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 	
 	private static final int maxGlass = 1;
 	
+	private enum GUIBreakState {stop, stopped, restart, running};
+	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI truck is broken or not	
+	
 	// *** MESSAGES ***
 	public void msgPositionFree() {
 		// dummy method, not used: just need this so we can implement LineComponent
@@ -58,12 +62,33 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
+		if (stop && guiBreakState == GUIBreakState.running) {
+			guiBreakState = GUIBreakState.stop;
+			stateChanged();
+		} 
+		else if (!stop && guiBreakState == GUIBreakState.stopped) {
+			guiBreakState = GUIBreakState.restart;
+			stateChanged();
+		}
 	}
 	
 	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction() {
+		// Check to see if a GUI break message came in
+		if (guiBreakState == GUIBreakState.stop) {
+			actBreakTruckOff();
+			return false; // Make sure the method does not call again
+		}
+		
+		else if (guiBreakState == GUIBreakState.restart) {
+			actBreakTruckOn();
+			return true; 		
+		}
+		
+		else if (guiBreakState == GUIBreakState.stopped) {
+			return false; // C'mon the Truck is broken!  It shouldn't run until this state is changed
+		}
+		
 		if (loadFinished || (!glasses.isEmpty() && prev.isEmpty())) {
 			actLoadAndEmptyTruck();
 			return true;
@@ -85,6 +110,15 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 		doEmptyTruck();
 		glasses.clear();
 		loadFinished = false;
+	}
+	
+	// New Non-norm GUI actions
+	private void actBreakTruckOff() {
+		guiBreakState = GUIBreakState.stopped; 
+	}
+	
+	private void actBreakTruckOn() {
+		guiBreakState = GUIBreakState.running;
 	}
 	
 	// *** ANIMATION ACTIONS ***
@@ -112,5 +146,4 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 		if (l instanceof GeneralConveyorAgent)
 			prev = (GeneralConveyorAgent)l;
 	}
-
 }

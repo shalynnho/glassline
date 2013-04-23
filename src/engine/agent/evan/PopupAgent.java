@@ -9,7 +9,7 @@ import transducer.*;
 import engine.agent.Agent;
 import engine.agent.evan.interfaces.*;
 
-public class PopupAgent extends Agent implements Popup, NonnormBreakInteraction {
+public class PopupAgent extends Agent implements Popup {
 	// *** DATA ***
 	
 	private LineComponent next, c; // the next LineComponent and the previous conveyor
@@ -84,6 +84,18 @@ public class PopupAgent extends Agent implements Popup, NonnormBreakInteraction 
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/* This message is from the GUI telling that the workstation is broken or unbroken. */
+	public void msgGUIBreakWorkstation(boolean stop, int machineIndex) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/* This message is from the GUI telling that a piece of glass was removed from the workstation. */
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
 		// TODO Auto-generated method stub
 		
 	}

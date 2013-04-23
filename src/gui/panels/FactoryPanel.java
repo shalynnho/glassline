@@ -1,28 +1,21 @@
 package gui.panels;
 
-import engine.agent.BigOnlineConveyorFamilyImp;
-import engine.agent.BinRobotAgent;
-import engine.agent.GeneralConveyorAgent;
-import engine.agent.OfflineWorkstationAgent;
-import engine.agent.OnlineWorkstationAgent;
-import engine.agent.SmallOnlineConveyorFamilyImp;
+import engine.agent.*;
 import engine.agent.TruckAgent;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormBreakInteraction;
+import shared.interfaces.PopupWorkstationInteraction;
 import transducer.Transducer;
 
 /**
@@ -55,7 +48,7 @@ public class FactoryPanel extends JPanel {
 	
 	/* Arrays of components for the nonnormative break interactions. */
 	private List<NonnormBreakInteraction> conveyors;
-	private List<NonnormBreakInteraction> popups;
+	private List<PopupWorkstationInteraction> popups;
 	private List<OnlineWorkstationAgent> onlineWorkstations;
 	private List<OfflineWorkstationAgent> offlineWorkstations;
 	
@@ -159,7 +152,7 @@ public class FactoryPanel extends JPanel {
 			
 			/* Initialize components. */
 			conveyors = new ArrayList<NonnormBreakInteraction>(15);
-			popups = new ArrayList<NonnormBreakInteraction>(3);
+			popups = new ArrayList<PopupWorkstationInteraction>(3);
 			onlineWorkstations = new ArrayList<OnlineWorkstationAgent>(7);
 			offlineWorkstations = new ArrayList<OfflineWorkstationAgent>(6);
 			
@@ -180,7 +173,7 @@ public class FactoryPanel extends JPanel {
 			// Drill
 			drillWorkstation = new OfflineWorkstationAgent[2];
 			{ // create drill conveyor family
-				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5);
+				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5, timer);
 				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("Drill popup", c, drillWorkstation, MachineType.DRILL, transducer, 0);
 				
 				drillFamily = new ConveyorFamilyImplementation(c, p);
@@ -440,10 +433,8 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break an offlineWorkstation. */
 	public void breakOfflineWorkstation(boolean stop, int i) {
-		//TODO tell the popup
-		
-		
 		offlineWorkstations.get(i).msgGUIBreak(stop);
+		popups.get(i / 2).msgGUIBreakWorkstation(stop, i % 2);
 	}
 	
 	/* Break the truck. */
@@ -453,12 +444,13 @@ public class FactoryPanel extends JPanel {
 	}
 
 	public void breakSensor(boolean b, int id) {
-		System.err.println("breaking sensor..."+"; "+b);
+		System.err.println("breaking sensor..."+b);
 		// TODO Auto-generated method stub
 	}
-
+	
 	public void breakGlass(boolean b, int id) {
-		System.err.println("breaking glass..."+"; "+b);
+		System.err.println("breaking glass..."+b);
+		popups.get(id / 2).msgGUIBreakRemovedGlassFromWorkstation(id % 2);
 		// TODO Auto-generated method stub
 	}
 	

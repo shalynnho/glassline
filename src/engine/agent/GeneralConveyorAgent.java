@@ -35,9 +35,9 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		}
 	}
 	
-	private List<MyGlass> glasses = Collections.synchronizedList(new ArrayList<MyGlass>());;
+	private List<MyGlass> glasses;
 	
-	private boolean posFree, moving, waitingToSendPosFree; // popup ready, is moving, waiting for glass to move off of front sensor
+	private boolean posFree, moving, wasMoving, waitingToSendPosFree; // popup ready, is moving, waiting for glass to move off of front sensor
 	private int glassMoved; // how far has glass moved
 	private static final int glassMovedPosFreeTicks = 12; // how many ticks of GUITimer before glass is off front sensor
 	
@@ -48,9 +48,10 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		transducer.register(this, TChannel.SENSOR);
 		id = index;
 		
-		glasses = new ArrayList<MyGlass>();
+		glasses = Collections.synchronizedList(new ArrayList<MyGlass>());
 		posFree = true;
 		moving = false;
+		wasMoving = false;
 		waitingToSendPosFree = false;
 		
 		guiTimer.addActionListener(this); // timer from the GUI to prevent a dumb bug
@@ -98,7 +99,6 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 				for (MyGlass mg : glasses)
 					if (mg.gs == GlassState.arrived) {
 						mg.gs = GlassState.moving;
-						//prev.msgPositionFree();
 						glassMoved = 0;
 						waitingToSendPosFree = true;
 						break;
@@ -181,13 +181,14 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	
 	/* Stop conveyor when GUI says to break. */
 	private void guiStopConveyor() {
+		wasMoving = moving;
 		doStopConveyor();
 		gbs = GUIBreakState.stopped;
 	}
 	
 	/* Restart conveyor on GUI command. */
 	private void guiRestartConveyor() {
-		doStartConveyor();
+		if (wasMoving) doStartConveyor();
 		gbs = null;
 	}
 	
