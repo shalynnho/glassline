@@ -45,4 +45,8 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	public void setNextLineComponent(LineComponent lc) {
 		p.setNext(lc);
 	}
+	
+	public void msgGUIBreakWorkstation(boolean stop, int index) {}
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {}
+	public void msgGUIBreak(boolean stop) {}
 }

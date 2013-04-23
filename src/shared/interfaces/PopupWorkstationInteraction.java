@@ -6,5 +6,5 @@ import shared.Glass;
 public interface PopupWorkstationInteraction extends NonnormBreakInteraction {
 	public void msgGlassDone(Glass g, int index);
 	public void msgGUIBreakWorkstation(boolean stop, int index);
-	public void msgGUIBreakRemoveGlassFromWorkstation(int index);
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index);
 }

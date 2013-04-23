@@ -93,6 +93,12 @@ public class PopupAgent extends Agent implements Popup {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/* This message is from the GUI telling that a piece of glass was removed from the workstation. */
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/* Transducer event. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
