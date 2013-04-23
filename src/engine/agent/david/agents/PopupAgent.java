@@ -182,6 +182,46 @@ public class PopupAgent extends Agent implements Popup {
 		stateChanged();
 	}
 
+	@Override
+	public void msgGUIBreakWorkstation(boolean stop, int index) { // sent when workstation is stopped
+		// index is 0 or 1
+ 		// top is index 0 workstation, bottom is index 1 workstation
+
+		// break
+		if (stop) {
+			// check if should make only 1 broken
+			if (wksBreakState == GUIWksBreakState.NORMATIVE) {
+				if (index == 0)	
+					wksBreakState = GUIWksBreakState.TOP_BROKEN;
+				else
+					wksBreakState = GUIWksBreakState.BOTTOM_BROKEN;
+			}
+			// check if should make both broken
+			else if ( (wksBreakState == GUIWksBreakState.TOP_BROKEN && index == 1) && (wksBreakState == GUIWksBreakState.BOTTOM_BROKEN && index == 0) ) {
+				wksBreakState = GUIWksBreakState.BOTH_BROKEN;
+			} else {
+				System.err.println("Break state incorrect on breaking");
+			}
+		}
+		// unbreak
+		else {
+			if (wksBreakState == GUIWksBreakState.BOTH_BROKEN) {
+				if (index == 0) // unbreak top only
+					wksBreakState = GUIWksBreakState.BOTTOM_BROKEN;
+				else // unbreak bottom only
+					wksBreakState = GUIWksBreakState.TOP_BROKEN;
+			} else if ( (wksBreakState == GUIWksBreakState.TOP_BROKEN && index == 0) || (wksBreakState == GUIWksBreakState.BOTTOM_BROKEN && index == 1) ) {
+				wksBreakState = GUIWksBreakState.NORMATIVE;
+			} else 
+				System.err.println("Break state incorrect on unbreaking");
+		}
+	}
+	@Override
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list
+		// TODO Auto-generated method stub
+		
+	}
+
 	// *** SCHEDULER ***
 	@Override
 	public boolean pickAndExecuteAnAction() {
@@ -518,8 +558,9 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	// Pre: wksBreakState is changed when FactoryPanel's breakOfflineWorkstation is called in
-	// TODO / CHECK later
 	private boolean aWorkstationIsFree() {
+		// TODONOW
+
 		// Check for non-norm first
 		if (wksBreakState == GUIWksBreakState.BOTH_BROKEN) {
 			return false;
@@ -610,15 +651,5 @@ public class PopupAgent extends Agent implements Popup {
 
 		finishedGlasses.add(g);
 		finishedGlasses.add(g2);
-	}
-	@Override
-	public void msgGUIBreakWorkstation(boolean stop, int index) { // sent when workstation is stopped
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list
-		// TODO Auto-generated method stub
-		
 	}
 }

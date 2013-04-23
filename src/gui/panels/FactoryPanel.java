@@ -328,7 +328,7 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1));
 			
 			// Set things in motion!
-//			createInitialGlasses();
+			createInitialGlasses();
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
@@ -446,7 +446,7 @@ public class FactoryPanel extends JPanel {
 	}
 	
 	/* Break an offlineWorkstation. */
-	public void breakOfflineWorkstation(boolean stop, int i) {
+	public void breakOfflineWorkstation(boolean stop, int i) { // i is from 0-5 (-1 already done in NonNormSelectButtonPanel)
 		offlineWorkstations.get(i).msgGUIBreak(stop);
 		popups.get(i / 2).msgGUIBreakWorkstation(stop, i % 2);
 	}
