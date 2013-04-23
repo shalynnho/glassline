@@ -131,7 +131,6 @@ public class ConveyorAgent extends Agent implements Conveyor {
 
 		family.runningState = RunningState.ON_BC_CONVEYOR_TO_SENSOR;
 
-		// TODONOW
 		family.popup.msgGlassComing(myGlass);
 
 		// Trust that conveyor knows to stop glass the moment the right sensor fires. See eventFired.

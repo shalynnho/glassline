@@ -3,7 +3,8 @@ package engine.agent.david.agents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import shared.Glass;
 import shared.interfaces.OfflineWorkstation;
@@ -60,32 +61,47 @@ public class PopupAgent extends Agent implements Popup {
 
 	private GUIWksBreakState wksBreakState = GUIWksBreakState.NORMATIVE;
 
-	// GUI Popup break state
-	// private enum GUIBreakState {
-	// BREAK_RECEIVED, UNBREAK_RECEIVED, IS_BROKEN, IS_UNBROKEN
-	// }
-	// private GUIBreakState breakState = GUIBreakState.IS_UNBROKEN;
 	PopupState prevState = null; // if not null, the non-norm of breaking the popup is active, and we eventually must revert the state back to this saved previous state
 	PopupState state = PopupState.DOING_NOTHING;
 	WorkstationState wsState1 = WorkstationState.FREE;
 	WorkstationState wsState2 = WorkstationState.FREE;
+	
+	Timer glassComingTimer = new Timer();
+	Timer posFreeTimer = new Timer();
+	Timer glassDoneTimer = new Timer();
 
+	private static int WAIT_INTERVAL = 1*1000;
+	
 	// *** MESSAGES ***
-
-	// TODONOW: IDEA: for each of these msg's (except guibreak), have the sender check before sending
-	// and if popup state is broken, don't send.. start a timer, and periodically try sending again
-	// CHECK HERE or in other agent?
-	// here makes more sense: if state is bad, just wait. but what of blocking the other agent's thread?
-	// it's okay if workstation is blocked - it has nothing else to do
-	// it's okay if conveyor is blocked - it won't do anything until msgTakingGlass comes
-
-	// what is 'blocking' here - how exactly am I 'stopping'? 
-	// if state is broken, start glass coming timer; every x seconds, check if state is broken; if so, restart timer; if not, send message (and stop timer)
-	// 
-
+	/*
+	 * Strategy for breaking popup:
+	 * for each of these msg's (except guibreak), have a check:
+	 * if state is broken, start glass coming timer; every x seconds, check if state is broken;
+	 * if so, restart timer; if not, send message (and stop timer)
+	 */
+	
 	@Override
 	public void msgGlassComing(MyGlass myGlass) {
 		print("Received msgGlassComing");
+		if (state == PopupState.BROKEN) {
+			startGlassComingTimer(myGlass);
+		} else {
+			handleGlassComing(myGlass);
+		}
+	}
+	// Periodically checks if state is not broken; when it finally isn't, it handles glass coming
+	private void startGlassComingTimer(final MyGlass myGlass) {
+		glassComingTimer.schedule(new TimerTask() { // "anonymous inner class"
+			public void run() {
+				if (state == PopupState.BROKEN) // if it's still broken, restart the timer
+					startGlassComingTimer(myGlass);
+				else // popup is fixed!
+					handleGlassComing(myGlass);
+			}
+		}, WAIT_INTERVAL);
+	}
+	// Used in msgGlassComing
+	private void handleGlassComing(MyGlass myGlass) {
 		glasses.add(myGlass);
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -96,6 +112,23 @@ public class PopupAgent extends Agent implements Popup {
 	@Override
 	public void msgPositionFree() {
 		print("Received msgPositionFree");
+		if (state == PopupState.BROKEN) {
+			startPosFreeTimer();
+		} else {
+			handlePosFree();
+		}
+	}
+	private void startPosFreeTimer() {
+		posFreeTimer.schedule(new TimerTask() {
+			public void run() {
+				if (state == PopupState.BROKEN) // if it's still broken, restart the timer
+					startPosFreeTimer();
+				else // popup is fixed!
+					handlePosFree();
+			}
+		}, WAIT_INTERVAL);
+	}
+	private void handlePosFree() {
 		nextPosFree = true;
 		if (state == PopupState.DOING_NOTHING) {
 			setState(PopupState.ACTIVE);
@@ -106,6 +139,23 @@ public class PopupAgent extends Agent implements Popup {
 	@Override
 	public void msgGlassDone(Glass g, int machineIndex) {
 		print("Received msgGlassDone");
+		if (state == PopupState.BROKEN) {
+			startGlassDoneTimer(g, machineIndex);
+		} else {
+			handleGlassDone(g, machineIndex);
+		}
+	}
+	private void startGlassDoneTimer(final Glass g, final int machineIndex) {
+		glassDoneTimer.schedule(new TimerTask() {
+			public void run() {
+				if (state == PopupState.BROKEN) // if it's still broken, restart the timer
+					startGlassDoneTimer(g, machineIndex);
+				else // popup is fixed!
+					handleGlassDone(g, machineIndex);
+			}
+		}, WAIT_INTERVAL);
+	}
+	private void handleGlassDone(Glass g, int machineIndex) {
 		updateWorkstationState(machineIndex, WorkstationState.DONE_BUT_STILL_HAS_GLASS);
 		finishedGlasses.add(g);
 
@@ -124,7 +174,7 @@ public class PopupAgent extends Agent implements Popup {
 		print("Received msgGUIBreak: " + stop);
 		if (stop) {
 			prevState = state; // save state
-			state = PopupState.BROKEN;
+			state = PopupState.BROKEN; // directly change state, no setState
 		} else {
 			state = prevState; // retrieve state
 			prevState = null;
@@ -503,25 +553,17 @@ public class PopupAgent extends Agent implements Popup {
 
 	/**
 	 * Method to change popup state
-	 * Surrounded by semaphore to guarantee state is only changed one at a time; significant if msgGUIBreak comes in
 	 */
 	private void setState(PopupState s) {
-
-		// TODONOW: 
-		// This is bad. A bunch of places, like workstation's msgGlassDone and next family's msgPosFree, would get
-		// stuck and waiting here... and by then the state may not be write in proceeding to set state.
-
-		// so REMOVE the prevState check below...
-
-
-		if (prevState == null) {
-			// System.err.println("changing state from " + state + " to " + s);
+		// If prevState is null, then popup is not broken
+		if (prevState == null) { // uncertain: why does this work for popup nonnorm?
+//			System.err.println("changing state from " + state + " to " + s);
+			// Only change state if popup is not broken
 			state = s;
 		} else {
 			// popup is currently broken
-
+//			System.err.println("prevented from setting state");
 		}
-			
 	}
 
 	// Testing helpers

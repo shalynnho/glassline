@@ -60,8 +60,6 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 	// acquired & released in sensor and conveyor agents
 	public Semaphore brokenStopSem = new Semaphore(1); // check if broken conveyor
 	
-//	public 
-	
 	private Transducer t;
 	public MachineType type;
 	private int conveyorIndex, popupIndex;

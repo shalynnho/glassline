@@ -71,14 +71,6 @@ public class SensorAgent extends Agent implements Sensor {
 		// Check that conveyor is currently OFF_BC_QUIET, done by Popup officially taking glass
 		family.acquireSem(family.stopSem);
 
-		// the above acquire technically waits for popup to be unbroken too if popup is broken (b/c popup wouldn't be able ./. but wait)
-
-		/*
-		// Check that popup is not broken. If it is, stop here and make sure you don't start the conveyor
-		// ! Issue: break conveyor first, sensor waits before below, but it has already passed checking popup not broken,
-		// so if you break the popup next, and then unbreak ... conveyor still starts!
-		*/
-
 		// Check that conveyor is not broken
 		// 	normative case: takes 1 permit and it goes back to 1 after start conveyor properly
 		// 	non-normative 1: conv acquires first, and then this is blocked; when unbreak happens, permit available again
