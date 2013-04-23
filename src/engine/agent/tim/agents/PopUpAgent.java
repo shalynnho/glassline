@@ -210,6 +210,8 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.machineIndex == index && g.processState == processState.processing) {
 					print("Removed glass (" + g.glass.getID() + ") from the popUp.");
 					glassToBeProcessed.remove(g);
+					// Make sure to make the workstation available again, even if it is broken
+					machineComs.get(index).inUse = false;
 					break;
 				}
 			}
