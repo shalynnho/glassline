@@ -89,7 +89,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		else if (!stop && guiBreakState == GUIBreakState.stopped) {
 			guiBreakState = GUIBreakState.restart;
 			stateChanged();
-		}		
+		}
 	}
 	
 	//Scheduler:
