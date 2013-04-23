@@ -202,6 +202,18 @@ public class PopUpAgent extends Agent implements PopUp {
 			}			
 		}
 	}
+	
+	@Override
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // Index is the index of the machine that removed the glass
+		synchronized (glassToBeProcessed) {
+			for (MyGlassPopUp g: glassToBeProcessed) {
+				if (g.machineIndex == index && g.processState == processState.processing) {
+					glassToBeProcessed.remove(g);
+					break;
+				}
+			}
+		}
+	}
 
 	//Scheduler:
 	public boolean pickAndExecuteAnAction() {
