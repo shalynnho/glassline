@@ -51,21 +51,20 @@ public class PopupAgent extends Agent implements Popup {
 	} // DOING_NOTHING is the default, doing nothing state - neither checking scheduler nor waiting for an animation to finish
 
 	public enum WorkstationState {
-		FREE, BUSY, DONE_BUT_STILL_HAS_GLASS
+		FREE, BUSY, DONE_BUT_STILL_HAS_GLASS, BROKEN
 	}
-
-	// GUI Workstation break state
-	private enum GUIWksBreakState {
-		BOTH_BROKEN, BOTTOM_BROKEN, TOP_BROKEN, NORMATIVE
-	}
-
-	private GUIWksBreakState wksBreakState = GUIWksBreakState.NORMATIVE;
 
 	PopupState prevState = null; // if not null, the non-norm of breaking the popup is active, and we eventually must revert the state back to this saved previous state
 	PopupState state = PopupState.DOING_NOTHING;
 	WorkstationState wsState1 = WorkstationState.FREE;
 	WorkstationState wsState2 = WorkstationState.FREE;
+	WorkstationState prevWsState1 = null;
+	WorkstationState prevWsState2 = null;
 	
+	// To deal with both workstations broken, must retrigger to wake up
+	Timer wksFixedTimer = new Timer();
+	
+	// To deal with broken popup
 	Timer glassComingTimer = new Timer();
 	Timer posFreeTimer = new Timer();
 	Timer glassDoneTimer = new Timer();
@@ -183,43 +182,38 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	@Override
-	public void msgGUIBreakWorkstation(boolean stop, int index) { // sent when workstation is stopped
-		// index is 0 or 1
- 		// top is index 0 workstation, bottom is index 1 workstation
-
+	/**
+	 * @param index 0 or 1 for top or bottom workstation, respectively
+	 */
+	public void msgGUIBreakWorkstation(boolean stop, int index) { // sent to break or unbreak workstation
 		// break
 		if (stop) {
-			// check if should make only 1 broken
-			if (wksBreakState == GUIWksBreakState.NORMATIVE) {
-				if (index == 0)	
-					wksBreakState = GUIWksBreakState.TOP_BROKEN;
-				else
-					wksBreakState = GUIWksBreakState.BOTTOM_BROKEN;
-			}
-			// check if should make both broken
-			else if ( (wksBreakState == GUIWksBreakState.TOP_BROKEN && index == 1) && (wksBreakState == GUIWksBreakState.BOTTOM_BROKEN && index == 0) ) {
-				wksBreakState = GUIWksBreakState.BOTH_BROKEN;
+			if (index == 0) {
+				prevWsState1 = wsState1; // save state
+				wsState1 = WorkstationState.BROKEN;
 			} else {
-				System.err.println("Break state incorrect on breaking");
+				prevWsState2 = wsState2;
+				wsState2 = WorkstationState.BROKEN;
 			}
+			
 		}
 		// unbreak
 		else {
-			if (wksBreakState == GUIWksBreakState.BOTH_BROKEN) {
-				if (index == 0) // unbreak top only
-					wksBreakState = GUIWksBreakState.BOTTOM_BROKEN;
-				else // unbreak bottom only
-					wksBreakState = GUIWksBreakState.TOP_BROKEN;
-			} else if ( (wksBreakState == GUIWksBreakState.TOP_BROKEN && index == 0) || (wksBreakState == GUIWksBreakState.BOTTOM_BROKEN && index == 1) ) {
-				wksBreakState = GUIWksBreakState.NORMATIVE;
-			} else 
-				System.err.println("Break state incorrect on unbreaking");
+			if (index == 0) {
+				wsState1 = prevWsState1; // revert to saved state
+				prevWsState1 = null;
+			} else {
+				wsState2 = prevWsState2; // revert to saved state
+				prevWsState2 = null;
+			}
 		}
+		print("CURRENT STATE: "+state);
+		stateChanged(); // needed? TODONOW: INCOMPLETE
 	}
 	@Override
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list
 		// TODO Auto-generated method stub
-		
+		stateChanged();
 	}
 
 	// *** SCHEDULER ***
@@ -268,7 +262,15 @@ public class PopupAgent extends Agent implements Popup {
 				}
 			}
 		} // returning true above is actually meaningless since all act methods lead to WAIT state, so we just reach false anyway.
+		
+		if (wsState1 == WorkstationState.BROKEN || wsState2 == WorkstationState.BROKEN) {
+			print("State being set to DOING NOTHING");
+		}
+		
 		setState(PopupState.DOING_NOTHING); // if you returned true above, you might reach here while in WAIT state, so this could interfere with other wait states
+		
+		
+		
 		return false;
 	}
 
@@ -559,29 +561,18 @@ public class PopupAgent extends Agent implements Popup {
 
 	// Pre: wksBreakState is changed when FactoryPanel's breakOfflineWorkstation is called in
 	private boolean aWorkstationIsFree() {
-		// TODONOW
-
-		// Check for non-norm first
-		if (wksBreakState == GUIWksBreakState.BOTH_BROKEN) {
-			return false;
-		} else if (wksBreakState == GUIWksBreakState.TOP_BROKEN) {
-			// Only check 2nd workstation
-			return wsState2 == WorkstationState.FREE;
-		} else if (wksBreakState == GUIWksBreakState.BOTTOM_BROKEN) {
-			// Only check 1st workstation
-			return wsState1 == WorkstationState.FREE;
-		}
-
-		// Normative case
-		else {
-			return aWorkstationHasState(WorkstationState.FREE);
-		}
+		return aWorkstationHasState(WorkstationState.FREE);
 	}
 
 	private boolean bothWorkstationsOccupiedButAtLeastOneIsDone() {
 		return wsState1 != WorkstationState.FREE && wsState2 != WorkstationState.FREE && atLeastOneWorkstationIsDoneButStillHasGlass();
 	}
 
+	/**
+	 * Returns workstation with the given state
+	 * @param s
+	 * @return
+	 */
 	private OfflineWorkstation getWorkstationWithState(WorkstationState s) {
 		if (wsState1 == s) {
 			return workstation1;

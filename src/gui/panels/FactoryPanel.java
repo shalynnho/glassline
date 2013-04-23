@@ -447,6 +447,7 @@ public class FactoryPanel extends JPanel {
 	
 	/* Break an offlineWorkstation. */
 	public void breakOfflineWorkstation(boolean stop, int i) { // i is from 0-5 (-1 already done in NonNormSelectButtonPanel)
+		System.err.println("breaking offline workstation " +i+"; "+stop);
 		offlineWorkstations.get(i).msgGUIBreak(stop);
 		popups.get(i / 2).msgGUIBreakWorkstation(stop, i % 2);
 	}
