@@ -97,7 +97,8 @@ public class ConveyorAgent extends Agent implements LineComponent, ActionListene
 				for (MyGlass mg : glasses)
 					if (mg.gs == GlassState.arrived) {
 						mg.gs = GlassState.moving;
-						prev.msgPositionFree();
+						glassMoved = 0;
+						waitingToSendPosFree = true;
 						break;
 					}
 				stateChanged();
@@ -105,9 +106,9 @@ public class ConveyorAgent extends Agent implements LineComponent, ActionListene
 		} else if (sensorID == id * 2 + 1) {
 			if (event == TEvent.SENSOR_GUI_PRESSED) { // if back sensor pressed
 				for (MyGlass mg : glasses)
-					if (mg.gs == GlassState.moving) {
+					if (mg.gs == GlassState.moving) { // only processes furthest along applicable piece of glass
 						mg.gs = GlassState.atEnd;
-						break;
+						break; // don't process any more of them
 					}
 				stateChanged();
 			} else if (event == TEvent.SENSOR_GUI_RELEASED) { // if back sensor released
