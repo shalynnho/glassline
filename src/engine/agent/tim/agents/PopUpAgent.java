@@ -297,7 +297,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.processState == processState.awaitingArrival) { // If glass needs to be sent out to next conveyor and a position is available
 					synchronized(machineComs) {
 						for (MachineCom com: machineComs) {
-							if (((com.inUse == false && g.glass.getNeedsProcessing(processType)/*&& com.isBroken == false*/) || ( !g.glass.getNeedsProcessing(processType) && !isGlassOnPopUp() ))) { // If there is an available machine and it is not broken or glass does not need processing
+							if (((com.inUse == false && g.glass.getNeedsProcessing(processType) && com.isBroken == false) || ( !g.glass.getNeedsProcessing(processType) && !isGlassOnPopUp() ))) { // If there is an available machine and it is not broken or glass does not need processing
 								glass = g;
 								machCom = com;
 								break;
