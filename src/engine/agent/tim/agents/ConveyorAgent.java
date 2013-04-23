@@ -263,7 +263,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	
 	private void actBreakConveyorOn() {
-		if (!cf.getPopUp().isGlassOnPopUp()) {
+		if (!cf.getPopUp().isGlassOnPopUp() && cf.getPopUp().getFreeChannels() > 0) {
 			turnOnConveyorGUI();
 		}		
 		guiBreakState = GUIBreakState.running;

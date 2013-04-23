@@ -282,7 +282,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		
 		synchronized(glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
-				if (g.processState == processState.doneProcessing && machineComs.get(g.machineIndex).isBroken == false) { // If glass needs to be sent out to next conveyor and a position is available
+				if (g.processState == processState.doneProcessing && machineComs.get(g.machineIndex).isBroken == false && !isGlassOnPopUp()) { // If glass needs to be sent out to next conveyor and a position is available
 					glass = g;
 					break;
 				}				
@@ -483,14 +483,14 @@ public class PopUpAgent extends Agent implements PopUp {
 		int freeChannels = 0;
 		synchronized(machineComs) {	
 			for (MachineCom com: machineComs) {
-				if (com.inUse == false)					
+				if (com.inUse == false && com.isBroken == false)					
 					freeChannels++;
 			}
 		}
 		
 		// Make sure to augment the free channels number by the amount of glasses that are currently within the popUp, so that two glasses do not come up when there shoulkd only be one
 		
-		freeChannels -= glassToBeProcessed.size();
+		//freeChannels -= glassToBeProcessed.size();
 		
 		return freeChannels;
 	}
