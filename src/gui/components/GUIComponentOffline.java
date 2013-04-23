@@ -165,20 +165,10 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	
 	/**
 	 * Sets the speed of processing for this workstation.
-	 * @param s - 0(LOW), 5(MED), 10(HIGH)
+	 * @param s the speed of processing, higher number is slower
 	 */
 	public void setSpeed(int s) {
-		if (s == 0) {
-			speed = LOW_SPEED;
-		} else if (s == 5) {
-			speed = MED_SPEED;
-		} else if (s == 10) {
-			speed = HIGH_SPEED;
-		} else {
-			System.err.println("GUIComponentOffline: Not a valid speed!");
-		}
-		
-		System.out.println("speed: " + speed);
+		speed = s;
 	}
 
 	@Override

@@ -46,16 +46,15 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 			speeds.put(workstations[i], 10);
 		}
 		
-		speedSlider = new JSlider(0, 10, 10);
-		speedSlider.setMajorTickSpacing(5);
-		speedSlider.setSnapToTicks(true);
+		speedSlider = new JSlider(1, 50, 1);
+		speedSlider.setMajorTickSpacing(10);
 		speedSlider.setPaintLabels(true);
+		speedSlider.setToolTipText("" + speedSlider.getValue());
 		speedSlider.addChangeListener(new SliderListener());
 		
 		Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
-		table.put(0, new JLabel("Low"));
-		table.put(5, new JLabel("Medium"));
-		table.put(10, new JLabel("High"));
+		table.put(1, new JLabel("Fastest"));
+		table.put(50, new JLabel("Slowest"));
 		speedSlider.setLabelTable(table);
 		
 		this.add(workstationComboBox);
@@ -69,9 +68,9 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 		public void stateChanged(ChangeEvent evt) {
 			JSlider slider = (JSlider) evt.getSource();
 			int newSpeed = slider.getValue();
+			speedSlider.setToolTipText("" + newSpeed);
 			speeds.put(selected,newSpeed);
 			controlPanel.getGuiParent().getGUIOfflineWorkstations().get(selected).setSpeed(newSpeed);
-			System.out.println("Speed set to " + newSpeed + "for " + selected);
 		}
 	}
 	
