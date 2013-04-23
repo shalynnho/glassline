@@ -152,7 +152,12 @@ public class PopupAgent extends Agent implements Popup {
 				int i;
 				if (mFree[0] && !mBroken[0])
 					i = 0;
-				else // machine 1 must be free (wouldn't have taken glass if it wasn't)
+				else if (mFree[1] && !mBroken[1])
+					i = 1;
+				// allows for optimization in case one workstation breaks after glass needing processing is taken onto popup
+				else if (mBroken[0])
+					i = 0;
+				else
 					i = 1;
 				moveUpAndToMachine(mg, i);
 				return true;
