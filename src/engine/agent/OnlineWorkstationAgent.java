@@ -1,6 +1,7 @@
 package engine.agent;
 
 import java.util.concurrent.Semaphore;
+
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.LineComponent;
@@ -15,8 +16,10 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent, Nonn
 	private Glass glass;
 
 	enum GlassState {pending, arrived, processing, processed, releasing, released};
+	enum GUIState {broken, working};
 
 	private GlassState state;
+	private GUIState aniState;
 	private LineComponent prev, next;
 	private Semaphore aniSem;
 	private boolean recPosFree;
@@ -27,6 +30,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent, Nonn
 		recPosFree = true;
 		channel = type.getChannel();
 		aniSem = new Semaphore(0);
+		aniState = GUIState.working;
 		transducer.register(this, channel);
 	}
 
@@ -46,8 +50,12 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent, Nonn
 
 	/* For the GUI break interaction to stop or start working again. */
 	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
+		if (stop) {
+			aniState = GUIState.broken;
+		} else {
+			aniState = GUIState.working;
+		}
+		stateChanged();
 	}
 	
 	/* Transducer event. Always on the <type> TChannel. */
@@ -65,17 +73,19 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent, Nonn
 
 	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction() {
-		if (state == GlassState.arrived) {
-			processGlass();
-			return true;
-		}
-		if (state == GlassState.processed && recPosFree) {
-			releaseGlass();
-			return true;
-		}
-		if (state == GlassState.released) {
-			reset();
-			return true;
+		if (aniState == GUIState.working) {
+			if (state == GlassState.arrived) {
+				processGlass();
+				return true;
+			}
+			if (state == GlassState.processed && recPosFree) {
+				releaseGlass();
+				return true;
+			}
+			if (state == GlassState.released) {
+				reset();
+				return true;
+			}
 		}
 		return false;
 	}
