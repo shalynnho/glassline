@@ -253,6 +253,7 @@ public class DisplayPanel extends JLayeredPane {
 		offlineComponent.setIndex(machineCount);
 		offlineComponent.addNextComponent(currentComponent);
 		parent.getGuiParent().getTimer().addActionListener(offlineComponent);
+		parent.addGUIComponentOffline(offlineComponent);
 		((GUIPopUp) currentComponent).setPairedMachineType(type);
 		((GUIPopUp) currentComponent).setPairedMachine(offlineComponent, machineCount);
 		machineCount = ++machineCount % 2;

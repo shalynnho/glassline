@@ -1,17 +1,28 @@
 package gui.panels;
 
-import engine.agent.*;
+import engine.agent.BigOnlineConveyorFamilyImp;
+import engine.agent.BinRobotAgent;
+import engine.agent.GeneralConveyorAgent;
+import engine.agent.OfflineWorkstationAgent;
+import engine.agent.OnlineWorkstationAgent;
+import engine.agent.SmallOnlineConveyorFamilyImp;
 import engine.agent.TruckAgent;
 import engine.agent.david.misc.ConveyorFamilyEntity;
 import engine.agent.evan.ConveyorFamilyImplementation;
 import engine.agent.tim.misc.ConveyorFamilyImp;
+import gui.components.GUIComponentOffline;
 import gui.drivers.FactoryFrame;
 import gui.test.DavidsOfflineCFIntegrationTest;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormBreakInteraction;
@@ -51,6 +62,9 @@ public class FactoryPanel extends JPanel {
 	private List<PopupWorkstationInteraction> popups;
 	private List<OnlineWorkstationAgent> onlineWorkstations;
 	private List<OfflineWorkstationAgent> offlineWorkstations;
+	
+	/* Array of GUI Offline Workstations to vary speed of animation */
+	private Map<String, GUIComponentOffline> GUIOfflineWorkstations = new HashMap<String,GUIComponentOffline>(6);;
 	
 	/* ConveyorFamilies & accompanying workstation */
 	
@@ -454,8 +468,29 @@ public class FactoryPanel extends JPanel {
 		// TODO Auto-generated method stub
 	}
 	
+	/**
+	 * Stops/starts the entire factory.
+	 * @param stop 
+	 */
 	public void stopFactory(boolean stop) {
 		// TODO
+	}
+	
+	/**
+	 * Adds a GUIComponentOffline to the list of workstations
+	 * @param g the GUIComponentOffline to be added
+	 */
+	public void addGUIComponentOffline(GUIComponentOffline g) {
+		GUIOfflineWorkstations.put(g.getType().toString()+g.getIndex(), g);
+	}
+	
+	/**
+	 * Returns the list of GUI offline workstations
+	 * 
+	 * @return list of GUI offline workstations
+	 */
+	public Map<String,GUIComponentOffline> getGUIOfflineWorkstations() {
+		return GUIOfflineWorkstations;
 	}
 
 	/**

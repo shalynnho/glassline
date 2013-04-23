@@ -22,6 +22,14 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	/**
 	 * The popup for the offline component
 	 */
+	
+	/* The number of times the animation runs if set to indicated speed.
+	 * High speed is the default and the animation will only execute once.
+	 */
+	private static final int LOW_SPEED = 40;
+	private static final int MED_SPEED = 20;
+	private static final int HIGH_SPEED = 1;
+
 	GUIPopUp myPopUp;
 
 	MachineType type;
@@ -36,6 +44,8 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Frame counter
 	 */
 	int counter = 0;
+	int animationCount = 0;
+	int speed = HIGH_SPEED;
 
 	/**
 	 * List of icons for animations
@@ -50,7 +60,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		transducer = t;
 		this.type = type;
 		initializeImages();
-
 	}
 
 	/**
@@ -81,13 +90,20 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Method that does the machine animation
 	 */
 	public void doAnimate() {
-		if (counter < imageicons.size()) {
+		System.out.println("counter: " + counter + ", size: " + imageicons.size()
+							+ ", aniCnt: " + animationCount + ", speed: " + speed);
+		if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
 			setIcon(imageicons.get(counter));
 			counter++;
+			animationCount++;
+			if (counter == imageicons.size()) {
+				counter = 0;
+			}
 		} else {
 
 			setIcon(imageicons.get(0));
 			counter = 0;
+			animationCount = 0;
 
 			Object[] args = new Object[1];
 			args[0] = index;
@@ -116,6 +132,14 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	public void setIndex(Integer index) {
 		this.index = index;
 	}
+	
+	public int getIndex() {
+		return index;
+	}
+	
+	public MachineType getType() {
+		return type;
+	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -137,6 +161,24 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			args[0] = index;
 			transducer.fireEvent(channel, TEvent.WORKSTATION_LOAD_FINISHED, args);
 		}
+	}
+	
+	/**
+	 * Sets the speed of processing for this workstation.
+	 * @param s - 0(LOW), 5(MED), 10(HIGH)
+	 */
+	public void setSpeed(int s) {
+		if (s == 0) {
+			speed = LOW_SPEED;
+		} else if (s == 5) {
+			speed = MED_SPEED;
+		} else if (s == 10) {
+			speed = HIGH_SPEED;
+		} else {
+			System.err.println("GUIComponentOffline: Not a valid speed!");
+		}
+		
+		System.out.println("speed: " + speed);
 	}
 
 	@Override
