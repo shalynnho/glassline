@@ -82,8 +82,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Method that does the machine animation
 	 */
 	public void doAnimate() {
-		System.out.println("counter: " + counter + ", size: " + imageicons.size()
-							+ ", aniCnt: " + animationCount + ", speed: " + speed);
 		if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
 			setIcon(imageicons.get(counter));
 			counter++;
