@@ -173,7 +173,7 @@ public class FactoryPanel extends JPanel {
 			// Drill
 			drillWorkstation = new OfflineWorkstationAgent[2];
 			{ // create drill conveyor family
-				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5);
+				engine.agent.evan.ConveyorAgent c = new engine.agent.evan.ConveyorAgent("Drill conveyor", transducer, 5, timer);
 				engine.agent.evan.PopupAgent p = new engine.agent.evan.PopupAgent("Drill popup", c, drillWorkstation, MachineType.DRILL, transducer, 0);
 				
 				drillFamily = new ConveyorFamilyImplementation(c, p);
