@@ -21,4 +21,5 @@ public interface PopUp extends PopupWorkstationInteraction {
 
 	// These methods will specifically be used for testing purposes -- do not have to be always be implemented
 	public abstract void runScheduler();
+	public abstract int getGuiIndex();
 }

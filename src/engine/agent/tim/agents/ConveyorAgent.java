@@ -272,7 +272,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Other Methods:
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel == TChannel.POPUP/* && event == TEvent.POPUP_GUI_RELEASE_FINISHED*/) {
+		if (channel == TChannel.POPUP  && (Integer) args[0] == cf.getPopUp().getGuiIndex() && guiBreakState == GUIBreakState.running/* && event == TEvent.POPUP_GUI_RELEASE_FINISHED*/) {
 			// Non-Norm check -- if there is no glass on the PopUpSensor and there is no glass on the popUp, turn on conveyor if it is stuck after popUp releases a piece of glass
 			boolean glassOnPopUpSensor = false;
 			synchronized(glassSheets) {

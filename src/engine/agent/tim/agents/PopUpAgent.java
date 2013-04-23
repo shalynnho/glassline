@@ -568,4 +568,8 @@ public class PopUpAgent extends Agent implements PopUp {
 		}
 		return false;
 	}
+	
+	public int getGuiIndex() {
+		return guiIndex;
+	}
 }
