@@ -27,8 +27,6 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 	
 	private JSlider speedSlider;
 	private String selected;
-	private int selectedSpeed;
-	
 	private Map<String,Integer> speeds;	
 	
 	public WorkstationSpeedSliderPanel(ControlPanel cp) {

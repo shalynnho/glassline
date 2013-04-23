@@ -22,13 +22,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	/**
 	 * The popup for the offline component
 	 */
-	
-	/* The number of times the animation runs if set to indicated speed.
-	 * High speed is the default and the animation will only execute once.
-	 */
-	private static final int LOW_SPEED = 40;
-	private static final int MED_SPEED = 20;
-	private static final int HIGH_SPEED = 1;
 
 	GUIPopUp myPopUp;
 
@@ -44,8 +37,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Frame counter
 	 */
 	int counter = 0;
-	int animationCount = 0;
-	int speed = HIGH_SPEED;
+	int animationCount = 0;	int speed = 1;
 
 	/**
 	 * List of icons for animations
