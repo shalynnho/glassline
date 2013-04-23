@@ -117,16 +117,23 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	public void msgPositionFree() {
 		popup.msgPositionFree();
-
-		// option: have a check that popup is not broken before relaying the message
-		// if popup IS broken, then wait and set a timer to periodically check if it should pass the position free, 
-		// only doing so when popup is unbroken
-
-		// actually just do this in popupagent directly...
 	}
 
 	public void msgGlassDone(Glass g, int index) {
 		popup.msgGlassDone(g, index); // pass to popup
+	}
+	
+	// Side-effect of interface extension - these 3 are ignored. These are never sent to the family.
+	@Override
+	public void msgGUIBreakWorkstation(boolean stop, int index) {
+	}
+
+	@Override
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
+	}
+
+	@Override
+	public void msgGUIBreak(boolean stop) {
 	}
 
 	// *** TRANSDUCER / ANIMATION CALLS ***

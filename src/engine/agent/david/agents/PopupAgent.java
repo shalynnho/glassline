@@ -611,4 +611,14 @@ public class PopupAgent extends Agent implements Popup {
 		finishedGlasses.add(g);
 		finishedGlasses.add(g2);
 	}
+	@Override
+	public void msgGUIBreakWorkstation(boolean stop, int index) { // sent when workstation is stopped
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list
+		// TODO Auto-generated method stub
+		
+	}
 }
