@@ -1,6 +1,7 @@
 package engine.agent;
 
 import java.util.concurrent.Semaphore;
+
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormBreakInteraction;
@@ -21,6 +22,9 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	private GlassState gs;
 	private PopupWorkstationInteraction p;
 	private Semaphore waitSem;
+	
+	private enum GUIBreakState {stop, stopped, restart, running};
+	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI workstation is broken or not	
 	
 	public OfflineWorkstationAgent(String name, MachineType mt, int index, Transducer trans) {
 		super(name, trans);
@@ -46,6 +50,18 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 		stateChanged();
 	}
 	
+	/* For the GUI break interaction to stop or start working again. */
+	public void msgGUIBreak(boolean stop) {
+		if (stop && guiBreakState == GUIBreakState.running) {
+			guiBreakState = GUIBreakState.stop;
+			stateChanged();
+		} 
+		else if (!stop && guiBreakState == GUIBreakState.stopped) {
+			guiBreakState = GUIBreakState.restart;
+			stateChanged();
+		}
+	}
+	
 	/* Transducer event. All events are on this workstation's machine type TChannel. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if ((Integer)args[0] == index) {
@@ -62,17 +78,26 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
+		// Check to see if a GUI break message came in
+		if (guiBreakState == GUIBreakState.stop) {
+			actBreakWorkstationOff();
+			return false; // Make sure the method does not call again
+		}
+		
+		else if (guiBreakState == GUIBreakState.restart) {
+			actBreakWorkstationOn();
+			return true; 		
+		}
+		
+		else if (guiBreakState == GUIBreakState.stopped) {
+			return false; // C'mon the Workstation is broken!  It shouldn't run until this state is changed
+		}
+		
 		if (gs == GlassState.arrived) {
 			processGlass();
 			return true;
 		}
 		return false;
-	}
-
-	/* For the GUI break interaction to stop or start working again. */
-	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	// *** ACTIONS ***
@@ -84,6 +109,15 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 		doWaitProcessing();
 		p.msgGlassDone(g, index);
 		// Popup will take glass when it is ready, Workstation now waits for next glass to arrive
+	}
+	
+	// New Non-norm GUI actions
+	private void actBreakWorkstationOff() {
+		guiBreakState = GUIBreakState.stopped; 
+	}
+	
+	private void actBreakWorkstationOn() {
+		guiBreakState = GUIBreakState.running;
 	}
 	
 	// *** ANIMATION ACTIONS ***

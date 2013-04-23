@@ -208,6 +208,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		synchronized (glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
 				if (g.machineIndex == index && g.processState == processState.processing) {
+					print("Removed glass (" + g.glass.getID() + ") from the popUp.");
 					glassToBeProcessed.remove(g);
 					break;
 				}
@@ -296,7 +297,7 @@ public class PopUpAgent extends Agent implements PopUp {
 				if (g.processState == processState.awaitingArrival) { // If glass needs to be sent out to next conveyor and a position is available
 					synchronized(machineComs) {
 						for (MachineCom com: machineComs) {
-							if (((com.inUse == false && com.isBroken == false) || !g.glass.getNeedsProcessing(processType))) { // If there is an available machine and it is not broken or glass does not need processing
+							if (((com.inUse == false && com.isBroken == false) || !g.glass.getNeedsProcessing(processType)) && !isGlassOnPopUp()) { // If there is an available machine and it is not broken or glass does not need processing
 								glass = g;
 								machCom = com;
 								break;
@@ -550,8 +551,8 @@ public class PopUpAgent extends Agent implements PopUp {
 		synchronized (glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
 				if (g.processState == processState.unprocessed ||
-					g.processState == processState.awaitingRemoval ||
-					g.processState == processState.doneProcessing) { // If glass is on or transitioning to/from popUp
+					g.processState == processState.awaitingRemoval /*||
+					g.processState == processState.doneProcessing*/) { // If glass is on or transitioning to/from popUp
 					return true;
 				}
 				if (g.processState == processState.awaitingArrival) { // If there is a piece of glass already moving towards the popUp
