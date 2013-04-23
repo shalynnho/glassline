@@ -87,6 +87,12 @@ public class PopupAgent extends Agent implements Popup, NonnormBreakInteraction 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/* This message is from the GUI telling that the workstation is broken or unbroken. */
+	public void msgGUIBreakWorkstation(boolean stop, int machineIndex) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/* Transducer event. */
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
