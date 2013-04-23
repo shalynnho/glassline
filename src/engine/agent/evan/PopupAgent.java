@@ -7,6 +7,7 @@ import shared.enums.MachineType;
 import shared.interfaces.*;
 import transducer.*;
 import engine.agent.Agent;
+import engine.agent.evan.ConveyorAgent.GUIBreakState;
 import engine.agent.evan.interfaces.*;
 
 public class PopupAgent extends Agent implements Popup {
@@ -17,6 +18,9 @@ public class PopupAgent extends Agent implements Popup {
 	private int id; // place in animation
 	
 	enum GlassState {pending, needsProcessing, atMachine, doneProcessing, waiting};
+	enum GUIBreakState {stop, stopped, restart};
+	private GUIBreakState gbs;
+	
 	private class MyGlass {
 		public Glass g;
 		public GlassState gs;
@@ -84,8 +88,12 @@ public class PopupAgent extends Agent implements Popup {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
+		if  (stop) {
+			gbs = GUIBreakState.stop;
+		} else {
+			gbs = GUIBreakState.restart;
+		}
+		stateChanged();
 	}
 	
 	/* This message is from the GUI telling that the workstation is broken or unbroken. */
@@ -117,6 +125,15 @@ public class PopupAgent extends Agent implements Popup {
 
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
+		if (gbs == GUIBreakState.stop) {
+			guiStop();
+			return false; // agent shouldn't do anything until it is unstopped
+		} else if (gbs == GUIBreakState.restart) {
+			guiRestart();
+			return true;
+		} else if (gbs == GUIBreakState.stopped) {
+			return false; // don't do anything if stopped
+		}
 		for (MyGlass mg : glasses)
 			if (mg.gs == GlassState.waiting) {
 				if (posFree) {
@@ -152,6 +169,16 @@ public class PopupAgent extends Agent implements Popup {
 	
 	// *** ACTIONS ***
 	
+	/* Restart on GUI command. */
+	private void guiRestart() {
+		gbs = null;
+	}
+	
+	/* Stop on GUI command. */
+	private void guiStop() {
+		gbs = GUIBreakState.stopped;
+	}
+
 	/* Move glass up and load it into the machine. */
 	private void moveUpAndToMachine(MyGlass mg, int i) {
 		mg.i = i;
