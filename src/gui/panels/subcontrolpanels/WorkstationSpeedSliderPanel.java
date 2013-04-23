@@ -1,5 +1,7 @@
 package gui.panels.subcontrolpanels;
 
+import gui.panels.ControlPanel;
+
 import java.util.Hashtable;
 
 import javax.swing.BoxLayout;
@@ -7,19 +9,24 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class WorkstationSpeedSliderPanel extends JPanel {
 	
-	private String[] workstations = {"DRILL", "CROSS SEAMER", "GRINDER"};
-	private JComboBox workstationComboBox;
+	private static final long serialVersionUID = 7286657091005148296L;
+	private ControlPanel parent;
+	private String[] workstations = {"Drill0", "Drill1", "CrossSeamer0", "CrossSeamer1", "Grinder0", "Grinder1"};
+	private JComboBox<String> workstationComboBox;
 	private JSlider speedSlider;
 	
 	
-	public WorkstationSpeedSliderPanel() {
+	public WorkstationSpeedSliderPanel(ControlPanel cp) {
 		super();
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		workstationComboBox = new JComboBox(workstations);
+		parent = cp;
+		workstationComboBox = new JComboBox<String>(workstations);
 		speedSlider = new JSlider(0, 10, 10);
 		speedSlider.setMajorTickSpacing(5);
 		speedSlider.setSnapToTicks(true);
@@ -34,6 +41,14 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 		this.add(workstationComboBox);
 		this.add(speedSlider);
 		this.validate();
+	}
+	 
+	protected class SliderListener implements ChangeListener {
+
+		@Override
+		public void stateChanged(ChangeEvent evt) {
+			
+		}
 	}
 
 }

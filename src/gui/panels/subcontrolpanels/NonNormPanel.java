@@ -98,7 +98,7 @@ public class NonNormPanel extends JPanel {
 		buttonPanel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
 		this.add(buttonPanel);
 		
-		this.add(new WorkstationSpeedSliderPanel());
+		this.add(new WorkstationSpeedSliderPanel(parent));
 
 		JPanel colorLinesPanel2 = new JPanel();
 		colorLinesPanel2.setPreferredSize(new Dimension(350, 40));
