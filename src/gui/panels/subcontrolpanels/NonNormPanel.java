@@ -20,7 +20,6 @@ import shared.enums.NonNormTarget;
 /**
  * The NonNormPanel is responsible for initiating and managing non-normative situations. It contains buttons for each possible non-norm.
  * 
- * The non-normative situations are: 1. 2. 3. 4. 5. 6. 7. 8.
  */
 @SuppressWarnings("serial")
 public class NonNormPanel extends JPanel {
