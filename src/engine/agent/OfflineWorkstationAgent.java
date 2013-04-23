@@ -5,8 +5,8 @@ import java.util.concurrent.Semaphore;
 import shared.Glass;
 import shared.enums.MachineType;
 import shared.interfaces.NonnormBreakInteraction;
-import shared.interfaces.PopupWorkstationInteraction;
 import shared.interfaces.OfflineWorkstation;
+import shared.interfaces.PopupWorkstationInteraction;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -76,6 +76,12 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
+		
+		if (gs == GlassState.arrived) {
+			processGlass();
+			return true;
+		}
+
 		if (aniState == GUIState.working) {		
 			if (gs == GlassState.arrived) {
 				processGlass();
