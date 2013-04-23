@@ -24,7 +24,7 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	private Semaphore waitSem;
 	
 	enum GUIState {broken, working};
-	private GUIState aniState = GUIState.working;
+	private GUIState aniState = GUIState.working;	
 	
 	public OfflineWorkstationAgent(String name, MachineType mt, int index, Transducer trans) {
 		super(name, trans);
@@ -75,18 +75,13 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	}
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
-	public boolean pickAndExecuteAnAction() {		
-		if (aniState == GUIState.working) {
-			
-			if (gs == GlassState.arrived) {
-				processGlass();
-				return true;
-			}				
+	public boolean pickAndExecuteAnAction() {
+		
+		if (aniState == GUIState.working) {		
 			if (gs == GlassState.arrived) {
 				processGlass();
 				return true;
 			}
-			
 		}
 		return false;
 	}
