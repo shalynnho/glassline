@@ -177,9 +177,11 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	}
 	
 	private void doBreaking() {
-		if (breakCount < 4) {
+		if (breakCount < 15) {
 			breakCount++;
-		} else {
+		}
+		
+		if (breakCount == 15) {
 			System.out.println("REMOVING BROKEN GLASS");
 			parent.getActivePieces();
 			parent.getParent().getGuiParent().getTimer().removeActionListener(part);
