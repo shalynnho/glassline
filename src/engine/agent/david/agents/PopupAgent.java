@@ -607,9 +607,6 @@ public class PopupAgent extends Agent implements Popup {
 		}
 	}
 
-	// public void setNextPosFree(boolean b) {
-	// nextPosFree = b;
-	// }
 	@Override
 	public void setIsUp(boolean b) {
 		isUp = b;
