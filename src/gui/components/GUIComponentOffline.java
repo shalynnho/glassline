@@ -183,7 +183,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			breakCount++;
 		} else {
 			// remove glass
-//			System.out.println("REMOVING BROKEN GLASS");
+			System.out.println("REMOVING BROKEN GLASS");
 			parent.getActivePieces();
 			parent.getParent().getGuiParent().getTimer().removeActionListener(part);
 			parent.remove(part);
