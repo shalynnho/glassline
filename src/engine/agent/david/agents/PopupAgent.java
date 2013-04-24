@@ -233,15 +233,11 @@ public class PopupAgent extends Agent implements Popup {
 	
 	/**
 	 * Message from gui that a piece of glass was removed from workstation index (0 or 1)
-	 * 
+	 * Nothing to do, as glass that is on workstation simply vanishes from OfflineWorkstationAgent
+	 * would msgGlassDone not get sent when glass is removed? if so, you're all set. 
 	 */
 	@Override
-	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list
-		// TODO Auto-generated method stub
-		// Nothing to do, as glass that is on workstation simply vanishes from OfflineWorkstationAgent
-		// would msgGlassDone not get sent when glass is removed? if so, you're all set.
-		
-//		stateChanged();
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list if necessary
 	}
 
 	// *** SCHEDULER ***
