@@ -167,7 +167,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			transducer.fireEvent(channel, TEvent.WORKSTATION_LOAD_FINISHED, args);
 			glassSentOnLoad = true; // While part is on WS, leave this as true
 			if (breakGlass) {
-//				System.out.println("ANIMATION STATE SET TO BREAKING");
 				animationState = AnimationState.BREAKING;
 				part.msgPartBroken();
 			}
@@ -179,10 +178,8 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	
 	private void doBreaking() {
 		if (breakCount < 4) {
-//			System.out.println("	BREAKING ANIMATION " + breakCount);
 			breakCount++;
 		} else {
-			// remove glass
 			System.out.println("REMOVING BROKEN GLASS");
 			parent.getActivePieces();
 			parent.getParent().getGuiParent().getTimer().removeActionListener(part);
