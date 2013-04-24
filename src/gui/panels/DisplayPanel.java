@@ -18,6 +18,8 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -75,14 +77,24 @@ public class DisplayPanel extends JLayeredPane {
 
 	GuiTestSM test;
 
-	ArrayList<GUIGlass> activePieces = new ArrayList<GUIGlass>();
+	List<GUIGlass> activePieces = Collections.synchronizedList(new ArrayList<GUIGlass>());
 
-	public ArrayList<GUIGlass> getActivePieces() {
+	public List<GUIGlass> getActivePieces() {
+		synchronized(activePieces) {
+			for(GUIGlass g : activePieces) {
+				if (g.getStateBroken()) {
+					activePieces.remove(g);
+					break;
+				}
+			}
+		}
 		return activePieces;
 	}
 
 	public void setActivePieces(ArrayList<GUIGlass> activePieces) {
-		this.activePieces = activePieces;
+		synchronized(activePieces) {
+			this.activePieces = activePieces;
+		}
 	}
 
 	GuiComponent currentComponent;

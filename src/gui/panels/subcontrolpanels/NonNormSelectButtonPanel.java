@@ -106,7 +106,7 @@ public class NonNormSelectButtonPanel extends JPanel {
 					factoryPanel.breakSensor(breakState[id], id);
 					break;
 				case GLASS:
-					factoryPanel.breakGlass(breakState[id], id);
+					factoryPanel.breakGlass(breakState[id], id, getOfflineName(id));
 					break;
 				case TEST:
 					// test
@@ -123,6 +123,25 @@ public class NonNormSelectButtonPanel extends JPanel {
 			} else {
 				breakState[id] = true;
 				breakButton.setText("Break " + name);
+			}
+		}
+		
+		private String getOfflineName(int id) {
+			switch(id) {
+				case 0:
+					return "Drill0";
+				case 1:
+					return "Drill1";
+				case 2:
+					return "Cross Seamer0";
+				case 3:
+					return "Cross Seamer1";
+				case 4:
+					return "Grinder0";
+				case 5:
+					return "Grinder1";
+				default:
+					return "Drill0";
 			}
 		}
 	}
