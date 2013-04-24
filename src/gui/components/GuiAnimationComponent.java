@@ -18,7 +18,7 @@ public class GuiAnimationComponent extends GuiComponent {
 	boolean isAnimating;
 
 	enum AnimationState {
-		IDLE, ANIMATING, DONE, MOVING
+		IDLE, ANIMATING, DONE, MOVING, BREAKING
 	};
 
 	AnimationState animationState = AnimationState.IDLE;

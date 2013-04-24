@@ -2,7 +2,7 @@ package gui.components;
 
 import java.awt.event.ActionEvent;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 
@@ -31,7 +31,7 @@ public class GUISensor extends GuiComponent {
 	 */
 	Rectangle2D glassRect;
 
-	ArrayList<GUIGlass> activePieces;
+	List<GUIGlass> activePieces;
 
 	GUIGlass currentGlassPiece;
 

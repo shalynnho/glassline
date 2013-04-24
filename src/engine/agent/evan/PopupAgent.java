@@ -39,7 +39,7 @@ public class PopupAgent extends Agent implements Popup {
 	
 	private Semaphore animSem[]; // animation delay semaphores: load finished, move up, move down, release finished, machine load finished
 	
-	private boolean mFree[], up, posFree; // machine free, up or down, nextCF position free
+	private boolean mFree[], mBroken[], up, posFree; // machine free, up or down, nextCF position free
 	
 	/* Assigns references from arguments and sets other data appropriately. */
 	public PopupAgent(String name, LineComponent conv, OfflineWorkstation machines[], MachineType mType, Transducer trans, int index) {
@@ -60,6 +60,8 @@ public class PopupAgent extends Agent implements Popup {
 		
 		mFree = new boolean[2];
 		mFree[0] = true; mFree[1] = true;
+		mBroken = new boolean[2];
+		mBroken[0] = false; mBroken[1] = false;
 		up = false;
 		posFree = true;
 	}
@@ -97,15 +99,18 @@ public class PopupAgent extends Agent implements Popup {
 	}
 	
 	/* This message is from the GUI telling that the workstation is broken or unbroken. */
-	public void msgGUIBreakWorkstation(boolean stop, int machineIndex) {
-		// TODO Auto-generated method stub
-		
+	public void msgGUIBreakWorkstation(boolean stop, int index) {
+		mBroken[index] = stop;
+		stateChanged();
 	}
 	
 	/* This message is from the GUI telling that a piece of glass was removed from the workstation. */
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
-		// TODO Auto-generated method stub
-		
+		for (MyGlass mg : glasses)
+			if (mg.i == index)
+				glasses.remove(mg);
+		mFree[index] = true;
+		stateChanged();
 	}
 
 	/* Transducer event. */
@@ -145,9 +150,14 @@ public class PopupAgent extends Agent implements Popup {
 		for (MyGlass mg : glasses)
 			if (mg.gs == GlassState.needsProcessing) {
 				int i;
-				if (mFree[0])
+				if (mFree[0] && !mBroken[0])
 					i = 0;
-				else // machine 1 must be free (wouldn't have taken glass if it wasn't)
+				else if (mFree[1] && !mBroken[1])
+					i = 1;
+				// allows for optimization in case one workstation breaks after glass needing processing is taken onto popup
+				else if (mBroken[0])
+					i = 0;
+				else
 					i = 1;
 				moveUpAndToMachine(mg, i);
 				return true;
@@ -159,7 +169,7 @@ public class PopupAgent extends Agent implements Popup {
 			}
 		for (MyGlass mg : glasses)
 			// if pending and (there is a machine free or mg doesn't need processing)
-			if (mg.gs == GlassState.pending && (mFree[0] || mFree[1] || !mg.g.getNeedsProcessing(mt))) {
+			if (mg.gs == GlassState.pending && ((mFree[0] && !mBroken[0]) || (mFree[1] && !mBroken[1]) || !mg.g.getNeedsProcessing(mt))) {
 				readyForGlass(mg);
 				return true;
 			}

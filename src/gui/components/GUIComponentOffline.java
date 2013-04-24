@@ -37,7 +37,9 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Frame counter
 	 */
 	int counter = 0;
-	int animationCount = 0;	int speed = 1;
+	int animationCount = 0;
+	int breakCount = 0;	int speed = 1;
+	boolean breakGlass = false;
 
 	/**
 	 * List of icons for animations
@@ -117,6 +119,14 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		if (animationState.equals(AnimationState.ANIMATING)) {
 			doAnimate();
 		}
+		if (animationState.equals(AnimationState.BREAKING)) {
+//			System.out.println("CALLING DOBREAKING()");
+			doBreaking();
+		}
+	}
+	
+	public void breakGlass(boolean breakGlass) {
+		this.breakGlass = breakGlass;
 	}
 
 	@Override
@@ -156,9 +166,28 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			args[0] = index;
 			transducer.fireEvent(channel, TEvent.WORKSTATION_LOAD_FINISHED, args);
 			glassSentOnLoad = true; // While part is on WS, leave this as true
+			if (breakGlass) {
+				animationState = AnimationState.BREAKING;
+				part.msgPartBroken();
+			}
 		}
 		else if (!(part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY())) {
 			glassSentOnLoad = false; // Set this to false as soon as the part leaves, so the next one can be processed
+		}
+	}
+	
+	private void doBreaking() {
+		if (breakCount < 15) {
+			breakCount++;
+		}
+		
+		if (breakCount == 15) {
+			System.out.println("REMOVING BROKEN GLASS");
+			parent.getActivePieces();
+			parent.getParent().getGuiParent().getTimer().removeActionListener(part);
+			parent.remove(part);
+			breakCount = 0;
+			animationState = AnimationState.IDLE;
 		}
 	}
 	
@@ -173,7 +202,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (((Integer) args[0]).equals(index)) {
-			if (event == TEvent.WORKSTATION_DO_ACTION) {
+			if (event == TEvent.WORKSTATION_DO_ACTION && !breakGlass) {
 				animationState = AnimationState.ANIMATING;
 				return;
 			}
@@ -191,7 +220,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				nextComponent.addPart(part);
 				return;
 			}
-
 		}
 	}
 }

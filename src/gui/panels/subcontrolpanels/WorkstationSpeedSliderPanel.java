@@ -46,6 +46,7 @@ public class WorkstationSpeedSliderPanel extends JPanel {
 		
 		speedSlider = new JSlider(1, 50, 1);
 		speedSlider.setMajorTickSpacing(10);
+		speedSlider.setInverted(true);
 		speedSlider.setPaintLabels(true);
 		speedSlider.setToolTipText("" + speedSlider.getValue());
 		speedSlider.addChangeListener(new SliderListener());

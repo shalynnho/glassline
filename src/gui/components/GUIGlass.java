@@ -56,7 +56,7 @@ public class GUIGlass extends GuiComponent implements Serializable {
 	/**
 	 * File names for each of the various images for glass
 	 */
-	String filePathNONE = "imageicons/glassImage_NONE.png"; // Base image
+	public static String filePathNONE = "imageicons/glassImage_NONE.png"; // Base image
 	/**
 	 * Instances of image holder that hold the overlays for the glass for breakout
 	 */
@@ -330,6 +330,10 @@ public class GUIGlass extends GuiComponent implements Serializable {
 	 */
 	public double getCurrentAngle() {
 		return currentAngle;
+	}
+	
+	public boolean getStateBroken() {
+		return stateBroken;
 	}
 
 	/**

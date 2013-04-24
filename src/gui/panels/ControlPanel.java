@@ -116,8 +116,8 @@ public class ControlPanel extends JPanel implements TReceiver {
 		selectTabbedPanel.setBorder(BorderFactory.createEmptyBorder());
 
 		JTabbedPane infoTabbedPanel = new JTabbedPane(JTabbedPane.TOP);
-		infoTabbedPanel.add("Glass Info", glassInfoPanel);
 		infoTabbedPanel.add("Agent Traces", tracePanel);
+		infoTabbedPanel.add("Glass Info", glassInfoPanel);
 		infoTabbedPanel.setBackground(Color.black);
 		infoTabbedPanel.setForeground(Color.white);
 		infoTabbedPanel.setBorder(BorderFactory.createEmptyBorder());
