@@ -164,7 +164,7 @@ public class PopupAgent extends Agent implements Popup {
 		}
 		// otherwise, popup is busy WAITING_FOR something else to happen, or is already ACTIVE doing something perhaps for the other workstation
 	}
-
+	
 	/**
 	 * To jam or unjam the popup
 	 */
@@ -181,10 +181,11 @@ public class PopupAgent extends Agent implements Popup {
 		stateChanged();
 	}
 
-	@Override
+	
 	/**
 	 * @param index 0 or 1 for top or bottom workstation, respectively
 	 */
+	@Override
 	public void msgGUIBreakWorkstation(boolean stop, int index) { // sent to break or unbreak workstation
 		// break
 		if (stop) {
@@ -195,7 +196,6 @@ public class PopupAgent extends Agent implements Popup {
 				prevWsState2 = wsState2;
 				wsState2 = WorkstationState.BROKEN;
 			}
-			
 		}
 		// unbreak
 		else {
@@ -206,14 +206,42 @@ public class PopupAgent extends Agent implements Popup {
 				wsState2 = prevWsState2; // revert to saved state
 				prevWsState2 = null;
 			}
+			
+			// In case glass is waiting at the sensor, and we finally unbreak, we must trigger action
+			if (sensorOccupied)
+				startWksFixedTimer(); // don't need if glass hasn't reached sensor yet, because then the next glass would reach the sensor and trigger events the standard way in eventFired
 		}
-		print("CURRENT STATE: "+state);
-		stateChanged(); // needed? TODONOW: INCOMPLETE
+//		stateChanged(); // do not want this since this triggers an unwanted run-through of the scheduler, which could interrupt popup state
 	}
+	private void startWksFixedTimer() {
+		wksFixedTimer.schedule(new TimerTask() {
+			public void run() {
+				if (state != PopupState.DOING_NOTHING) // if the state still isn't ready (ready=DOING_NOTHING), restart the timer
+					startWksFixedTimer();
+				else { // popup is already to trigger what would have been triggered when the glass reached the sensor (copy of what happens in event fired)
+					handleWakeUpPopupAfterWksFixed();
+				}
+			}
+		}, WAIT_INTERVAL);		
+	}
+	// pre: popup state is DOING_NOTHING, sensorOccupied should also be true since popup wouldn't know to remove the glass at the sensor
+	private void handleWakeUpPopupAfterWksFixed() {
+		setState(PopupState.ACTIVE);
+		stateChanged();
+	}
+	
+	
+	/**
+	 * Message from gui that a piece of glass was removed from workstation index (0 or 1)
+	 * 
+	 */
 	@Override
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list
 		// TODO Auto-generated method stub
-		stateChanged();
+		// Nothing to do, as glass that is on workstation simply vanishes from OfflineWorkstationAgent
+		// would msgGlassDone not get sent when glass is removed? if so, you're all set.
+		
+//		stateChanged();
 	}
 
 	// *** SCHEDULER ***
@@ -268,9 +296,6 @@ public class PopupAgent extends Agent implements Popup {
 		}
 		
 		setState(PopupState.DOING_NOTHING); // if you returned true above, you might reach here while in WAIT state, so this could interfere with other wait states
-		
-		
-		
 		return false;
 	}
 
@@ -499,7 +524,7 @@ public class PopupAgent extends Agent implements Popup {
 	/**
 	 * Returns next MyGlass object from glasses list that either needs processing or doesn't
 	 */
-	private MyGlass getNextUnhandledGlass() {
+	private synchronized MyGlass getNextUnhandledGlass() {
 		MyGlass g = null;
 		for (MyGlass mg : glasses) {
 			if (mg.getState() == GlassState.NEEDS_PROCESSING || mg.getState() == GlassState.DOES_NOT_NEED_PROCESSING)
@@ -540,14 +565,14 @@ public class PopupAgent extends Agent implements Popup {
 		return wsState1 == state || wsState2 == state;
 	}
 
-	private void updateWorkstationState(OfflineWorkstation w, WorkstationState state) {
+	private synchronized void updateWorkstationState(OfflineWorkstation w, WorkstationState state) {
 		if (w.getIndex() % 2 == 0) // 0 or even index means top machine (machine 1)
 			wsState1 = state;
 		else
 			wsState2 = state;
 	}
 
-	private void updateWorkstationState(int machineIndex, WorkstationState state) {
+	private synchronized void updateWorkstationState(int machineIndex, WorkstationState state) {
 		if (machineIndex % 2 == 0) // 0 or even index means top machine (machine 1)
 			wsState1 = state;
 		else
@@ -555,16 +580,16 @@ public class PopupAgent extends Agent implements Popup {
 	}
 
 	// Returns true if there is a glass that is done processing on a workstation
-	private boolean atLeastOneWorkstationIsDoneButStillHasGlass() {
+	private synchronized boolean atLeastOneWorkstationIsDoneButStillHasGlass() {
 		return aWorkstationHasState(WorkstationState.DONE_BUT_STILL_HAS_GLASS);
 	}
 
 	// Pre: wksBreakState is changed when FactoryPanel's breakOfflineWorkstation is called in
-	private boolean aWorkstationIsFree() {
+	private synchronized boolean aWorkstationIsFree() {
 		return aWorkstationHasState(WorkstationState.FREE);
 	}
 
-	private boolean bothWorkstationsOccupiedButAtLeastOneIsDone() {
+	private synchronized boolean bothWorkstationsOccupiedButAtLeastOneIsDone() {
 		return wsState1 != WorkstationState.FREE && wsState2 != WorkstationState.FREE && atLeastOneWorkstationIsDoneButStillHasGlass();
 	}
 
@@ -573,7 +598,7 @@ public class PopupAgent extends Agent implements Popup {
 	 * @param s
 	 * @return
 	 */
-	private OfflineWorkstation getWorkstationWithState(WorkstationState s) {
+	private synchronized OfflineWorkstation getWorkstationWithState(WorkstationState s) {
 		if (wsState1 == s) {
 			return workstation1;
 		} else if (wsState2 == s) {
@@ -586,7 +611,7 @@ public class PopupAgent extends Agent implements Popup {
 	/**
 	 * Method to change popup state
 	 */
-	private void setState(PopupState s) {
+	private synchronized void setState(PopupState s) {
 		// If prevState is null, then popup is not broken
 		if (prevState == null) { // uncertain: why does this work for popup nonnorm?
 //			System.err.println("changing state from " + state + " to " + s);
@@ -598,8 +623,15 @@ public class PopupAgent extends Agent implements Popup {
 		}
 	}
 
+//	/**
+//	 * Changing workstation state in a synchronized manner
+//	 */
+//	private synchronized void changeWksState1(WorkstationState s) {
+//		wsState1 = s;
+//	}
+	
 	// Testing helpers
-	public void setWorkstationState(int i, WorkstationState s) {
+	public synchronized void setWorkstationState(int i, WorkstationState s) {
 		if (i == 1) {
 			wsState1 = s;
 		} else {
@@ -607,18 +639,17 @@ public class PopupAgent extends Agent implements Popup {
 		}
 	}
 
-	@Override
-	public void setIsUp(boolean b) {
+	public synchronized void setIsUp(boolean b) {
 		isUp = b;
 	}
 
 	@Override
-	public List<Glass> getFinishedGlasses() {
+	public synchronized List<Glass> getFinishedGlasses() {
 		return finishedGlasses;
 	}
 
 	@Override
-	public List<MyGlass> getGlasses() {
+	public synchronized List<MyGlass> getGlasses() {
 		return glasses;
 	}
 

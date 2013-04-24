@@ -396,7 +396,7 @@ public class FactoryPanel extends JPanel {
 //				MachineType.GRINDER, MachineType.OVEN}));
 
 		glasses.add(new Glass(new MachineType[] { MachineType.CROSS_SEAMER, MachineType.GRINDER }));
-		glasses.add(new Glass(new MachineType[] { MachineType.DRILL, MachineType.GRINDER }));
+		glasses.add(new Glass(new MachineType[] { MachineType.DRILL }));
 		glasses.add(new Glass(new MachineType[] { MachineType.GRINDER }));
 		glasses.add(new Glass(new MachineType[] { }));
 		
