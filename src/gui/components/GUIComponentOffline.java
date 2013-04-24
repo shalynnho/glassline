@@ -190,6 +190,9 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			parent.repaint();
 			breakCount = 0;
 			animationState = AnimationState.IDLE;
+			// @Tim -- Added this transducer event to remove the glass reference from my PopUpAgent
+			Integer[] args = {index};
+			transducer.fireEvent(this.channel, TEvent.WORKSTATION_REMOVED_GLASS, args);
 		}
 	}
 	

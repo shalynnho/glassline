@@ -44,4 +44,7 @@ public enum TEvent {
 	// bin and "Glass Ghosts"
 	BIN_CREATE_PART,
 	BIN_PART_CREATED,
+	
+	// @Tim -- Used to remove glass after it hits the workstation
+	WORKSTATION_REMOVED_GLASS
 }

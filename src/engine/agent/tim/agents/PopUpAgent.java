@@ -429,7 +429,10 @@ public class PopUpAgent extends Agent implements PopUp {
 				animationSemaphores.get(4).release();
 				print("Animation semaphore 4 released");
 			}
-		}		
+			else if (event == TEvent.WORKSTATION_REMOVED_GLASS) {
+				msgGUIBreakRemovedGlassFromWorkstation((Integer) args[0]);
+			}
+		}	
 	}
 	
 	// Special Animation Methods Below ("do" methods):
