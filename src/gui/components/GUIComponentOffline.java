@@ -147,6 +147,9 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				animationState = AnimationState.BREAKING;
 				part.msgPartBroken();
 			}
+			else { // @Tim -- Hopefully this fixes that processing bug
+				animationState = AnimationState.ANIMATING;
+			}
 		}
 		else if (!(part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY())) {
 			glassSentOnLoad = false; // Set this to false as soon as the part leaves, so the next one can be processed
