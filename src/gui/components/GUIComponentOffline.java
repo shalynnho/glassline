@@ -85,32 +85,10 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		setSize(getIcon().getIconWidth(), getIcon().getIconHeight());
 	}
 
-	/**
-	 * Method that does the machine animation
-	 */
-	public void doAnimate() {
-		if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
-			setIcon(imageicons.get(counter));
-			counter++;
-			animationCount++;
-			if (counter == imageicons.size()) {
-				counter = 0;
-			}
-		} else {
-
-			setIcon(imageicons.get(0));
-			counter = 0;
-			animationCount = 0;
-
-			Object[] args = new Object[1];
-			args[0] = index;
-			animationState = GuiAnimationComponent.AnimationState.DONE;
-			transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, args);
-		}
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		
+//		System.out.println(type.toString() + index +"	ANIMATION STATE: " + animationState);
 		if (animationState.equals(AnimationState.MOVING)) {
 			if (part != null) {
 				movePartIn();
@@ -120,7 +98,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			doAnimate();
 		}
 		if (animationState.equals(AnimationState.BREAKING)) {
-//			System.out.println("CALLING DOBREAKING()");
 			doBreaking();
 		}
 	}
@@ -155,12 +132,12 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
 		else if (part.getCenterX() > getCenterX())
 			part.setCenterLocation(part.getCenterX() - 1, part.getCenterY());
-
+	
 		if (part.getCenterY() < getCenterY())
 			part.setCenterLocation(part.getCenterX(), part.getCenterY() + 1);
 		else if (part.getCenterY() > getCenterY())
 			part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
-
+	
 		if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY() && !glassSentOnLoad) {
 			Object[] args = new Object[1];
 			args[0] = index;
@@ -175,17 +152,42 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			glassSentOnLoad = false; // Set this to false as soon as the part leaves, so the next one can be processed
 		}
 	}
+
+	/**
+	 * Method that does the machine animation
+	 */
+	private void doAnimate() {
+		if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
+			setIcon(imageicons.get(counter));
+			counter++;
+			animationCount++;
+			if (counter == imageicons.size()) {
+				counter = 0;
+			}
+		} else {
 	
+			setIcon(imageicons.get(0));
+			counter = 0;
+			animationCount = 0;
+	
+			Object[] args = new Object[1];
+			args[0] = index;
+			animationState = GuiAnimationComponent.AnimationState.DONE;
+			transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, args);
+		}
+	}
+
 	private void doBreaking() {
-		if (breakCount < 15) {
+		if (breakCount < 50) {
 			breakCount++;
 		}
 		
-		if (breakCount == 15) {
-			System.out.println("REMOVING BROKEN GLASS");
+		if (breakCount == 50) {
+			System.out.println("[GUI"+type.toString() + index + "] REMOVING BROKEN GLASS");
 			parent.getActivePieces();
 			parent.getParent().getGuiParent().getTimer().removeActionListener(part);
 			parent.remove(part);
+			parent.repaint();
 			breakCount = 0;
 			animationState = AnimationState.IDLE;
 		}
