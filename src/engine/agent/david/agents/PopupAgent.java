@@ -222,7 +222,7 @@ public class PopupAgent extends Agent implements Popup {
 					handleWakeUpPopupAfterWksFixed();
 				}
 			}
-		}, WAIT_INTERVAL);		
+		}, WAIT_INTERVAL);
 	}
 	// pre: popup state is DOING_NOTHING, sensorOccupied should also be true since popup wouldn't know to remove the glass at the sensor
 	private void handleWakeUpPopupAfterWksFixed() {
@@ -230,14 +230,17 @@ public class PopupAgent extends Agent implements Popup {
 		stateChanged();
 	}
 	
-	
 	/**
 	 * Message from gui that a piece of glass was removed from workstation index (0 or 1)
-	 * Nothing to do, as glass that is on workstation simply vanishes from OfflineWorkstationAgent
-	 * would msgGlassDone not get sent when glass is removed? if so, you're all set. 
+	 * Just make sure the workstation if set back to free - the glassDone is never sent back. 
 	 */
 	@Override
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // piece of glass was removed, so should delete from internal list if necessary
+		updateWorkstationState(index, WorkstationState.FREE);
+		// also make sure to wake up popup again if glass is waiting at sensor
+		if (sensorOccupied)
+			startWksFixedTimer();
+		
 	}
 
 	// *** SCHEDULER ***

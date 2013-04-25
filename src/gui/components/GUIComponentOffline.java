@@ -22,7 +22,8 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	/**
 	 * The popup for the offline component
 	 */
-
+	// parent is display panel
+	
 	GUIPopUp myPopUp;
 
 	MachineType type;
@@ -87,7 +88,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		
 //		System.out.println(type.toString() + index +"	ANIMATION STATE: " + animationState);
 		if (animationState.equals(AnimationState.MOVING)) {
 			if (part != null) {

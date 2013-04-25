@@ -130,6 +130,7 @@ public class ConveyorFamilyEntity implements OfflineConveyorFamily {
 
 	@Override
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
+		popup.msgGUIBreakRemovedGlassFromWorkstation(index); // just forward because of workstation change
 	}
 
 	@Override
