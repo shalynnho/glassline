@@ -53,7 +53,7 @@ public class PopupAgent extends Agent implements Popup {
 		transducer.register(this, mtc);
 		id = index;
 		
-		glasses = new ArrayList<MyGlass>();
+		glasses = Collections.synchronizedList(new ArrayList<MyGlass>());
 		animSem = new Semaphore[5];
 		for (int i = 0; i < 5; ++i)
 			animSem[i] = new Semaphore(0);
@@ -70,7 +70,9 @@ public class PopupAgent extends Agent implements Popup {
 	
 	/* Conveyor sends next glass when glass is at end of conveyor. */
 	public void msgNextGlass(Glass g) {
-		glasses.add(new MyGlass(g));
+		synchronized(glasses) {
+			glasses.add(new MyGlass(g));
+		}
 		stateChanged();
 	}
 
@@ -82,9 +84,11 @@ public class PopupAgent extends Agent implements Popup {
 
 	/* Machine tells when glass is done being processed. */
 	public void msgGlassDone(Glass g, int index) {
-		for (MyGlass mg : glasses)
-			if (mg.g.equals(g))
-				mg.gs = GlassState.doneProcessing;
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.g.equals(g))
+					mg.gs = GlassState.doneProcessing;
+		}
 		stateChanged();
 	}
 
@@ -106,9 +110,14 @@ public class PopupAgent extends Agent implements Popup {
 	
 	/* This message is from the GUI telling that a piece of glass was removed from the workstation. */
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
-		for (MyGlass mg : glasses)
-			if (mg.i == index)
-				glasses.remove(mg);
+		MyGlass toRemove = null;
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.i == index)
+					toRemove = mg;
+		}
+		if (toRemove != null) // toRemove will never be null
+			glasses.remove(toRemove);
 		mFree[index] = true;
 		stateChanged();
 	}
@@ -139,40 +148,48 @@ public class PopupAgent extends Agent implements Popup {
 		} else if (gbs == GUIBreakState.stopped) {
 			return false; // don't do anything if stopped
 		}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.waiting) {
-				if (posFree) {
-					sendGlass(mg);
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.waiting) {
+					if (posFree) {
+						sendGlass(mg);
+						return true;
+					} else
+						return false; // popup is holding glass so can’t do anything else
+				}
+		}
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.needsProcessing) {
+					int i;
+					if (mFree[0] && !mBroken[0])
+						i = 0;
+					else if (mFree[1] && !mBroken[1])
+						i = 1;
+					// allows for optimization in case one workstation breaks after glass needing processing is taken onto popup
+					else if (mBroken[0])
+						i = 0;
+					else
+						i = 1;
+					moveUpAndToMachine(mg, i);
 					return true;
-				} else
-					return false; // popup is holding glass so can’t do anything else
-			}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.needsProcessing) {
-				int i;
-				if (mFree[0] && !mBroken[0])
-					i = 0;
-				else if (mFree[1] && !mBroken[1])
-					i = 1;
-				// allows for optimization in case one workstation breaks after glass needing processing is taken onto popup
-				else if (mBroken[0])
-					i = 0;
-				else
-					i = 1;
-				moveUpAndToMachine(mg, i);
-				return true;
-			}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.doneProcessing) {
-				removeFromMachine(mg);
-				return true;
-			}
-		for (MyGlass mg : glasses)
-			// if pending and (there is a machine free or mg doesn't need processing)
-			if (mg.gs == GlassState.pending && ((mFree[0] && !mBroken[0]) || (mFree[1] && !mBroken[1]) || !mg.g.getNeedsProcessing(mt))) {
-				readyForGlass(mg);
-				return true;
-			}
+				}
+		}
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.doneProcessing) {
+					removeFromMachine(mg);
+					return true;
+				}
+		}
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				// if pending and (there is a machine free or mg doesn't need processing)
+				if (mg.gs == GlassState.pending && ((mFree[0] && !mBroken[0]) || (mFree[1] && !mBroken[1]) || !mg.g.getNeedsProcessing(mt))) {
+					readyForGlass(mg);
+					return true;
+				}
+		}
 		
 		return false;
 	}
@@ -211,7 +228,9 @@ public class PopupAgent extends Agent implements Popup {
 	private void sendGlass(MyGlass mg) {
 		next.msgHereIsGlass(mg.g);
 		doReleaseGlass(mg);
-		glasses.remove(mg);
+		synchronized(glasses) {
+			glasses.remove(mg);
+		}
 		posFree = false; // next conveyor now occupied
 	}
 	

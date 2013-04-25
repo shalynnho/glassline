@@ -63,7 +63,9 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	
 	/* From previous CF. */
 	public void msgHereIsGlass(Glass g) {
-		glasses.add(new MyGlass(g));
+		synchronized(glasses) {
+			glasses.add(new MyGlass(g));
+		}
 		stateChanged();
 	}
 	
@@ -89,36 +91,44 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 		
 		if (sensorID == id * 2) {
 			if (event == TEvent.SENSOR_GUI_PRESSED) { // if front sensor pressed
-				for (MyGlass mg : glasses)
-					if (mg.gs == GlassState.pending) {
-						mg.gs = GlassState.arrived;
-						break;
-					}
+				synchronized(glasses) {
+					for (MyGlass mg : glasses)
+						if (mg.gs == GlassState.pending) {
+							mg.gs = GlassState.arrived;
+							break;
+						}
+				}
 				stateChanged();
 			} else if (event == TEvent.SENSOR_GUI_RELEASED) { // if front sensor released
-				for (MyGlass mg : glasses)
-					if (mg.gs == GlassState.arrived) {
-						mg.gs = GlassState.moving;
-						glassMoved = 0;
-						waitingToSendPosFree = true;
-						break;
-					}
+				synchronized(glasses) {
+					for (MyGlass mg : glasses)
+						if (mg.gs == GlassState.arrived) {
+							mg.gs = GlassState.moving;
+							glassMoved = 0;
+							waitingToSendPosFree = true;
+							break;
+						}
+				}
 				stateChanged();
 			}
 		} else if (sensorID == id * 2 + 1) {
 			if (event == TEvent.SENSOR_GUI_PRESSED) { // if back sensor pressed
-				for (MyGlass mg : glasses)
-					if (mg.gs == GlassState.moving) { // only processes furthest along applicable piece of glass
-						mg.gs = GlassState.atEnd;
-						break; // don't process any more of them
-					}
+				synchronized(glasses) {
+					for (MyGlass mg : glasses)
+						if (mg.gs == GlassState.moving) { // only processes furthest along applicable piece of glass
+							mg.gs = GlassState.atEnd;
+							break; // don't process any more of them
+						}
+				}
 				stateChanged();
 			} else if (event == TEvent.SENSOR_GUI_RELEASED) { // if back sensor released
-				for (MyGlass mg : glasses)
-					if (mg.gs == GlassState.sent) {
-						mg.gs = GlassState.done;
-						break;
-					}
+				synchronized(glasses) {
+					for (MyGlass mg : glasses)
+						if (mg.gs == GlassState.sent) {
+							mg.gs = GlassState.done;
+							break;
+						}
+				}
 				stateChanged();
 			}
 		}
@@ -144,35 +154,43 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 			sendPositionFree();
 			return true;
 		}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.done) {
-				removeGlass(mg); // remove mg from glasses
-				return true;
-			}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.waiting) {
-				if (posFree) {
-					sendGlass(mg); // send to next LineComponent
-					return true;
-				} else {
-					return false; // shouldn't do anything else if glass waiting and next LineComponent is full
-				}
-			}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.atEnd) {
-				if (posFree) {
-					sendGlass(mg);
-					return true;
-				} else {
-					startWaiting(mg);
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.done) {
+					removeGlass(mg); // remove mg from glasses
 					return true;
 				}
-			}
-		for (MyGlass mg : glasses)
-			if (mg.gs == GlassState.arrived) {
-				doStartConveyor(); // start conveyor if conveyor isn't moving
-				return true;
-			}
+		}
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.waiting) {
+					if (posFree) {
+						sendGlass(mg); // send to next LineComponent
+						return true;
+					} else {
+						return false; // shouldn't do anything else if glass waiting and next LineComponent is full
+					}
+				}
+		}
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.atEnd) {
+					if (posFree) {
+						sendGlass(mg);
+						return true;
+					} else {
+						startWaiting(mg);
+						return true;
+					}
+				}
+		}
+		synchronized(glasses) {
+			for (MyGlass mg : glasses)
+				if (mg.gs == GlassState.arrived) {
+					doStartConveyor(); // start conveyor if conveyor isn't moving
+					return true;
+				}
+		}
 		
 		return false;
 	}
@@ -213,7 +231,9 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 	
 	/* Remove mg from glasses. */
 	private void removeGlass(MyGlass mg) {
-		glasses.remove(mg);
+		synchronized(glasses) {
+			glasses.remove(mg);
+		}
 		posFree = false;
 	}
 	
