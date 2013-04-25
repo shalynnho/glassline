@@ -80,6 +80,10 @@ public class DisplayPanel extends JLayeredPane {
 	List<GUIGlass> activePieces = Collections.synchronizedList(new ArrayList<GUIGlass>());
 
 	public List<GUIGlass> getActivePieces() {
+		return activePieces;
+	}
+	
+	public void removeBrokenGlass() {
 		synchronized(activePieces) {
 			for(GUIGlass g : activePieces) {
 				if (g.getStateBroken()) {
@@ -88,7 +92,6 @@ public class DisplayPanel extends JLayeredPane {
 				}
 			}
 		}
-		return activePieces;
 	}
 
 	public void setActivePieces(ArrayList<GUIGlass> activePieces) {
