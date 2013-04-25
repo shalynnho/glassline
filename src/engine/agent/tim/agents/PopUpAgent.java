@@ -160,6 +160,7 @@ public class PopUpAgent extends Agent implements PopUp {
 			for (MyGlassPopUp glass: glassToBeProcessed) {
 				if (glass.glass.getID() == g.getID()) {
 					glass.processState = processState.doneProcessing;
+					System.err.println("RECEIVED msgGlassDone() for glass: " + glass.glass.getID());
 					stateChanged();
 					break;
 				}
@@ -199,14 +200,16 @@ public class PopUpAgent extends Agent implements PopUp {
 			if (machineComs.get(machineIndex % 2).isBroken == true) {
 				machineComs.get(machineIndex % 2).isBroken = false;
 				stateChanged();
-			}			
+			}
 		}
 	}
 	
 	@Override
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) { // Index is the index of the machine that removed the glass
+		print("Attempting to remove glass from popUp." + index);
 		synchronized (glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
+				System.err.println(g.machineIndex + " " + g.processState);
 				if (g.machineIndex == index && g.processState == processState.processing) {
 					print("Removed glass (" + g.glass.getID() + ") from the popUp.");
 					glassToBeProcessed.remove(g);
