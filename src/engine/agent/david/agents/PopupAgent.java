@@ -240,7 +240,6 @@ public class PopupAgent extends Agent implements Popup {
 		// also make sure to wake up popup again if glass is waiting at sensor
 		if (sensorOccupied)
 			startWksFixedTimer();
-		
 	}
 
 	// *** SCHEDULER ***
