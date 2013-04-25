@@ -130,13 +130,11 @@ public class ConveyorFamilyImp implements OfflineConveyorFamily {
 
 	@Override
 	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
-		popUp.msgGUIBreakRemovedGlassFromWorkstation(index);
-		
+		popUp.msgGUIBreakRemovedGlassFromWorkstation(index);		
 	}
 
 	@Override
 	public void msgGUIBreak(boolean stop) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 }
