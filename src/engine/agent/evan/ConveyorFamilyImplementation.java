@@ -31,6 +31,10 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 		p.msgGlassDone(g, index);
 	}
 	
+	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {
+		p.msgGUIBreakRemovedGlassFromWorkstation(index);
+	}
+	
 	// *** EXTRA ***
 	public void startThreads() {
 		c.startThread();
@@ -47,6 +51,5 @@ public class ConveyorFamilyImplementation implements OfflineConveyorFamily {
 	}
 	
 	public void msgGUIBreakWorkstation(boolean stop, int index) {}
-	public void msgGUIBreakRemovedGlassFromWorkstation(int index) {}
 	public void msgGUIBreak(boolean stop) {}
 }

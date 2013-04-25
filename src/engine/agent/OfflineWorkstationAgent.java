@@ -24,7 +24,8 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	private Semaphore waitSem;
 	
 	enum GUIState {broken, working};
-	private GUIState aniState = GUIState.working;	
+	private GUIState aniState;
+	private boolean glassBroken;
 	
 	public OfflineWorkstationAgent(String name, MachineType mt, int index, Transducer trans) {
 		super(name, trans);
@@ -36,6 +37,8 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 		g = null;
 		gs = null;
 		waitSem = new Semaphore(0);
+		aniState = GUIState.working;
+		glassBroken = false;
 		
 		transducer.register(this, mtc);
 	}
@@ -70,13 +73,21 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 			} else if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
 				print("WORKSTATION_GUI_ACTION_FINISHED");
 				waitSem.release(); // don't need stateChanged because sem release wakes agent
+			} else if (event == TEvent.WORKSTATION_REMOVED_GLASS) {
+				glassBroken = true;
+				if (gs == GlassState.processing)
+					waitSem.release();
+				stateChanged();
 			}
 		}
 	}
 	
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
-		
+		if (glassBroken) {
+			removeBrokenGlassAndMessagePopup();
+			return true;
+		}
 		if (aniState == GUIState.working) {		
 			if (gs == GlassState.arrived) {
 				processGlass();
@@ -89,6 +100,14 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 	
 	// *** ACTIONS ***
 	
+	/* Remove a piece of broken glass and alert popup agent. */
+	private void removeBrokenGlassAndMessagePopup() {
+		g = null;
+		gs = GlassState.done;
+		p.msgGUIBreakRemovedGlassFromWorkstation(index);
+		glassBroken = false;
+	}
+
 	/* Tell animation to process glass, wait for it to finish, then send msgGlassDone. */
 	private void processGlass() {
 		print("processing glass");
