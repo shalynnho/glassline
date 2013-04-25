@@ -113,7 +113,8 @@ public class OfflineWorkstationAgent extends Agent implements OfflineWorkstation
 		print("processing glass");
 		doStartProcessing();
 		doWaitProcessing();
-		p.msgGlassDone(g, index);
+		if (!glassBroken)
+			p.msgGlassDone(g, index);
 		// Popup will take glass when it is ready, Workstation now waits for next glass to arrive
 	}
 
