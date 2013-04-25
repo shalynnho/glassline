@@ -104,6 +104,9 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	
 	public void breakGlass(boolean breakGlass) {
 		this.breakGlass = breakGlass;
+		if (breakCount != 50 && breakCount != 0) {
+			removeGlass();
+		}
 	}
 
 	@Override
