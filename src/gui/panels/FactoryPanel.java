@@ -464,9 +464,6 @@ public class FactoryPanel extends JPanel {
 	
 	public void breakGlass(boolean b, int id, String name) {
 		System.err.println("breaking glass..."+b);
-		if (id != 2 && id != 3) { // @Tim -- Used so that clicking the break glass button does not remove a glass in index id if a glass is already processing there -- Transducer deals with that logic in my code
-			popups.get(id / 2).msgGUIBreakRemovedGlassFromWorkstation(id % 2);
-		}
 		getGUIOfflineWorkstations().get(name).breakGlass(b);
 	}
 	
