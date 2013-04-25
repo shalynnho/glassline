@@ -160,23 +160,28 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Method that does the machine animation
 	 */
 	private void doAnimate() {
-		if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
-			setIcon(imageicons.get(counter));
-			counter++;
-			animationCount++;
-			if (counter == imageicons.size()) {
-				counter = 0;
-			}
+		if (breakGlass) {
+			animationState = AnimationState.BREAKING;
+			part.msgPartBroken();
 		} else {
-	
-			setIcon(imageicons.get(0));
-			counter = 0;
-			animationCount = 0;
-	
-			Object[] args = new Object[1];
-			args[0] = index;
-			animationState = GuiAnimationComponent.AnimationState.DONE;
-			transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, args);
+			if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
+				setIcon(imageicons.get(counter));
+				counter++;
+				animationCount++;
+				if (counter == imageicons.size()) {
+					counter = 0;
+				}
+			} else {
+		
+				setIcon(imageicons.get(0));
+				counter = 0;
+				animationCount = 0;
+		
+				Object[] args = new Object[1];
+				args[0] = index;
+				animationState = GuiAnimationComponent.AnimationState.DONE;
+				transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, args);
+			}
 		}
 	}
 
@@ -186,17 +191,21 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		}
 		
 		if (breakCount == 50) {
-			System.out.println("[GUI"+type.toString() + index + "] REMOVING BROKEN GLASS");
-			parent.removeBrokenGlass();
-			parent.getParent().getGuiParent().getTimer().removeActionListener(part);
-			parent.remove(part);
-			parent.repaint();
-			breakCount = 0;
-			animationState = AnimationState.IDLE;
-			// @Tim -- Added this transducer event to remove the glass reference from my PopUpAgent
-			Integer[] args = {index};
-			transducer.fireEvent(this.channel, TEvent.WORKSTATION_REMOVED_GLASS, args);
+			removeGlass();
 		}
+	}
+	
+	private void removeGlass() {
+		System.out.println("[GUI"+type.toString() + index + "] REMOVING BROKEN GLASS");
+		parent.removeBrokenGlass();
+		parent.getParent().getGuiParent().getTimer().removeActionListener(part);
+		parent.remove(part);
+		parent.repaint();
+		breakCount = 0;
+		animationState = AnimationState.IDLE;
+		// @Tim -- Added this transducer event to remove the glass reference from my PopUpAgent
+		Integer[] args = {index};
+		transducer.fireEvent(this.channel, TEvent.WORKSTATION_REMOVED_GLASS, args);
 	}
 	
 	/**
