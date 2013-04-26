@@ -5,9 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.swing.Timer;
-
 import shared.Glass;
 import shared.interfaces.LineComponent;
 import shared.interfaces.NonnormBreakInteraction;
@@ -154,42 +152,59 @@ public class GeneralConveyorAgent extends Agent implements LineComponent, Action
 			sendPositionFree();
 			return true;
 		}
+		MyGlass toProcess = null;
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.done) {
-					removeGlass(mg); // remove mg from glasses
-					return true;
+					toProcess = mg;
+					break;
 				}
+		}
+		if (toProcess != null) {
+			removeGlass(toProcess); // remove mg from glasses
+			return true;
 		}
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.waiting) {
 					if (posFree) {
-						sendGlass(mg); // send to next LineComponent
-						return true;
+						toProcess = mg;
+						break;
 					} else {
 						return false; // shouldn't do anything else if glass waiting and next LineComponent is full
 					}
 				}
 		}
+		if (toProcess != null) {
+			sendGlass(toProcess); // send to next LineComponent
+			return true;
+		}
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.atEnd) {
 					if (posFree) {
-						sendGlass(mg);
-						return true;
+						toProcess = mg;
+						break;
 					} else {
 						startWaiting(mg);
 						return true;
 					}
 				}
 		}
+		if (toProcess != null) {
+			sendGlass(toProcess); // send to next LineComponent
+			return true;
+		}
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.arrived) {
-					doStartConveyor(); // start conveyor if conveyor isn't moving
-					return true;
+					toProcess = mg;
+					break;
 				}
+		}
+		if (toProcess != null) {
+			doStartConveyor(); // start conveyor if conveyor isn't moving
+			return true;
 		}
 		
 		return false;
