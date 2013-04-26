@@ -263,7 +263,8 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	}
 	
 	private void actBreakConveyorOn() {
-		if (!cf.getPopUp().isGlassOnPopUp() && cf.getPopUp().getFreeChannels() > 0) {
+		// First Check -- Is there no glass on popUp, is there a free machineCom, and it glass currently on a workstation
+		if (!cf.getPopUp().isGlassOnPopUp() && cf.getPopUp().getFreeChannels() > 0 && !cf.getPopUp().isGlassOnWorkstation()) {
 			turnOnConveyorGUI();
 		}		
 		// Second Check -- there is nothing currently on the popUp Sensor

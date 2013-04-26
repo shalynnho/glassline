@@ -160,7 +160,7 @@ public class PopUpAgent extends Agent implements PopUp {
 			for (MyGlassPopUp glass: glassToBeProcessed) {
 				if (glass.glass.getID() == g.getID()) {
 					glass.processState = processState.doneProcessing;
-					System.err.println("RECEIVED msgGlassDone() for glass: " + glass.glass.getID());
+					print("RECEIVED msgGlassDone() for glass: " + glass.glass.getID());
 					stateChanged();
 					break;
 				}
@@ -209,7 +209,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		print("Attempting to remove glass from popUp." + index);
 		synchronized (glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
-				System.err.println(g.machineIndex + " " + g.processState);
+				System.err.println(name + " " + g.machineIndex + " " + g.processState);
 				if (g.machineIndex == index && g.processState == processState.processing) {
 					print("Removed glass (" + g.glass.getID() + ") from the popUp.");
 					glassToBeProcessed.remove(g);
@@ -555,6 +555,7 @@ public class PopUpAgent extends Agent implements PopUp {
 		return machineComs;
 	}
 	
+	// Will check to see if a piece of glass is currently on the popUp
 	public boolean isGlassOnPopUp() {
 		synchronized (glassToBeProcessed) {
 			for (MyGlassPopUp g: glassToBeProcessed) {
@@ -571,6 +572,18 @@ public class PopUpAgent extends Agent implements PopUp {
 					}
 				}
 			}			
+		}
+		return false;
+	}
+	
+	// Will check to see if a piece of glass is currently on a workstation
+	public boolean isGlassOnWorkstation() {
+		synchronized(glassToBeProcessed) {
+			for (MyGlassPopUp g: glassToBeProcessed) {
+				if (g.processState == processState.doneProcessing || g.processState == processState.processing) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

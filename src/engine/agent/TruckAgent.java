@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import engine.agent.OfflineWorkstationAgent.GUIState;
+
 import shared.Glass;
 import shared.interfaces.LineComponent;
 import shared.interfaces.NonnormBreakInteraction;
@@ -23,6 +25,8 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 		transducer.register(this, TChannel.TRUCK);
 		loadFinished = alreadyTold = false;
 		glasses = new ArrayList<Glass>();
+		
+		aniState = GUIState.working;
 	}
 	
 	// *** DATA ***
@@ -34,8 +38,8 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 	
 	private static final int maxGlass = 1;
 	
-	private enum GUIBreakState {stop, stopped, restart, running};
-	GUIBreakState guiBreakState = GUIBreakState.running; // Value that determines whether the GUI truck is broken or not	
+	enum GUIState {broken, working};
+	private GUIState aniState;
 	
 	// *** MESSAGES ***
 	public void msgPositionFree() {
@@ -62,39 +66,25 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		if (stop && guiBreakState == GUIBreakState.running) {
-			guiBreakState = GUIBreakState.stop;
-			stateChanged();
-		} 
-		else if (!stop && guiBreakState == GUIBreakState.stopped) {
-			guiBreakState = GUIBreakState.restart;
-			stateChanged();
+		if (stop) {
+			aniState = GUIState.broken;
+		} else {
+			aniState = GUIState.working;
 		}
+		stateChanged();
 	}
 	
 	// *** SCHEDULER ***
 	public boolean pickAndExecuteAnAction() {
 		// Check to see if a GUI break message came in
-		if (guiBreakState == GUIBreakState.stop) {
-			actBreakTruckOff();
-			return false; // Make sure the method does not call again
-		}
-		
-		else if (guiBreakState == GUIBreakState.restart) {
-			actBreakTruckOn();
-			return true; 		
-		}
-		
-		else if (guiBreakState == GUIBreakState.stopped) {
-			return false; // C'mon the Truck is broken!  It shouldn't run until this state is changed
-		}
-		
-		if (loadFinished || (!glasses.isEmpty() && prev.isEmpty())) {
-			actLoadAndEmptyTruck();
-			return true;
-		} else if (!alreadyTold && glasses.size() < maxGlass) {
-			actTellPrevPosFree();
-			return true;
+		if (aniState == GUIState.working) {		
+			if (loadFinished || (!glasses.isEmpty() && prev.isEmpty())) {
+				actLoadAndEmptyTruck();
+				return true;
+			} else if (!alreadyTold && glasses.size() < maxGlass) {
+				actTellPrevPosFree();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -110,15 +100,6 @@ public class TruckAgent extends Agent implements LineComponent, NonnormBreakInte
 		doEmptyTruck();
 		glasses.clear();
 		loadFinished = false;
-	}
-	
-	// New Non-norm GUI actions
-	private void actBreakTruckOff() {
-		guiBreakState = GUIBreakState.stopped; 
-	}
-	
-	private void actBreakTruckOn() {
-		guiBreakState = GUIBreakState.running;
 	}
 	
 	// *** ANIMATION ACTIONS ***
