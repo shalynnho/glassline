@@ -215,6 +215,7 @@ public class PopUpAgent extends Agent implements PopUp {
 					glassToBeProcessed.remove(g);
 					// Make sure to make the workstation available again, even if it is broken
 					machineComs.get(index).inUse = false;
+					stateChanged();
 					break;
 				}
 			}
