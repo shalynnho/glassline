@@ -104,6 +104,7 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent, Nonn
 	private void releaseGlass() {
 		transducer.fireEvent(channel, TEvent.WORKSTATION_RELEASE_GLASS, null);
 		state = GlassState.releasing;
+		recPosFree = false;
 		
 		next.msgHereIsGlass(glass);
 	}
@@ -111,7 +112,6 @@ public class OnlineWorkstationAgent extends Agent implements LineComponent, Nonn
 	private void reset() {
 		state = null;
 		glass = null;
-		recPosFree = false;
 		prev.msgPositionFree();
 	}
 	
