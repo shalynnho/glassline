@@ -328,7 +328,7 @@ public class FactoryPanel extends JPanel {
 			truck.setPrevLineComponent((GeneralConveyorAgent)conveyors.get(conveyors.size() - 1));
 			
 			// Set things in motion!
-			createInitialGlasses();
+//			createInitialGlasses();
 			startAgentThreads();
 		} else if (RUN_MODE == RunMode.OFFLINE_CF_TEST) {
 			System.err.println("Running in OFFLINE TEST MODE");
