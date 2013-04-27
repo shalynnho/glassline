@@ -166,6 +166,9 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		if (breakGlass) {
 			animationState = AnimationState.BREAKING;
 			part.msgPartBroken();
+			counter = 0;
+			animationCount = 0;
+			setIcon(imageicons.get(counter));
 		} else {
 			if (counter < imageicons.size() && animationCount < (speed * imageicons.size())) {
 				setIcon(imageicons.get(counter));
