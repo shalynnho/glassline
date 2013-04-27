@@ -18,9 +18,6 @@ public class PopupAgent extends Agent implements Popup {
 	private int id; // place in animation
 	
 	enum GlassState {pending, needsProcessing, atMachine, doneProcessing, waiting};
-	enum GUIBreakState {stop, stopped, restart};
-	private GUIBreakState gbs;
-	
 	private class MyGlass {
 		public Glass g;
 		public GlassState gs;
@@ -31,6 +28,8 @@ public class PopupAgent extends Agent implements Popup {
 			gs = GlassState.pending;
 			i = -1; // not at a machine yet
 		}
+		
+		public String toString() { return g.toString() + " " + gs + " " + i; }
 	}
 	private List<MyGlass> glasses;
 	
@@ -39,7 +38,7 @@ public class PopupAgent extends Agent implements Popup {
 	
 	private Semaphore animSem[]; // animation delay semaphores: load finished, move up, move down, release finished, machine load finished
 	
-	private boolean mFree[], mBroken[], up, posFree; // machine free, up or down, nextCF position free
+	private boolean init, mFree[], mBroken[], up, posFree, broken; // machine free, up or down, nextCF position free, broken or not
 	
 	/* Assigns references from arguments and sets other data appropriately. */
 	public PopupAgent(String name, LineComponent conv, OfflineWorkstation machines[], MachineType mType, Transducer trans, int index) {
@@ -59,11 +58,11 @@ public class PopupAgent extends Agent implements Popup {
 			animSem[i] = new Semaphore(0);
 		
 		mFree = new boolean[2];
-		mFree[0] = true; mFree[1] = true;
+		mFree[0] = mFree[1] = true;
 		mBroken = new boolean[2];
-		mBroken[0] = false; mBroken[1] = false;
-		up = false;
-		posFree = true;
+		mBroken[0] = mBroken[1] = false;
+		up = broken = false;
+		posFree = init = true; // different procedure when receiving first piece of glass
 	}
 	
 	// *** MESSAGES ***
@@ -94,11 +93,7 @@ public class PopupAgent extends Agent implements Popup {
 
 	/* This message is from the GUI to stop or restart. */
 	public void msgGUIBreak(boolean stop) {
-		if  (stop) {
-			gbs = GUIBreakState.stop;
-		} else {
-			gbs = GUIBreakState.restart;
-		}
+		broken = stop;
 		stateChanged();
 	}
 	
@@ -139,56 +134,70 @@ public class PopupAgent extends Agent implements Popup {
 
 	/* Scheduler.  Determine what action is called for, and do it. */
 	public boolean pickAndExecuteAnAction() {
-		if (gbs == GUIBreakState.stop) {
-			guiStop();
-			return false; // agent shouldn't do anything until it is unstopped
-		} else if (gbs == GUIBreakState.restart) {
-			guiRestart();
-			return true;
-		} else if (gbs == GUIBreakState.stopped) {
-			return false; // don't do anything if stopped
-		}
+		if (init)
+			initialReceiveGlass(); // different procedure for receiving first piece of glass
+		
+		if (broken)
+			return false; // wait to be unbroken
+		
+		MyGlass toProcess = null;
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.waiting) {
 					if (posFree) {
-						sendGlass(mg);
-						return true;
+						toProcess = mg;
+						break;
 					} else
 						return false; // popup is holding glass so can’t do anything else
 				}
 		}
+		if (toProcess != null) {
+			sendGlass(toProcess);
+			return true;
+		}
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.needsProcessing) {
-					int i;
-					if (mFree[0] && !mBroken[0])
-						i = 0;
-					else if (mFree[1] && !mBroken[1])
-						i = 1;
-					// allows for optimization in case one workstation breaks after glass needing processing is taken onto popup
-					else if (mBroken[0])
-						i = 0;
-					else
-						i = 1;
-					moveUpAndToMachine(mg, i);
-					return true;
+					toProcess = mg;
+					break;
 				}
+		}
+		if (toProcess != null) {
+			int i;
+			if (mFree[0] && !mBroken[0])
+				i = 0;
+			else if (mFree[1] && !mBroken[1])
+				i = 1;
+			// allows for optimization in case one workstation breaks after glass needing processing is taken onto popup
+			else if (mBroken[0])
+				i = 0;
+			else
+				i = 1;
+			moveUpAndToMachine(toProcess, i);
+			return true;
 		}
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				if (mg.gs == GlassState.doneProcessing) {
-					removeFromMachine(mg);
-					return true;
+					toProcess = mg;
+					break;
 				}
+		}
+		if (toProcess != null) {
+			removeFromMachine(toProcess);
+			return true;
 		}
 		synchronized(glasses) {
 			for (MyGlass mg : glasses)
 				// if pending and (there is a machine free or mg doesn't need processing)
 				if (mg.gs == GlassState.pending && ((mFree[0] && !mBroken[0]) || (mFree[1] && !mBroken[1]) || !mg.g.getNeedsProcessing(mt))) {
-					readyForGlass(mg);
-					return true;
+					toProcess = mg;
+					break;
 				}
+		}
+		if (toProcess != null) {
+			readyForGlass(toProcess);
+			return true;
 		}
 		
 		return false;
@@ -196,16 +205,14 @@ public class PopupAgent extends Agent implements Popup {
 	
 	// *** ACTIONS ***
 	
-	/* Restart on GUI command. */
-	private void guiRestart() {
-		gbs = null;
+	/* Wait to receive first piece of glass, conveyor assumes position is free in beginning. */
+	private void initialReceiveGlass() {
+		doWaitAnimation(0); // wait to receive first piece of glass
+		MyGlass mg = glasses.get(0);
+		mg.gs = mg.g.getNeedsProcessing(mt) ? GlassState.needsProcessing : GlassState.waiting;
+		init = false;
 	}
 	
-	/* Stop on GUI command. */
-	private void guiStop() {
-		gbs = GUIBreakState.stopped;
-	}
-
 	/* Move glass up and load it into the machine. */
 	private void moveUpAndToMachine(MyGlass mg, int i) {
 		mg.i = i;
@@ -219,6 +226,7 @@ public class PopupAgent extends Agent implements Popup {
 	/* Move up, release glass from machine, move down, and start waiting. */
 	private void removeFromMachine(MyGlass mg) {
 		doMoveUp(); // only moves if necessary
+		
 		doMachineRelease(mg.i);
 		doMoveDown();
 		mg.gs = GlassState.waiting;
@@ -238,7 +246,6 @@ public class PopupAgent extends Agent implements Popup {
 	private void readyForGlass(MyGlass mg) {
 		doMoveDown();
 		c.msgPositionFree();
-		
 		doWaitAnimation(0); // wait for conveyor to finish sending glass
 		mg.gs = mg.g.getNeedsProcessing(mt) ? GlassState.needsProcessing : GlassState.waiting;
 	}
